@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Configuration</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li class="active"><a href="/7.0/docs">Documentation</a></li>
+        <li><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    	
+        <div><p><a href="https://github.com/GitTools/GitVersion/tree/8fd9e294be12083242079edf2bf4dae4c0956164/docs/input/docs/reference/configuration.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
+
+                </section>
+                <section class="sidebar">
+                    
+                    
+
+                    <ul class="sidebar-menu">
+                        
+        <li class="header gv-docs-version">7.0 · documentation</li>
+            <li class="treeview">
+                <a href="/7.0/docs/getting-started">Getting started</a><a href="#" class="expand" aria-label="Expand Getting started"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/getting-started">Getting started</a></li>
+                            <li><a href="/7.0/docs/usage/ai-agent-onboarding">AI-agent onboarding</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/installation">Installation</a></li>
+
+                <li><a href="/7.0/docs/reference/requirements">Requirements</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/usage">Guides</a><a href="#" class="expand" aria-label="Expand Guides"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/usage/choose-workflow">Choose a workflow</a></li>
+
+                <li><a href="/7.0/docs/usage/configure">Configure GitVersion</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies">Workflow examples</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/trunkbased">Trunk-based (preview)</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">Trunk-based examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/build-servers">CI integrations</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/output">Use version output</a></li>
+
+                <li><a href="/7.0/docs/usage/docker">Docker</a></li>
+
+                <li><a href="/7.0/docs/usage/msbuild">MSBuild Task</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                <li><a href="/7.0/docs/usage/library">Library</a></li>
+
+                <li><a href="/7.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn">Concepts</a><a href="#" class="expand" aria-label="Expand Concepts"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+
+                <li><a href="/7.0/docs/learn/how-it-works">How versions are calculated</a></li>
+
+                <li><a href="/7.0/docs/learn/version-calculation">Version calculation algorithm</a></li>
+
+                <li><a href="/7.0/docs/learn/workflows-modes-strategies">Workflows, modes, and strategies</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/modes">Deployment modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/reference/version-increments">Version Incrementing</a></li>
+                </ul>
+            </li>
+            <li class="treeview active">
+                <a href="/7.0/docs/reference">Reference</a><a href="#" class="expand" aria-label="Expand Reference"></a>
+                <ul class="treeview-menu">
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/configuration-topics">Configuration by topic</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/configuration-topics/branches">Branch configuration</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/output">Output and formatting</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/calculation">Version calculation</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/arguments">Arguments</a></li>
+
+                <li><a href="/7.0/docs/reference/version-sources">Calculation strategies</a></li>
+
+                <li><a href="/7.0/docs/reference/variables">Version Variables</a></li>
+
+                <li><a href="/7.0/docs/reference/custom-formatting">Format Strings</a></li>
+
+                <li><a href="/7.0/docs/reference/environment-variables">Environment variables</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn/faq">Troubleshooting</a><a href="#" class="expand" aria-label="Expand Troubleshooting"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/faq">Troubleshooting</a></li>
+
+                <li><a href="/7.0/docs/learn/git-setup">Repository setup</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/migration">Upgrading</a><a href="#" class="expand" aria-label="Expand Upgrading"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a></li>
+                </ul>
+            </li>
+
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Configuration</h1>
+		</section>
+	<section class="content">
+		<p>This is the complete settings reference, including built-in workflow defaults.
+For a shorter starting point, use <a href="/7.0/docs/reference/configuration-topics">configuration by topic</a>
+or follow <a href="/7.0/docs/usage/configure">Configure GitVersion</a>.</p>
+<p>Defaults depend on the selected workflow and effective branch configuration.
+Use the configuration output below to inspect them rather than assuming that
+every workflow uses the same deployment mode.</p>
+<p>Validate a candidate first with <code>gitversion config validate --config GitVersion.yml</code>.
+Explicit-file validation works outside Git and resolves the same workflow defaults
+and overrides as normal execution. It checks public keys/types, configured regexes
+and branch-definition references without calculating versions or changing files.
+See <a href="/7.0/docs/usage/cli/arguments#validate-configuration">configuration validation</a> for the JSON contract and
+limits. Matching-version schema and loader checks remain useful for older tools.</p>
+<p>To see the effective configuration (defaults and overrides), you can run
+<code>gitversion --show-config</code>.</p>
+<p>For a single v7 scalar setting, use <code>gitversion config get calculation.tag-prefix</code>.
+The result is a JSON scalar after workflow, file and runtime overrides have been
+applied. Both querying and full display honor runtime overrides with v7
+configuration. Querying requires v7 configuration; branch maps and structured
+values are unsupported. See <a href="/7.0/docs/usage/cli/arguments#query-a-configuration-property">query a configuration property</a>
+for path syntax, null handling, exit statuses and examples.</p>
+<h2 id="configuration-tool">Configuration tool</h2>
+<p>The interactive configuration tool (<code>gitversion init</code>) was removed in
+GitVersion v6.0.0. The <a href="https://github.com/GitTools/GitVersion/commit/09014f1af2367d79d53919c759a82ea998d9db6c">removal commit</a>
+removed the init wizard and its command handling. Create <code>GitVersion.yml</code>
+manually, <a href="/7.0/docs/usage/choose-workflow">choose a workflow</a>, and inspect the
+resolved settings with <code>gitversion --show-config</code>. Follow
+<a href="/7.0/docs/usage/configure">Configure GitVersion</a> for current configuration guidance,
+or the <a href="/7.0/docs/learn/branching-strategies/trunkbased">trunk-based guide</a> to try
+<code>TrunkBased/preview1</code>.</p>
+<h2 id="v7-configuration-layout">v7 configuration layout</h2>
+<p>GitVersion v7 separates version <strong>calculation</strong> from version <strong>output</strong>. Put
+calculation settings under <code>calculation</code> and settings that format or publish
+the calculated version under <code>output</code>:</p>
+<pre><code class="language-yaml">workflow: GitHubFlow/v1
+calculation:
+  branches:
+    main:
+      increment: Patch
+output:
+  update-build-number: true
+  branches:
+    main:
+      pre-release-weight: 55000
+</code></pre>
+<p><code>calculation.branches</code> contains branch-discovery and version-calculation
+settings. <code>output.branches</code> contains branch-specific output settings. A branch
+may appear in either section or both; GitVersion combines both sections into
+one effective branch configuration.</p>
+<p><code>workflow</code> belongs at the document root because it selects a preset for the
+whole configuration. Presets can supply defaults for both <code>calculation</code> and
+<code>output</code>, including output settings for branches defined by the preset. User
+configuration overrides those defaults, and runtime overrides take precedence
+over the user configuration. A file containing only <code>workflow: GitHubFlow/v1</code>
+is valid in either configuration format.</p>
+<table class="table">
+<thead>
+<tr>
+<th>v6 flat setting</th>
+<th>v7 location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assembly-file-versioning-format</code>, <code>assembly-file-versioning-scheme</code>, <code>assembly-informational-format</code>, <code>assembly-versioning-format</code>, <code>assembly-versioning-scheme</code>, <code>commit-date-format</code>, <code>custom-version-format</code>, <code>pre-release-weight</code>, <code>tag-pre-release-weight</code>, <code>update-build-number</code></td>
+<td><code>output.&lt;setting&gt;</code></td>
+</tr>
+<tr>
+<td><code>workflow</code></td>
+<td><code>workflow</code> (unchanged, applies to both sections)</td>
+</tr>
+<tr>
+<td>Every other root setting, including <code>branches</code>, <code>ignore</code>, <code>next-version</code>, <code>strategies</code>, and <code>tag-prefix</code></td>
+<td><code>calculation.&lt;setting&gt;</code></td>
+</tr>
+<tr>
+<td>Branch <code>custom-version-format</code>, <code>pre-release-weight</code></td>
+<td><code>output.branches.&lt;branch&gt;.&lt;setting&gt;</code></td>
+</tr>
+<tr>
+<td>Every other branch setting, including <code>increment</code>, <code>label</code>, <code>mode</code>, <code>regex</code>, and <code>source-branches</code></td>
+<td><code>calculation.branches.&lt;branch&gt;.&lt;setting&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>In v7, <code>gitversion --show-config</code> emits this nested structure. The temporary
+v6 flat format can be selected only with
+<code>GITVERSION_CONFIGURATION_VERSION=v6</code> in v7.0; GitVersion warns when it loads
+a user configuration that way.</p>
+<h3 id="migrating-an-existing-configuration">Migrating an existing configuration</h3>
+<p>When upgrading from v5, first <a href="#migrating-master-overrides-from-v5">migrate any <code>master</code> overrides</a>
+to the v6 configuration keys. The layout migration command below does not
+rename branch configuration keys or references to them.</p>
+<p>Use the migration command with the default POSIX-style argument parser to
+convert a v6 document without opening a repository. It works on all supported
+operating systems; the legacy v6 argument parser does not support it:</p>
+<pre><code class="language-shell"># Discover GitVersion.yml in the target/current directory and write YAML to stdout
+gitversion config migrate
+
+# Select an input explicitly, write a new file, or replace that input
+gitversion config migrate --config GitVersion.yml --output GitVersion.v7.yml
+gitversion config migrate --config GitVersion.yml --in-place
+</code></pre>
+<p><code>--output</code> refuses to overwrite an existing file unless <code>--force</code> is supplied;
+<code>--output</code> and <code>--in-place</code> cannot be combined. <code>--in-place</code> warns because
+comments cannot be preserved. The command is deterministic: migrating an
+already nested v7 document produces the same YAML again.</p>
+<p>Migration also relocates <code>calculation.workflow</code> from the earlier v7 draft layout
+to the root. Runtime loading accepts only root-level <code>workflow</code>; duplicate
+root/nested selectors and <code>output.workflow</code> are rejected.</p>
+<h3 id="migrating-master-overrides-from-v5">Migrating master overrides from v5</h3>
+<p>If your v5 configuration uses <code>branches.master</code> to override the built-in main
+branch settings, change that key to <code>branches.main</code> for v6. Later v5 releases
+already used <code>main</code> internally but accepted <code>master</code> for compatibility. v6
+removed that compatibility mapping; see the
+<a href="https://github.com/GitTools/GitVersion/blob/main/BREAKING_CHANGES.md#v600">v6.0.0 breaking changes</a>.</p>
+<p>For example, this v5 configuration overrides the main branch increment and
+restricts the feature configuration's source branches:</p>
+<pre><code class="language-yaml">branches:
+  master:
+    increment: Minor
+  feature:
+    source-branches: [master]
+</code></pre>
+<p>The equivalent v6 configuration uses the flat layout:</p>
+<pre><code class="language-yaml">branches:
+  main:
+    increment: Minor
+  feature:
+    source-branches: [main]
+</code></pre>
+<p>For v7, use the nested layout (or convert the corrected v6 file with
+<code>gitversion config migrate</code>):</p>
+<pre><code class="language-yaml">calculation:
+  branches:
+    main:
+      increment: Minor
+    feature:
+      source-branches: [main]
+</code></pre>
+<p><code>main</code> here is a <strong>configuration key</strong>, not a requirement to rename your Git
+branch. The built-in <code>main</code> configuration's default <code>regex</code> matches both Git
+branches <code>main</code> and <code>master</code>. The overrides above therefore also apply when
+your repository's branch is still named <code>master</code>.</p>
+<p>In v6 and v7, a <code>master</code> configuration entry is a separate custom entry, so a
+partial override can fail with
+<code>Branch configuration 'master' is missing required configuration 'regex'</code>.
+Update references to the renamed key in <code>source-branches</code> and, where
+applicable, <code>is-source-branch-for</code>, preserving the other entries in each list.
+These properties refer to configuration keys. Do not blindly rename
+intentionally custom configurations or literal Git branch names and regular
+expressions. Custom configurations still need their own required settings,
+including <code>regex</code> and <code>source-branches</code>.</p>
+<h3 id="overriding-v7-configuration">Overriding v7 configuration</h3>
+<p><code>--override-config</code> uses the selected configuration structure. With the v7
+default, use root-level <code>--override-config workflow=GitHubFlow/v1</code> for the preset,
+and nested keys such as
+<code>--override-config calculation.tag-prefix='[vV]?'</code> and
+<code>--override-config output.update-build-number=false</code>. Branch overrides follow
+the same ownership map, for example
+<code>calculation.branches.main.increment=Patch</code> and
+<code>output.branches.main.pre-release-weight=55000</code>. Flat v6 keys are rejected in
+v7 mode with their nested replacement.</p>
+<h2 id="global-configuration">Global configuration</h2>
+<p>The following supported workflow configurations are available in GitVersion and can be referenced by the workflow property:</p>
+<ul>
+<li>GitFlow (GitFlow/v1)</li>
+<li>GitHubFlow (GitHubFlow/v1)</li>
+<li><a href="/7.0/docs/learn/branching-strategies/trunkbased">TrunkBased</a> (<code>TrunkBased/preview1</code>, experimental preview; <a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">worked examples</a>)</li>
+</ul>
+<p>Example of using a <code>GitHubFlow</code> workflow with a different <code>tag-prefix</code>:</p>
+<pre><code class="language-yaml">workflow: GitHubFlow/v1
+calculation:
+  tag-prefix: '[abc]'
+</code></pre>
+<p>The built-in configuration for the <code>GitFlow</code> workflow (<code>workflow: GitFlow/v1</code>) looks like:</p>
+<!-- snippet: /docs/workflows/GitFlow/v1.yml -->
+<p><a id="snippet-/docs/workflows/GitFlow/v1.yml"></a></p>
+<pre><code class="language-yml">calculation:
+  branches:
+    develop:
+      increment: Minor
+      is-main-branch: false
+      is-release-branch: false
+      is-source-branch-for: []
+      label: alpha
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: ^dev(elop)?(ment)?$
+      source-branches:
+        - main
+      track-merge-message: true
+      track-merge-target: true
+      tracks-release-branches: true
+    main:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^master$|^main$"
+      source-branches: []
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    release:
+      increment: Minor
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: beta
+      mode: ManualDeployment
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^releases?[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+        - support
+      track-merge-target: false
+      tracks-release-branches: false
+    feature:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^features?[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - develop
+        - main
+        - release
+        - support
+        - hotfix
+      track-merge-message: true
+    pull-request:
+      increment: Inherit
+      is-source-branch-for: []
+      label: "PullRequest{Number}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^(pull-requests|pull|pr)[\\/-](?&lt;Number&gt;\\d*)"
+      source-branches:
+        - develop
+        - main
+        - release
+        - feature
+        - support
+        - hotfix
+      track-merge-message: true
+    hotfix:
+      increment: Inherit
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: beta
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^hotfix(es)?[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+        - support
+    support:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^support[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+      track-merge-target: false
+      tracks-release-branches: false
+    unknown:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: true
+      regex: "(?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+        - develop
+        - release
+        - feature
+        - pull-request
+        - hotfix
+        - support
+  commit-message-incrementing: Enabled
+  ignore:
+    branches: []
+    paths: []
+    sha: []
+    tags: []
+  increment: Inherit
+  is-main-branch: false
+  is-release-branch: false
+  is-source-branch-for: []
+  label: "{BranchName}"
+  major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+  merge-message-formats: {}
+  minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+  mode: ContinuousDelivery
+  no-bump-message: "[+=]semver:\\s?(none|skip)"
+  patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
+  prevent-increment:
+    of-merged-branch: false
+    when-branch-merged: false
+    when-current-commit-tagged: true
+  regex: ''
+  semantic-version-format: Strict
+  source-branches: []
+  strategies:
+    - Fallback
+    - ConfiguredNextVersion
+    - MergeMessage
+    - TaggedCommit
+    - TrackReleaseBranches
+    - VersionInBranchName
+  tag-prefix: "[vV]?"
+  track-merge-message: true
+  track-merge-target: false
+  tracks-release-branches: false
+  version-bump-reset-message: "=semver:"
+  version-in-branch-pattern: "(?&lt;version&gt;[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+output:
+  assembly-file-versioning-scheme: MajorMinorPatch
+  assembly-versioning-scheme: MajorMinorPatch
+  branches:
+    develop:
+      pre-release-weight: 0
+    main:
+      pre-release-weight: 55000
+    release:
+      pre-release-weight: 30000
+    feature:
+      pre-release-weight: 30000
+    pull-request:
+      pre-release-weight: 30000
+    hotfix:
+      pre-release-weight: 30000
+    support:
+      pre-release-weight: 55000
+  commit-date-format: yyyy-MM-dd
+  tag-pre-release-weight: 60000
+  update-build-number: true
+</code></pre>
+<p><sup><a href="/7.0/docs/workflows/GitFlow/v1.yml#L1-L180" title="Snippet source file">snippet source</a> | <a href="#snippet-/docs/workflows/GitFlow/v1.yml" title="Start of snippet">anchor</a></sup></p>
+<!-- endSnippet -->
+<p>The supported built-in configuration for the <code>GitHubFlow</code> workflow (<code>workflow: GitHubFlow/v1</code>) looks like:</p>
+<!-- snippet: /docs/workflows/GitHubFlow/v1.yml -->
+<p><a id="snippet-/docs/workflows/GitHubFlow/v1.yml"></a></p>
+<pre><code class="language-yml">calculation:
+  branches:
+    main:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^master$|^main$"
+      source-branches: []
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    release:
+      increment: Patch
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: beta
+      mode: ManualDeployment
+      prevent-increment:
+        of-merged-branch: true
+        when-branch-merged: false
+        when-current-commit-tagged: false
+      regex: "^releases?[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    feature:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^features?[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+        - release
+      track-merge-message: true
+    pull-request:
+      increment: Inherit
+      is-source-branch-for: []
+      label: "PullRequest{Number}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^(pull-requests|pull|pr)[\\/-](?&lt;Number&gt;\\d*)"
+      source-branches:
+        - main
+        - release
+        - feature
+      track-merge-message: true
+    unknown:
+      increment: Inherit
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ManualDeployment
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "(?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+        - release
+        - feature
+        - pull-request
+      track-merge-message: false
+  commit-message-incrementing: Enabled
+  ignore:
+    branches: []
+    paths: []
+    sha: []
+    tags: []
+  increment: Inherit
+  is-main-branch: false
+  is-release-branch: false
+  is-source-branch-for: []
+  label: "{BranchName}"
+  major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+  merge-message-formats: {}
+  minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+  mode: ContinuousDelivery
+  no-bump-message: "[+=]semver:\\s?(none|skip)"
+  patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
+  prevent-increment:
+    of-merged-branch: false
+    when-branch-merged: false
+    when-current-commit-tagged: true
+  regex: ''
+  semantic-version-format: Strict
+  source-branches: []
+  strategies:
+    - Fallback
+    - ConfiguredNextVersion
+    - MergeMessage
+    - TaggedCommit
+    - TrackReleaseBranches
+    - VersionInBranchName
+  tag-prefix: "[vV]?"
+  track-merge-message: true
+  track-merge-target: false
+  tracks-release-branches: false
+  version-bump-reset-message: "=semver:"
+  version-in-branch-pattern: "(?&lt;version&gt;[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+output:
+  assembly-file-versioning-scheme: MajorMinorPatch
+  assembly-versioning-scheme: MajorMinorPatch
+  branches:
+    main:
+      pre-release-weight: 55000
+    release:
+      pre-release-weight: 30000
+    feature:
+      pre-release-weight: 30000
+    pull-request:
+      pre-release-weight: 30000
+  commit-date-format: yyyy-MM-dd
+  tag-pre-release-weight: 60000
+  update-build-number: true
+</code></pre>
+<p><sup><a href="/7.0/docs/workflows/GitHubFlow/v1.yml#L1-L126" title="Snippet source file">snippet source</a> | <a href="#snippet-/docs/workflows/GitHubFlow/v1.yml" title="Start of snippet">anchor</a></sup></p>
+<!-- endSnippet -->
+<p>The preview built-in configuration (experimental usage only) for the <code>TrunkBased</code> workflow (<code>workflow: TrunkBased/preview1</code>) looks like:</p>
+<!-- snippet: /docs/workflows/TrunkBased/preview1.yml -->
+<p><a id="snippet-/docs/workflows/TrunkBased/preview1.yml"></a></p>
+<pre><code class="language-yml">calculation:
+  branches:
+    main:
+      increment: Patch
+      is-main-branch: true
+      is-release-branch: false
+      is-source-branch-for: []
+      label: ''
+      mode: ContinuousDeployment
+      prevent-increment:
+        of-merged-branch: true
+      regex: "^master$|^main$"
+      source-branches: []
+      track-merge-message: true
+      track-merge-target: false
+      tracks-release-branches: false
+    feature:
+      increment: Minor
+      is-main-branch: false
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^features?[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+      track-merge-message: true
+    hotfix:
+      increment: Patch
+      is-main-branch: false
+      is-release-branch: true
+      is-source-branch-for: []
+      label: "{BranchName}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "^hotfix(es)?[\\/-](?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+    pull-request:
+      increment: Inherit
+      is-source-branch-for: []
+      label: "PullRequest{Number}"
+      mode: ContinuousDelivery
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      regex: "^(pull-requests|pull|pr)[\\/-](?&lt;Number&gt;\\d*)"
+      source-branches:
+        - main
+        - feature
+        - hotfix
+      track-merge-message: true
+    unknown:
+      increment: Patch
+      is-source-branch-for: []
+      prevent-increment:
+        when-current-commit-tagged: false
+      regex: "(?&lt;BranchName&gt;.+)"
+      source-branches:
+        - main
+  commit-message-incrementing: Enabled
+  ignore:
+    branches: []
+    paths: []
+    sha: []
+    tags: []
+  increment: Inherit
+  is-main-branch: false
+  is-release-branch: false
+  is-source-branch-for: []
+  label: "{BranchName}"
+  major-version-bump-message: "[+=]semver:\\s?(breaking|major)"
+  merge-message-formats: {}
+  minor-version-bump-message: "[+=]semver:\\s?(feature|minor)"
+  mode: ContinuousDelivery
+  no-bump-message: "[+=]semver:\\s?(none|skip)"
+  patch-version-bump-message: "[+=]semver:\\s?(fix|patch)"
+  prevent-increment:
+    of-merged-branch: false
+    when-branch-merged: false
+    when-current-commit-tagged: true
+  regex: ''
+  semantic-version-format: Strict
+  source-branches: []
+  strategies:
+    - ConfiguredNextVersion
+    - Mainline
+  tag-prefix: "[vV]?"
+  track-merge-message: true
+  track-merge-target: false
+  tracks-release-branches: false
+  version-bump-reset-message: "=semver:"
+  version-in-branch-pattern: "(?&lt;version&gt;[vV]?\\d+(\\.\\d+)?(\\.\\d+)?).*"
+output:
+  assembly-file-versioning-scheme: MajorMinorPatch
+  assembly-versioning-scheme: MajorMinorPatch
+  branches:
+    main:
+      pre-release-weight: 55000
+    feature:
+      pre-release-weight: 30000
+    hotfix:
+      pre-release-weight: 30000
+    pull-request:
+      pre-release-weight: 30000
+    unknown:
+      pre-release-weight: 30000
+  commit-date-format: yyyy-MM-dd
+  tag-pre-release-weight: 60000
+  update-build-number: true
+</code></pre>
+<p><sup><a href="/7.0/docs/workflows/TrunkBased/preview1.yml#L1-L112" title="Snippet source file">snippet source</a> | <a href="#snippet-/docs/workflows/TrunkBased/preview1.yml" title="Start of snippet">anchor</a></sup></p>
+<!-- endSnippet -->
+<p>The details of the available options are as follows:</p>
+<div class="alert alert-info"><p><strong>Regular expression matching</strong></p>
+<p>Unless stated otherwise, regular expressions in GitVersion configuration are
+matched case-insensitively. To require case-sensitive matching, prefix the
+expression with <code>(?-i)</code>, for example <code>(?-i)^experimental-</code>.</p>
+</div>
+<h3 id="assembly-file-versioning-format">assembly-file-versioning-format</h3>
+<p>This is an <code>output</code> setting: <code>output.assembly-file-versioning-format</code>.</p>
+<p>Specifies the format of <code>AssemblyFileVersion</code> and
+overwrites the value of <code>assembly-file-versioning-scheme</code>.</p>
+<p>Expressions in curly braces reference one of the <a href="/7.0/docs/reference/variables">variables</a>
+or a process-scoped environment variable (when prefixed with <code>env:</code>).  For example,</p>
+<pre><code class="language-yaml"># use a variable if non-null or a fallback value otherwise
+output:
+  assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber ?? 0}'
+
+# use an environment variable or raise an error if not available
+output:
+  assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}'
+
+# use an environment variable if available or a fallback value otherwise
+output:
+  assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 42}'
+</code></pre>
+<h3 id="assembly-file-versioning-scheme">assembly-file-versioning-scheme</h3>
+<p>This is an <code>output</code> setting: <code>output.assembly-file-versioning-scheme</code>.</p>
+<p>When updating assembly info, <code>assembly-file-versioning-scheme</code> tells GitVersion
+how to treat the <code>AssemblyFileVersion</code> attribute. Note: you can use <code>None</code> to
+skip updating the <code>AssemblyFileVersion</code> while still updating the
+<code>AssemblyVersion</code> and <code>AssemblyInformationVersion</code> attributes. Valid values:
+<code>MajorMinorPatchTag</code>, <code>MajorMinorPatch</code>, <code>MajorMinor</code>, <code>Major</code>, <code>None</code>.</p>
+<h3 id="assembly-informational-format">assembly-informational-format</h3>
+<p>This is an <code>output</code> setting: <code>output.assembly-informational-format</code>.</p>
+<p>Specifies the format of <code>AssemblyInformationalVersion</code>.
+Follows the same formatting semantics as <code>assembly-file-versioning-format</code>.
+The default value is <code>{InformationalVersion}</code>.</p>
+<h3 id="assembly-versioning-format">assembly-versioning-format</h3>
+<p>This is an <code>output</code> setting: <code>output.assembly-versioning-format</code>.</p>
+<p>Specifies the format of <code>AssemblyVersion</code> and
+overwrites the value of <code>assembly-versioning-scheme</code>.
+Follows the same formatting semantics as <code>assembly-file-versioning-format</code>.</p>
+<h3 id="assembly-versioning-scheme">assembly-versioning-scheme</h3>
+<p>This is an <code>output</code> setting: <code>output.assembly-versioning-scheme</code>.</p>
+<p>When updating assembly info, <code>assembly-versioning-scheme</code> tells GitVersion how
+to treat the <code>AssemblyVersion</code> attribute. Useful to lock the major when using
+Strong Naming. Note: you can use <code>None</code> to skip updating the <code>AssemblyVersion</code>
+while still updating the <code>AssemblyFileVersion</code> and <code>AssemblyInformationVersion</code>
+attributes. Valid values: <code>MajorMinorPatchTag</code>, <code>MajorMinorPatch</code>, <code>MajorMinor</code>,
+<code>Major</code>, <code>None</code>.</p>
+<p>For information on using format strings in these properties, see
+<a href="/7.0/docs/reference/custom-formatting">Format Strings</a>.</p>
+<h3 id="branches">branches</h3>
+<p>The header for all the individual branch configurations. Entries are named
+configuration keys; their <code>regex</code> selects the Git branches they apply to.
+The built-in <code>main</code> key matches both <code>main</code> and <code>master</code> by default. For v5
+files that use <code>branches.master</code>, see <a href="#migrating-master-overrides-from-v5">migration guidance</a>.</p>
+<h3 id="increment">increment</h3>
+<p>Same as for the <a href="#increment">global configuration, explained above</a>.</p>
+<h3 id="is-main-branch">is-main-branch</h3>
+<p>This indicates that this branch is a main branch. By default <code>main</code> and <code>support/*</code> are main branches.</p>
+<h3 id="is-release-branch">is-release-branch</h3>
+<p>Indicates this branch config represents a release branch in GitFlow.</p>
+<h3 id="label">label</h3>
+<p>The pre-release label to use for this branch. Use the value <code>{BranchName}</code> as a placeholder to
+insert the value of the named group <code>BranchName</code> from the <a href="#regex">regular expression</a>.</p>
+<p>For example: branch <code>feature/foo</code> would become a pre-release label
+of <code>alpha.foo</code> with <code>label: 'alpha.{BranchName}'</code> and <code>regex: '^features?[\/-](?&lt;BranchName&gt;.+)'</code>.</p>
+<p>Another example: branch <code>features/sc-12345/some-description</code> would become a pre-release label of <code>sc-12345</code> with <code>label: '{StoryNo}'</code> and <code>regex: '^features?[\/-](?&lt;StoryNo&gt;sc-\d+)[-/].+'</code>.</p>
+<p>Use <code>{Sha}</code> for the full hash of the commit being versioned, or <code>{ShortSha}</code> for
+its abbreviated hash, using the same seven-character abbreviation as the
+<code>ShortSha</code> output variable. These placeholders work without named regex captures
+and can be combined with them, for example <code>label: '{BranchName}.ci.{ShortSha}'</code>.</p>
+<pre><code class="language-yaml">workflow: GitHubFlow/v1
+calculation:
+  branches:
+    feature:
+      label: 'ci.{ShortSha}'
+</code></pre>
+<p>For a commit whose abbreviated hash is <code>a1b2c3d</code>, this configures the label
+<code>ci.a1b2c3d</code>. The pre-release number still follows the selected deployment mode.
+In the temporary <a href="#v7-configuration-layout">v6 compatibility mode</a>, put the same
+<code>label</code> setting under <code>branches.feature</code> instead of <code>calculation.branches.feature</code>.</p>
+<p>Placeholder names are case-sensitive. If the branch regex contains a named
+capture <code>Sha</code> or <code>ShortSha</code>, that capture takes precedence over the corresponding
+commit value, including when the capture is empty. Commit values always refer
+to the commit being versioned, even while GitVersion examines earlier commits
+or merged branches to calculate its version.</p>
+<p>You can also use environment variable placeholders with the <code>{env:VARIABLE_NAME}</code> syntax. Environment variable placeholders can also be combined with regex placeholders, for example <code>{BranchName}-{env:VARIABLE_NAME}</code>, and support fallback values using the <code>{env:VARIABLE_NAME ?? "fallback"}</code> syntax. These can be combined with cascading fallbacks using environment variables and placeholders like this: <code>{env:VARIABLE_NAME ?? BranchName ?? "fallback"}</code>.</p>
+<p><strong>Note:</strong> To clear a default use an empty string: <code>label: ''</code></p>
+<h3 id="label-number-pattern">label-number-pattern</h3>
+<p>Pull requests require us to extract the pre-release number out of the branch
+name so <code>refs/pull/534/merge</code> builds as <code>PullRequest534</code>. This is a regex with
+a named capture group called <code>Number</code>.</p>
+<p><strong>Example usage:</strong></p>
+<pre><code class="language-yaml">calculation:
+  branches:
+    pull-request:
+      mode: ContinuousDelivery
+      label: PullRequest{Number}
+      increment: Inherit
+      prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: false
+      track-merge-message: true
+      regex: ^(pull-requests|pull|pr)[\/-](?&lt;Number&gt;\d*)
+      source-branches:
+      - main
+      - release
+      - feature
+      is-source-branch-for: []
+output:
+  branches:
+    pull-request:
+      pre-release-weight: 30000
+</code></pre>
+<h3 id="mode">mode</h3>
+<p>Same as for the <a href="#mode">global configuration, explained above</a>.</p>
+<h3 id="pre-release-weight">pre-release-weight</h3>
+<p>This is an output setting: <code>output.pre-release-weight</code> globally or
+<code>output.branches.&lt;branch&gt;.pre-release-weight</code> for a branch.</p>
+<p>Provides a way to translate the <code>PreReleaseLabelName</code> (<a href="/7.0/docs/reference/variables">variables</a>) to a numeric
+value in order to avoid version collisions across different branches. For
+example, a release branch created after "1.2.3-alpha.55" results in
+"1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4" and "1.2.3-beta.4" would have the
+same file version: "1.2.3.4". One of the ways to use this value is to set
+<code>assembly-file-versioning-format: {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}</code>. If the <code>pre-release-weight</code>
+is set, it would be added to the <code>PreReleaseNumber</code> to get a final
+<code>AssemblySemFileVer</code>, otherwise a branch specific default for
+<code>pre-release-weight</code> will be used in the calculation. Related Issues <a href="https://github.com/GitTools/GitVersion/issues/1145">1145</a>
+and <a href="https://github.com/GitTools/GitVersion/issues/1366">1366</a>.</p>
+<h3 id="prevent-increment-of-merged-branch">prevent-increment-of-merged-branch</h3>
+<p>The increment of the branch merged to will be ignored, regardless of whether the merged branch has a version number or not, when this branch related property is set to true on the target branch.</p>
+<p>When <code>release-2.0.0</code> is merged into main, we want main to build <code>2.0.0</code>. If
+<code>release-2.0.0</code> is merged into develop we want it to build <code>2.1.0</code>, this option
+prevents incrementing after a versioned branch is merged.</p>
+<p>In a GitFlow-based repository, setting this option can have implications on the
+<code>VersionSourceDistance</code> output variable. It can rule out a potentially
+better version source proposed by the <code>MergeMessageBaseVersionStrategy</code>. For
+more details and an in-depth analysis, please see <a href="https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037">the discussion</a>.</p>
+<h3 id="prevent-increment-when-branch-merged">prevent-increment-when-branch-merged</h3>
+<p>The increment of the merged branch will be ignored when this branch related property is set to <code>true</code> on the source branch.</p>
+<h3 id="prevent-increment-when-current-commit-tagged">prevent-increment-when-current-commit-tagged</h3>
+<p>This branch related property controls the behvior whether to use the tagged (value set to true) or the incremented (value set to false) semantic version. Defaults to true.</p>
+<h3 id="track-merge-message">track-merge-message</h3>
+<p>This property is a branch related property and gives the user the possibility to control the behavior of whether the merge
+commit message will be interpreted as a next version or not. Consider we have a main branch and a <code>release/1.0.0</code> branch and
+merge changes from <code>release/1.0.0</code> to the <code>main</code> branch. If <code>track-merge-message</code> is set to <code>true</code> then the next version will
+be <code>1.0.0</code> otherwise <code>0.0.1</code>.</p>
+<h3 id="track-merge-target">track-merge-target</h3>
+<p>Strategy which will look for tagged merge commits directly off the current
+branch. For example <code>develop</code> → <code>release/1.0.0</code> → merge into <code>main</code> and tag
+<code>1.0.0</code>. The tag is <em>not</em> on develop, but develop should be version <code>1.0.0</code> now.</p>
+<h3 id="tracks-release-branches">tracks-release-branches</h3>
+<p>Controls whether this branch tracks release branches when calculating its version.
+This is typically enabled for <code>develop</code> in GitFlow.</p>
+<p>With the <code>TrackReleaseBranches</code> strategy enabled, a release branch's version is
+taken from its name. If the name contains no version, GitVersion uses the highest
+semantic prerelease tag matching that release branch's <a href="#label">configured label</a>. Matching
+is case-insensitive. Tags must be on the release branch's first-parent history,
+outside the first-parent history of configured <code>main</code> branches. A release tag
+remains eligible when its commit is merged into <code>main</code> through a merge commit.
+Like versioned release names, tags are evaluated against the current release
+refs, including when versioning an older commit. Tags on newer sibling release
+commits are eligible; advancing the tracking branch alone does not change tag eligibility.
+This does not reconstruct historical branch or tag state. <a href="#tag-prefix">Tag prefix</a>,
+<a href="#semantic-version-format">semantic version format</a>, and <a href="#ignore">ignore</a> settings apply.
+The release branch must share an ancestor with the commit being versioned.</p>
+<p>For example, with release label <code>rc</code>, <code>releases/R2301</code> tagged <code>1.0.0-RC.1</code> lets
+<code>develop</code> advance to <code>1.1.0-beta.1</code> after its next commit when <code>develop</code>'s label is
+<code>beta</code>. Versioned release names retain precedence over tags within this strategy.
+Git does not record which branch created a tag; first-parent history and the
+release label determine eligibility, including when the tracking branch
+(typically <code>develop</code>) was branched from the tagged release commit.</p>
+<h3 id="commit-date-format">commit-date-format</h3>
+<p>This is an <code>output</code> setting: <code>output.commit-date-format</code>.</p>
+<p>Sets the format which will be used to format the <code>CommitDate</code> output variable.</p>
+<h3 id="commit-message-incrementing">commit-message-incrementing</h3>
+<p>Sets whether it should be possible to increment the version with special syntax
+in the commit message. See the <code>*-version-bump-message</code> options above for
+details on the syntax. Default set to <code>Enabled</code>; set to <code>Disabled</code> to disable.</p>
+<h3 id="custom-version-format">custom-version-format</h3>
+<p>This is an <code>output</code> setting: <code>output.custom-version-format</code> globally or
+<code>output.branches.&lt;branch&gt;.custom-version-format</code> for a branch.</p>
+<p>Specifies the format of the <code>CustomVersion</code> output variable.
+Follows the same formatting semantics as <code>assembly-file-versioning-format</code> and
+can use version variables or environment variables. <code>CustomVersion</code> is empty
+when no format is configured. The format can be configured globally and
+overridden for individual branches under <code>branches</code>.</p>
+<h3 id="ignore">ignore</h3>
+<p>The header property for the <code>ignore</code> configuration.</p>
+<div class="alert alert-info"><p><strong>Note:</strong> When ignoring a commit or a range of commits, they are only ignored in
+the search for a <a href="/7.0/docs/reference/version-sources">version source</a>, not when calculating other
+parts of the version number, such as build metadata.</p>
+</div>
+<h4 id="branches-1">branches</h4>
+<p>A sequence of regular expressions matching branch names that should not be
+used as <a href="/7.0/docs/reference/version-sources">version sources</a>. Patterns are matched
+case-insensitively against the friendly branch name. For remote-tracking
+branches, the remote name is removed first, so the same pattern matches both
+<code>release/legacy</code> and <code>upstream/release/legacy</code>. Multiple patterns use OR
+semantics, and <code>^</code> and <code>$</code> can be used to anchor a match. To require
+case-sensitive matching, prefix a pattern with <code>(?-i)</code>.</p>
+<pre><code class="language-yaml">calculation:
+  ignore:
+    branches:
+      - ^experimental/
+      - ^release/legacy$
+</code></pre>
+<p>The current branch and an explicitly requested target branch remain available
+for version calculation even when they match an ignore pattern. During dynamic
+repository normalization, ignored remote-tracking branches are not created or
+updated as local branches, except when the ignored branch is the requested
+target. Ignoring a branch does not exclude commits that are also reachable from
+other references.</p>
+<p>Ignored branches remain available as parent branches when GitVersion resolves
+an inherited branch configuration. This preserves the branching configuration
+model without making the ignored reference eligible for auxiliary main-branch
+or release-branch version-source discovery.</p>
+<p>Branch exclusions are applied after remote references are fetched. They do not
+prevent GitVersion from fetching an ignored branch from its remote.</p>
+<h4 id="commits-before">commits-before</h4>
+<p>Date and time in the format <code>yyyy-MM-ddTHH:mm:ss</code> (eg <code>commits-before: 2015-10-23T12:23:15</code>) to setup an exclusion range. Effectively any commit before
+<code>commits-before</code> will be ignored.</p>
+<h4 id="paths">paths</h4>
+<p>A sequence of regular expressions that represent paths in the repository. Commits that modify these paths will be excluded from version calculations. For example, to filter out commits that belong to <code>docs</code>:</p>
+<pre><code class="language-yaml">calculation:
+  ignore:
+    paths:
+      - ^docs\/
+</code></pre>
+<h5 id="monorepo"><em>Monorepo</em></h5>
+<p>This ignore config can be used to filter only those commits that belong to a specific project in a monorepo.
+As an example, consider a monorepo consisting of subdirectories for <code>ProjectA</code>, <code>ProjectB</code> and a shared <code>LibraryC</code>. For GitVersion to consider only commits that are part of <code>ProjectA</code> and shared library <code>LibraryC</code>, a regex that matches all paths except those starting with <code>ProjectA</code> or <code>LibraryC</code> can be used. Either one of the following configs would filter out <code>ProjectB</code>.</p>
+<ul>
+<li>Specific match on <code>ProjectB/*</code>:</li>
+</ul>
+<pre><code class="language-yaml">calculation:
+  ignore:
+    paths:
+      - '^ProjectB/.*'
+</code></pre>
+<ul>
+<li>Negative lookahead on anything other than <code>ProjectA/*</code> and <code>LibraryC/*</code>:</li>
+</ul>
+<pre><code class="language-yaml">calculation:
+  ignore:
+    paths:
+      - '^(?!ProjectA/|LibraryC/).*'
+</code></pre>
+<p>A commit having changes only in <code>ProjectB/*</code> path would be ignored. A commit having changes in the following paths wouldn't be ignored:</p>
+<ul>
+<li><code>ProjectA/*</code></li>
+<li><code>LibraryC/*</code></li>
+<li><code>ProjectA/*</code> and <code>LibraryC/*</code></li>
+<li><code>ProjectA/*</code> and <code>ProjectB/*</code></li>
+<li><code>LibraryC/*</code> and <code>ProjectB/*</code></li>
+<li><code>ProjectA/*</code> and <code>ProjectB/*</code> and <code>LibraryC/*</code></li>
+</ul>
+<div><p>Note: The <code>ignore.paths</code> configuration is case-insensitive. To require
+case-sensitive path matching, prefix the regular expression with <code>(?-i)</code>. For
+example, <code>(?-i)^docs\/</code> matches <code>docs/</code> but not <code>Docs/</code>.</p>
+</div>
+<div class="alert alert-warning"><p>A commit is ignored by the <code>ignore.paths</code> configuration only if <strong>all paths</strong> changed in that commit match one or more of the specified regular expressions. If a path in a commit does not match any one of the ignore patterns, that commit will be included in version calculations.</p>
+</div>
+<h4 id="sha">sha</h4>
+<p>A sequence of SHAs to be excluded from the version calculations. Useful when
+there is a rogue commit in history yielding a bad version. You can use either
+style below:</p>
+<pre><code class="language-yaml">calculation:
+  ignore:
+    sha: [e7bc24c0f34728a25c9187b8d0b041d935763e3a, 764e16321318f2fdb9cdeaa56d1156a1cba307d7]
+</code></pre>
+<p>or</p>
+<pre><code class="language-yaml">calculation:
+  ignore:
+    sha:
+      - e7bc24c0f34728a25c9187b8d0b041d935763e3a
+      - 764e16321318f2fdb9cdeaa56d1156a1cba307d7
+</code></pre>
+<h4 id="tags">tags</h4>
+<p>A sequence of regular expressions matching tag names that should not be used as
+<a href="/7.0/docs/reference/version-sources">version sources</a>. Patterns are matched case-insensitively
+against the friendly tag name without the <code>refs/tags/</code> prefix. Multiple patterns
+use OR semantics, and <code>^</code> and <code>$</code> can be used to anchor a match. To require
+case-sensitive matching, prefix a pattern with <code>(?-i)</code>.</p>
+<pre><code class="language-yaml">calculation:
+  ignore:
+    tags:
+      - ^experimental-
+      - ^v0\.
+</code></pre>
+<p>Ignoring a tag does not ignore the commit it points to. The commit remains part
+of version calculation and can still be reached through other references.</p>
+<h3 id="increment-1">increment</h3>
+<p>The part of the SemVer to increment when GitVersion detects it needs to be
+increased, such as for commits after a tag: <code>Major</code>, <code>Minor</code>, <code>Patch</code>, <code>None</code>.</p>
+<p>The special value <code>Inherit</code> means that GitVersion should find the parent branch
+(i.e. the branch where the current branch was branched from), and use its values
+for <a href="#increment">increment</a> or other branch related properties.</p>
+<p>For a synthetic pull request merge ref, GitVersion uses the <code>TargetBranch</code>
+captured from the merge commit message as the immediate parent when it matches
+an allowed source branch. If the message has no matching target, GitVersion
+falls back to Git ancestry, as it does for ordinary branches.</p>
+<h3 id="is-source-branch-for">is-source-branch-for</h3>
+<p>The reverse of <code>source-branches</code>. This property was introduced to keep it easy
+to extend GitVersion's config.</p>
+<p>It exists to make it easier to extend GitVersion's configuration. If only
+<code>source-branches</code> exists and you add a new branch type, for instance
+<code>unstable/</code>, you then need to re-define the <code>source-branches</code> configuration
+value for existing branches (like feature/) to now include the new unstable
+branch.</p>
+<p>A complete example:</p>
+<pre><code class="language-yaml">calculation:
+  branches:
+    unstable:
+      regex: ...
+      is-source-branch-for: ['main', 'develop', 'feature', 'hotfix', 'support']
+</code></pre>
+<p>Without this configuration value you would have to do:</p>
+<pre><code class="language-yaml">calculation:
+  branches:
+    unstable:
+      regex:
+    feature:
+      source-branches: ['unstable', 'develop', 'feature', 'hotfix', 'support']
+    release:
+      source-branches: ['unstable', 'develop']
+    etc...
+</code></pre>
+<h3 id="major-version-bump-message">major-version-bump-message</h3>
+<p>The regex to match commit messages with to perform a major version increment.
+Default set to <code>'[+=]semver:\s?(breaking|major)'</code>, which will match occurrences
+of <code>+semver: major</code>, <code>=semver: major</code>, and the corresponding <code>breaking</code> forms.</p>
+<h3 id="merge-message-formats">merge-message-formats</h3>
+<p>Custom merge message formats to enable identification of merge messages that do not
+follow the built-in conventions.  Entries should be added as key-value pairs where
+the value is a regular expression.
+e.g.</p>
+<pre><code class="language-yaml">merge-message-formats:
+    tfs: '^Merged (?:PR (?&lt;PullRequestNumber&gt;\d+)): Merge (?&lt;SourceBranch&gt;.+) to (?&lt;TargetBranch&gt;.+)'
+</code></pre>
+<p>The regular expression should contain the following capture groups:</p>
+<ul>
+<li><code>SourceBranch</code> - Identifies the source branch of the merge</li>
+<li><code>TargetBranch</code> - Identifies the target branch of the merge</li>
+<li><code>PullRequestNumber</code> - Captures the pull-request number</li>
+</ul>
+<p>Custom merge message formats are evaluated <em>before</em> any built in formats.
+Support for <a href="https://www.conventionalcommits.org/">Conventional Commits</a> can be
+<a href="/7.0/docs/reference/version-increments#conventional-commit-messages">configured</a>.</p>
+<h3 id="minor-version-bump-message">minor-version-bump-message</h3>
+<p>The regex to match commit messages with to perform a minor version increment.
+Default set to <code>'[+=]semver:\s?(feature|minor)'</code>, which will match occurrences
+of <code>+semver: minor</code>, <code>=semver: minor</code>, and the corresponding <code>feature</code> forms.</p>
+<h3 id="mode-1">mode</h3>
+<p>Sets the <code>mode</code> of how GitVersion should create a new version. Read more at
+<a href="/7.0/docs/reference/modes">deployment modes</a>.</p>
+<h3 id="next-version">next-version</h3>
+<p>Allows you to bump the next version explicitly. Useful for bumping <code>main</code> or a
+feature branch with breaking changes (i.e., a major increment), indicating what
+the next <code>git tag</code> is going to be.</p>
+<p><code>next-version</code> is not a permanent replacement for <code>git tag</code> and should only be
+used intermittently. Since version 5.5 GitVersion supports <code>next-version</code> with
+<code>mode: Mainline</code> and should not be treated as a "base version".</p>
+<p>If you are using <code>next-version</code> and are experiencing weird versioning behaviour,
+please remove it, create a <code>git tag</code> with an appropriate version number on an
+appropriate historical commit and see if that resolves any versioning issues
+you may have.</p>
+<h3 id="no-bump-message">no-bump-message</h3>
+<p>Used to tell GitVersion not to increment when in Mainline development mode.
+Default <code>[+=]semver:\s?(none|skip)</code>, which will match both the <code>+semver</code> and
+<code>=semver</code> forms of <code>none</code> and <code>skip</code>.</p>
+<p>When a commit matches <strong>both</strong> the <code>no-bump-message</code> <strong>and</strong> any combination of
+the <code>version-bump-message</code>, <code>no-bump-message</code> takes precedence and no increment is applied.</p>
+<h3 id="patch-version-bump-message">patch-version-bump-message</h3>
+<p>The regex to match commit messages with to perform a patch version increment.
+Default set to <code>'[+=]semver:\s?(fix|patch)'</code>, which will match occurrences of
+<code>+semver: patch</code>, <code>=semver: patch</code>, and the corresponding <code>fix</code> forms.</p>
+<h3 id="regex">regex</h3>
+<p>This is the regex which is used to match the current branch to the correct
+branch configuration.</p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions">Named groups</a> can be used to dynamically label pre-releases based on the branch name, or parts of it. See <a href="#label">Label</a> for more details and examples.</p>
+<h3 id="semantic-version-format">semantic-version-format</h3>
+<p>Specifies the semantic version format that is used when parsing the string.
+Can be <code>Strict</code> - using the <a href="https://regex101.com/r/Ly7O1x/3/">regex</a>
+or <code>Loose</code> the old way of parsing. The default if not specified is <code>Strict</code>
+Example of invalid <code>Strict</code>, but valid <code>Loose</code></p>
+<pre><code class="language-log">1.2-alpha4
+01.02.03-rc03
+1.2.3.4
+</code></pre>
+<h3 id="source-branches">source-branches</h3>
+<p>Because Git commits only refer to parent commits (not branches) GitVersion
+sometimes cannot tell which branch the current branch was branched from.</p>
+<p>Take this commit graph</p>
+<pre><code class="language-shell">* release/v1.0.0   * feature/foo
+| ________________/
+|/
+*
+*
+* (main)
+</code></pre>
+<p>By looking at this graph, you cannot tell which of these scenarios happened:</p>
+<ul>
+<li>feature/foo branches off release/v1.0.0
+<ul>
+<li>Branch release/v1.0.0 from main</li>
+<li>Branch feature/foo from release/v1.0.0</li>
+<li>Add a commit to both release/v1.0.0 and feature/foo</li>
+<li>release/v1.0.0 is the base for feature/foo</li>
+</ul>
+</li>
+<li>release/v1.0.0 branches off feature/foo
+<ul>
+<li>Branch feature/foo from main</li>
+<li>Branch release/v1.0.0 from feature/foo</li>
+<li>Add a commit to both release/v1.0.0 and feature/foo</li>
+<li>feature/foo is the base for release/v1.0.0</li>
+</ul>
+</li>
+</ul>
+<p>Or put more simply, you cannot tell which branch was created first,
+<code>release/v1.0.0</code> or <code>feature/foo</code>.</p>
+<p>To resolve this issue, we give GitVersion a hint about our branching workflows
+by telling it what types of branches a branch can be created from. For example,
+feature branches are, by default, configured to have the following source
+branches:</p>
+<p><code>source-branches: ['main', 'develop', 'feature', 'hotfix', 'support']</code></p>
+<p>This means that we will never bother to evaluate pull request branches as merge
+base options and being explicit in this way also improves the performance of
+GitVersion.</p>
+<h3 id="strategies">strategies</h3>
+<p>Specifies which version strategy implementation (one or more) will be used to determine the next version.
+These strategies can be combined, and the order in which they are specified does not matter.
+The configuration accepts the following values:</p>
+<ul>
+<li>Fallback</li>
+<li>ConfiguredNextVersion</li>
+<li>MergeMessage</li>
+<li>TaggedCommit</li>
+<li>TrackReleaseBranches</li>
+<li>VersionInBranchName</li>
+<li>Mainline</li>
+</ul>
+<h3 id="tag-pre-release-weight">tag-pre-release-weight</h3>
+<p>The pre-release weight in case of tagged commits. If the value is not set in the
+configuration, a default weight of 60000 is used instead. If the
+<code>WeightedPreReleaseNumber</code> <a href="/7.0/docs/reference/variables">variable</a> is 0 and this parameter is set,
+its value is used. This helps if your branching model is GitFlow and the last
+release build, which is often tagged, can utilize this parameter to produce a
+monotonically increasing build number.</p>
+<h3 id="tag-prefix">tag-prefix</h3>
+<p>A regular expression which is used to trim Git tags before processing (e.g.,
+v1.0.0). The default value is <code>[vV]?</code>. Confirm the selected tool's effective value
+with <code>gitversion config get calculation.tag-prefix</code>.</p>
+<h3 id="update-build-number">update-build-number</h3>
+<p>Configures GitVersion to update the build number or not when running on a build server.</p>
+<h2 id="branch-configuration">Branch configuration</h2>
+<p>The following <strong>v4 migration example</strong> illustrates the change from regular-expression
+keys to named branch configurations. It uses the legacy flat layout and is retained
+only for that historical migration context; it is not a valid v7 configuration. For
+new v7 configuration, place branch calculation settings under <code>calculation.branches</code>
+and branch output settings under <code>output.branches</code>, as shown in the <a href="#v7-configuration-layout">v7 configuration
+layout</a>.</p>
+<div class="alert alert-info"><p><strong>Note</strong></p>
+<p>v4 changed from using regexes for keys, to named configs</p>
+</div>
+<p>If you have branch-specific configuration, upgrading to v4 required this change.</p>
+<pre><code class="language-yaml">workflow: 'GitHubFlow/v1'
+branches:
+  main:
+    label: ''
+    increment: Patch
+    prevent-increment:
+      of-merged-branch: true
+    track-merge-target: false
+    track-merge-message: true
+    regex: ^master$|^main$
+    source-branches: []
+    is-source-branch-for: []
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
+  release:
+    mode: ManualDeployment
+    label: beta
+    increment: Patch
+    prevent-increment:
+      of-merged-branch: true
+      when-branch-merged: false
+      when-current-commit-tagged: false
+    track-merge-target: false
+    track-merge-message: true
+    regex: ^releases?[\/-](?&lt;BranchName&gt;.+)
+    source-branches:
+    - main
+    is-source-branch-for: []
+    tracks-release-branches: false
+    is-release-branch: true
+    is-main-branch: false
+    pre-release-weight: 30000
+  feature:
+    mode: ManualDeployment
+    label: '{BranchName}'
+    increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^features?[\/-](?&lt;BranchName&gt;.+)
+    source-branches:
+    - main
+    - release
+    is-source-branch-for: []
+    is-main-branch: false
+    pre-release-weight: 30000
+  pull-request:
+    mode: ContinuousDelivery
+    label: PullRequest{Number}
+    increment: Inherit
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^(pull-requests|pull|pr)[\/-](?&lt;Number&gt;\d*)
+    source-branches:
+    - main
+    - release
+    - feature
+    is-source-branch-for: []
+    pre-release-weight: 30000
+  unknown:
+    mode: ManualDeployment
+    label: '{BranchName}'
+    increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: false
+    regex: (?&lt;BranchName&gt;.+)
+    source-branches:
+    - main
+    - release
+    - feature
+    - pull-request
+    is-source-branch-for: []
+    is-main-branch: false
+</code></pre>
+<p>If you don't specify the regex, the built-in for that branch config will be
+used (recommended).</p>
+<p>We don't envision many people needing to change most of these configuration
+values, but here they are if you need to:</p>
+<h3 id="version-bump-reset-message">version-bump-reset-message</h3>
+<p>The regex to match a commit message that resets the version bump baseline and
+suppresses the configured branch increment. The default is <code>=semver:</code>. The
+increment itself is still selected by the major, minor, patch, and no-bump
+message patterns above, whose defaults accept both <code>+semver</code> and <code>=semver</code>.</p>
+<p>For example, when a branch is configured with <code>increment: Patch</code>, a commit
+containing <code>=semver: none</code> keeps the current version and a commit containing
+<code>=semver: minor</code> selects a minor increment. Unlike the <code>+semver</code> form, the <code>=</code>
+form resets earlier commit-message increments in the calculation range and can
+lower the configured increment. This setting follows
+<code>commit-message-incrementing</code>.</p>
+<h3 id="version-in-branch-pattern">version-in-branch-pattern</h3>
+<p>A regular expression which is used to determine the version number in the branch
+name or commit message (e.g., v1.0.0-LTS). This setting only applies on branches
+where the option <code>is-release-branch</code> is set to <code>true</code>. The default value is
+<code>(?&lt;version&gt;[vV]?\d+(\.\d+)?(\.\d+)?).*</code>.</p>
+<h3 id="workflow">workflow</h3>
+<p>The base template of the configuration to use. Possible values are <code>GitFlow/v1</code> or <code>GitHubFlow/v1</code>. Defaults to <code>GitFlow/v1</code> if not set. To create a configuration from scratch without using a base template, please specify an empty string.</p>
+
+	</section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

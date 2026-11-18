@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Telemetry policy and collected data</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li class="active"><a href="/7.0/docs">Documentation</a></li>
+        <li><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    	
+        <div><p><a href="https://github.com/GitTools/GitVersion/tree/8fd9e294be12083242079edf2bf4dae4c0956164/docs/input/docs/usage/cli/telemetry-policy.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
+
+                </section>
+                <section class="sidebar">
+                    
+                    
+
+                    <ul class="sidebar-menu">
+                        
+        <li class="header gv-docs-version">7.0 · documentation</li>
+            <li class="treeview">
+                <a href="/7.0/docs/getting-started">Getting started</a><a href="#" class="expand" aria-label="Expand Getting started"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/getting-started">Getting started</a></li>
+                            <li><a href="/7.0/docs/usage/ai-agent-onboarding">AI-agent onboarding</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/installation">Installation</a></li>
+
+                <li><a href="/7.0/docs/reference/requirements">Requirements</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/usage">Guides</a><a href="#" class="expand" aria-label="Expand Guides"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/usage/choose-workflow">Choose a workflow</a></li>
+
+                <li><a href="/7.0/docs/usage/configure">Configure GitVersion</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies">Workflow examples</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/trunkbased">Trunk-based (preview)</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">Trunk-based examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/build-servers">CI integrations</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/output">Use version output</a></li>
+
+                <li><a href="/7.0/docs/usage/docker">Docker</a></li>
+
+                <li><a href="/7.0/docs/usage/msbuild">MSBuild Task</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                <li><a href="/7.0/docs/usage/library">Library</a></li>
+
+                <li><a href="/7.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn">Concepts</a><a href="#" class="expand" aria-label="Expand Concepts"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+
+                <li><a href="/7.0/docs/learn/how-it-works">How versions are calculated</a></li>
+
+                <li><a href="/7.0/docs/learn/version-calculation">Version calculation algorithm</a></li>
+
+                <li><a href="/7.0/docs/learn/workflows-modes-strategies">Workflows, modes, and strategies</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/modes">Deployment modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/reference/version-increments">Version Incrementing</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/reference">Reference</a><a href="#" class="expand" aria-label="Expand Reference"></a>
+                <ul class="treeview-menu">
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/configuration-topics">Configuration by topic</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/configuration-topics/branches">Branch configuration</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/output">Output and formatting</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/calculation">Version calculation</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/arguments">Arguments</a></li>
+
+                <li><a href="/7.0/docs/reference/version-sources">Calculation strategies</a></li>
+
+                <li><a href="/7.0/docs/reference/variables">Version Variables</a></li>
+
+                <li><a href="/7.0/docs/reference/custom-formatting">Format Strings</a></li>
+
+                <li><a href="/7.0/docs/reference/environment-variables">Environment variables</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn/faq">Troubleshooting</a><a href="#" class="expand" aria-label="Expand Troubleshooting"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/faq">Troubleshooting</a></li>
+
+                <li><a href="/7.0/docs/learn/git-setup">Repository setup</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/migration">Upgrading</a><a href="#" class="expand" aria-label="Expand Upgrading"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a></li>
+                </ul>
+            </li>
+
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Telemetry policy and collected data</h1>
+		</section>
+	<section class="content">
+		<p>This policy describes version 2 of GitVersion's optional CLI usage telemetry. Maintainers use sampled
+invocation and option-usage aggregates to help prioritize GitVersion development. Collection is disabled
+until maintainers configure and enable a campaign. Only the established POSIX CLI supports collection;
+the legacy argument parser, experimental <code>new-cli/</code> and native MSBuild tasks do not collect.</p>
+<h2 id="your-controls-and-the-first-run-notice">Your controls and the first-run notice</h2>
+<p>Disable telemetry with <code>--telemetry-opt-out</code>, <code>DO_NOT_TRACK=1</code>, or <code>GITVERSION_TELEMETRY_OPTOUT=1</code>.
+Both environment variables also accept <code>true</code>, ignoring case. Opt-outs take effect before the notice,
+notice-state access, sampling or networking. Help, version, CLI-schema and configuration operations do
+not collect events or create notice state. Disabled, unconfigured, expired and zero-sampling campaigns
+also perform no notice-state I/O or transport.</p>
+<p>On the first eligible direct version-calculation run with a positive direct sampling probability,
+GitVersion writes a brief notice to <strong>stderr</strong> linking
+to this policy at <code>https://gitversion.net/docs/usage/cli/telemetry-policy</code>. For direct runs the notice appears
+before sampling, including when that invocation is not selected. For recognized CI agents, unknown non-default
+build agents, and CLI calls marked as MSBuild or GitTools/actions invocations, sampling happens first: unselected runs neither
+write a notice nor access its marker. A selected automated run still discloses before sending an event.
+JSON and single-variable stdout remain unchanged. If the notice cannot be written, no event is sent.
+Selected automated runs can write to stderr; pipelines that treat stderr as failure should use an opt-out above.</p>
+<p>After successful disclosure, GitVersion tries to create an empty <code>GitVersion/telemetry-policy-v2</code> marker
+under the platform's .NET <code>LocalApplicationData</code> directory. It records only that this policy version has
+been shown; it contains no identifier or event data and is never uploaded. Later invocations sharing that
+directory skip the notice. Removing the marker causes the next eligible direct run or selected automated run
+to show it again. A materially changed policy uses a new marker version. Read-only/unavailable storage can cause repeat notices, and
+concurrent first runs can each show the notice; neither condition interrupts version calculation.</p>
+<h2 id="exactly-what-is-sent">Exactly what is sent</h2>
+<p>An invocation can send at most one explicit <code>gitversion_cli_invocation</code> event. The complete event envelope is:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Value and purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_key</code></td>
+<td>Public PostHog project write key, routing the event to the maintainers' project</td>
+</tr>
+<tr>
+<td><code>event</code></td>
+<td>The fixed name <code>gitversion_cli_invocation</code></td>
+</tr>
+<tr>
+<td><code>distinct_id</code></td>
+<td>A fresh random UUID for this event; never reused to identify a person, machine or repository</td>
+</tr>
+<tr>
+<td><code>properties</code></td>
+<td>Only the fields listed below</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<thead>
+<tr>
+<th>Property</th>
+<th>Allowed data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schema_version</code></td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code>windows</code>, <code>linux</code>, <code>macos</code>, or <code>other</code></td>
+</tr>
+<tr>
+<td><code>os_distribution</code></td>
+<td>Allowlisted Linux distro ID, <code>macos</code>, <code>windows</code>, <code>other</code>, or <code>unknown</code>; see below</td>
+</tr>
+<tr>
+<td><code>os_version</code></td>
+<td>Numeric OS release, or <code>unknown</code>; Windows uses major.minor.build</td>
+</tr>
+<tr>
+<td><code>container</code></td>
+<td><code>docker</code>, <code>other</code>, <code>none</code>, or <code>unknown</code>; best-effort runtime detection</td>
+</tr>
+<tr>
+<td><code>gitversion_version</code></td>
+<td>Installed GitVersion CLI assembly release, excluding branch/SHA build metadata; <code>unknown</code> for unsupported versions</td>
+</tr>
+<tr>
+<td><code>architecture</code></td>
+<td><code>x64</code>, <code>arm64</code>, <code>x86</code>, <code>arm</code>, or <code>other</code></td>
+</tr>
+<tr>
+<td><code>ci</code></td>
+<td>Existing build-agent classification: one of the fixed provider labels below; no environment-variable values</td>
+</tr>
+<tr>
+<td><code>invocation</code></td>
+<td><code>direct</code>, <code>msbuild</code>, or <code>gittools-actions</code>; fixed child-process wrapper markers, independent of CI/container</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td>Canonical names indicating option presence, and bounded output modes listed below</td>
+</tr>
+<tr>
+<td><code>sampling_probability</code></td>
+<td>Probability of selecting this invocation; at most <code>0.01</code> direct or <code>0.0001</code> automated</td>
+</tr>
+<tr>
+<td><code>$process_person_profile</code></td>
+<td>Always <code>false</code>, requesting personless processing</td>
+</tr>
+<tr>
+<td><code>$geoip_disable</code></td>
+<td>Always <code>true</code>, requesting no GeoIP enrichment</td>
+</tr>
+<tr>
+<td><code>$ip</code></td>
+<td>Always the sentinel <code>0.0.0.0</code>; see provider processing below</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-runtime-and-caller-fields-are-derived">How runtime and caller fields are derived</h3>
+<p>These dimensions are independent: an MSBuild invocation can also run on GitHub Actions inside Docker.
+They describe the observed invocation; they do not identify a person, repository, or unique installation.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Detection and fallback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>os</code>, <code>architecture</code></td>
+<td>.NET's current OS family and <strong>process</strong> architecture, mapped to the fixed labels above; architecture is not necessarily the host hardware architecture when emulated</td>
+</tr>
+<tr>
+<td><code>ci</code></td>
+<td>GitVersion's existing build-agent resolver; its local/default agent maps to <code>none</code>, and an unmapped non-default agent maps to <code>other</code></td>
+</tr>
+<tr>
+<td><code>invocation</code></td>
+<td>Trimmed, case-insensitive <code>GITVERSION_INTERNAL_CALLER</code>: <code>GitVersion.MsBuild</code> or <code>gitversion-msbuild</code> maps to <code>msbuild</code>; <code>gittools-actions</code> maps to <code>gittools-actions</code>; all other or absent values map to <code>direct</code></td>
+</tr>
+<tr>
+<td><code>container</code></td>
+<td>Exact <code>GITVERSION_CONTAINER_KIND=docker</code>, set by the official image, or <code>/.dockerenv</code> on Linux maps to <code>docker</code>; otherwise <code>DOTNET_RUNNING_IN_CONTAINER=1</code> or case-insensitive <code>true</code> maps to <code>other</code>; no recognized hint maps to <code>none</code>, and detection errors map to <code>unknown</code></td>
+</tr>
+<tr>
+<td>Linux <code>os_distribution</code>, <code>os_version</code></td>
+<td>Only <code>ID</code> and <code>VERSION_ID</code> from <code>/etc/os-release</code>; <code>/usr/lib/os-release</code> is used only when the first file is absent, never merged or used after a read failure. No shell expansion is performed</td>
+</tr>
+<tr>
+<td>macOS <code>os_distribution</code>, <code>os_version</code></td>
+<td>Fixed <code>macos</code> and the product version from .NET's <code>Environment.OSVersion.Version</code> as major.minor.build; the revision component and Darwin kernel/build labels are excluded; GitVersion does not read a plist</td>
+</tr>
+<tr>
+<td>Windows <code>os_distribution</code>, <code>os_version</code></td>
+<td>Fixed <code>windows</code> and .NET's <code>Environment.OSVersion.Version</code> as major.minor.build; revision and marketing labels such as Windows 11 or Server edition are excluded</td>
+</tr>
+<tr>
+<td><code>gitversion_version</code></td>
+<td>The CLI assembly's informational version, with everything from <code>+</code> onward removed; only the release/prerelease syntax described below is accepted, otherwise <code>unknown</code></td>
+</tr>
+</tbody>
+</table>
+<p>Linux release files are read only after eligibility, sampling and disclosure permit an event. Files exceeding
+8,192 characters are rejected using a bounded read with one extra character to detect overflow;
+oversized or unreadable data is not transmitted. OS release strings allow
+at most four numeric components, each up to eight digits, with a total limit of 32 characters.
+Pretty names, codenames, arbitrary environment values, file contents and error messages are never copied
+to event properties.</p>
+<p>The existing GitVersion build-agent resolver supplies <code>ci</code>. Its fixed labels are <code>appveyor</code>, <code>azure</code>,
+<code>bitbucket</code>, <code>buildkite</code>, <code>codebuild</code>, <code>continua</code>, <code>drone</code>, <code>envrun</code>, <code>github</code>, <code>gitlab</code>, <code>jenkins</code>, <code>myget</code>,
+<code>space</code>, <code>teamcity</code> and <code>travis</code>. Local/default builds use <code>none</code>; unmapped non-default agent types use
+<code>other</code> and the automated sampling rate. Telemetry does not call agent branch/tag or output-writing methods.</p>
+<p>Linux distro IDs are limited to <code>debian</code>, <code>ubuntu</code>, <code>alpine</code>, <code>fedora</code>, <code>rhel</code>, <code>centos</code>, <code>rocky</code>,
+<code>almalinux</code>, <code>amzn</code>, <code>opensuse-leap</code>, <code>opensuse-tumbleweed</code>, <code>sles</code>, <code>arch</code>, <code>gentoo</code>, <code>nixos</code>, <code>photon</code>,
+<code>mariner</code> and <code>azurelinux</code>. Only numeric <code>VERSION_ID</code> values are accepted; custom distro IDs use <code>other</code>
+and <code>unknown</code> for the version. macOS and Windows use .NET's numeric OS version, excluding the revision
+component and using zero for an unavailable build component. On macOS this is the product release;
+on Windows it is the numeric OS build rather than a marketing name.
+Missing, malformed, non-numeric or oversized release data uses <code>unknown</code>.
+Inside a container these fields describe its userland, not the host OS. Docker uses the official image's
+fixed marker or the conventional <code>/.dockerenv</code> hint; the generic .NET container hint uses <code>other</code>.
+Detection is best effort and does not inspect cgroup IDs, hostnames, image tags or container IDs.</p>
+<p>The installed tool version accepts a numeric major.minor.patch release and optional public
+<code>alpha</code>, <code>beta</code>, <code>rc</code>, <code>preview</code>, <code>dev</code> or <code>ci</code> prerelease channel with numeric components.
+Custom branch-based prerelease labels use <code>unknown</code>. This is the version of GitVersion itself,
+not the version calculated for the user's repository.</p>
+<p>The MSBuild package marks only its CLI child process. In-process MSBuild tasks do not send events.
+GitTools/actions recognition requires the wrapper to set <code>GITVERSION_INTERNAL_CALLER=gittools-actions</code>
+for the CLI child; older wrappers without the marker remain <code>direct</code>. GitHub runner detection alone
+does not identify GitTools/actions usage. Arbitrary marker values are never transmitted.</p>
+<p>For example, a marked MSBuild CLI child in an Alpine Docker container on a GitHub runner can report
+<code>ci=github</code>, <code>invocation=msbuild</code>, <code>container=docker</code>, <code>os=linux</code>, <code>os_distribution=alpine</code> and
+<code>os_version=3.22</code>. A direct CLI call on that same runner uses <code>invocation=direct</code>.
+Here <code>direct</code> means no recognized wrapper marker; it does not prove an interactive human call.
+Likewise, <code>container=none</code> means no recognized container hint, not proof that containerization is absent.
+Markers and hints can be omitted, inherited or spoofed; these fields are best-effort usage categories,
+not authenticated provenance or reliable measurements of every wrapper/container installation.</p>
+<p>Schema-1 events did not include <code>container</code>, <code>os_distribution</code>, <code>os_version</code> or <code>gitversion_version</code>.
+When analyzing historical schema-1 events, treat those absent values as unknown rather than inferring or
+backfilling them. The current maintainer dashboard is scoped to schema-2 events.</p>
+<h3 id="how-cli-options-are-represented">How CLI options are represented</h3>
+<p>The <code>options</code> list can contain only these names:</p>
+<pre><code class="language-text">--no-cache, --no-fetch, --no-normalize, --allow-shallow, --diagnose,
+--config, --override-config, --show-variable, --format,
+--url, --branch, --commit, --dynamic-repo-location, --log-file, --output-file,
+--update-assembly-info, --update-project-files, --ensure-assembly-info,
+--update-wix-version-file,
+--output=json, --output=buildserver, --output=file, --output=dotenv
+</code></pre>
+<p>Option values are discarded except for those four output-mode labels. For example, <code>--branch private-name</code>
+contributes only <code>--branch</code>; <code>--format</code> contributes no format text. Default output modes can also be listed.
+The client sends no event timestamp; PostHog assigns a receipt time.</p>
+<h2 id="what-is-excluded">What is excluded</h2>
+<p>The payload excludes paths, repository names/URLs, credentials, branch names, commit IDs, configuration
+contents or override values, format strings, environment contents, calculated versions, user names and
+stable machine/user/repository identifiers. It does not send the raw command line.</p>
+<p>An event is attempted after successful argument parsing and before version calculation. It does not
+include the final exit code, success/failure outcome, calculation duration, error text or stack traces.
+A later calculation failure can therefore have an invocation event; an argument-parsing failure does not.
+Event delivery must not be interpreted as evidence that the CLI calculation succeeded.</p>
+<p>There are no user profiles, stable cross-event identities, session replay, autocapture, automatic exception
+capture, dependency capture, browser cookies, or disk event queues. The first-run marker is separate from
+the event payload. Invocation counts must not be presented as unique-user counts.</p>
+<h2 id="sampling-collection-window-and-reliability">Sampling, collection window and reliability</h2>
+<p>Direct invocations are independently sampled at up to 1%; recognized automation and CLI calls marked as
+MSBuild or GitTools/actions invocations are sampled at up to 0.01%. Maintainers can reduce either probability to zero or disable
+the campaign. Transport/ingestion loss, opt-outs, quota drops and forged events affect aggregate estimates.
+There is no global client-side volume guarantee or authentication of genuine clients using a public write key.</p>
+<p>Only <code>sampling_probability</code> is transmitted. The dashboard derives an inverse-probability weight as
+<code>1 / sampling_probability</code> only for a valid probability greater than zero and at most one; it is not a separate
+event property. Missing or invalid probabilities contribute no estimated invocation count.
+For example, probabilities of <code>0.01</code> and <code>0.0001</code> produce calculated weights of <code>100</code> and <code>10000</code>.
+Controlled test events must be excluded from adoption estimates. Older events may contain the former
+<code>sampling_weight</code> property; dashboards must ignore it and derive weights from probability.
+The maintainer dashboard's default reporting range is the last three calendar months. That range does not
+enable collection or extend the per-assembly collection window. Empty projects have no usage estimates;
+explicit no-event labels are display states, not telemetry observations.</p>
+<p>Cake automatically embeds the UTC build date only for official tagged releases and prereleases. Collection is allowed
+only on dates <code>start &lt;= today &lt; start + three calendar months</code> for that assembly. All packages from one Cake
+build share that date. Each official release or prerelease build, including patches and later tag rebuilds, gets its
+own window. Cake gives internal prerelease, development, local, fork and pull-request builds no key or
+collection date, so they collect nothing. Ordinary direct <code>dotnet</code> builds also default to disabled with no
+date. A controlled local build can explicitly supply both <code>GitVersionTelemetryProjectKey</code> and a valid
+<code>GitVersionTelemetryCampaignStart</code>; these become public key and date assembly metadata and still require
+all other campaign checks to pass. Official release builds require no manually chosen start date.</p>
+<p>Sending is best effort: one awaited HTTPS request, a 300 ms transport deadline for direct runs or 1 second
+for selected automated runs, no retry and no response-body read. The deadline applies to the HTTP request,
+not the total reporting work before version calculation. It does not bound earlier disclosure, sampling or
+runtime-context evaluation. Caller cancellation can end the request sooner. Offline or rejected events are lost.
+Telemetry errors do not alter calculation output or exit codes.</p>
+<h2 id="posthog-processing-access-and-retention">PostHog processing, access and retention</h2>
+<p>The selected destination is <strong>PostHog Cloud EU</strong>, <code>eu.i.posthog.com</code>. The provider and its network
+infrastructure receive the connection's source IP even though the event contains a zero IP sentinel.
+The payload is minimized; this does not make the network connection anonymous. Provider transport/security
+processing is governed by <a href="https://posthog.com/docs/privacy">PostHog's privacy documentation</a>.</p>
+<p>Before enabling collection, maintainers must verify a dedicated no-card <strong>Free</strong> project, restrict project
+access to authorized maintainers, enable <strong>Discard client IP data</strong>, disable the GeoIP transformation, and
+ensure project transformations do not add person processing or additional identifying data. IP discard
+alone does not prevent transformations from using the IP before it is discarded. Collection remains disabled
+while no project write key is configured. Recheck provider settings before activation.</p>
+<p>Official tagged releases and prereleases require the repository's GitHub Actions variable
+<code>GITVERSION_TELEMETRY_PROJECT_KEY</code> when built. Cake forwards the public write key from the build environment
+and embeds it as <code>TelemetryProjectKey</code> assembly metadata, together with the release build date.
+There is no separate enablement flag. Missing, invalid or duplicate key metadata disables collection.
+Other Cake builds omit both key and date, even when the environment contains the key.
+No runtime environment variable enables collection or replaces the embedded key. Changing the GitHub
+variable affects future builds only and cannot remotely stop or start already distributed releases.</p>
+<p>PostHog Free allows one million analytics events per month and permanently drops excess events rather
+than billing them. The project must remain on Free with no payment method or automatic paid overages.
+See <a href="https://posthog.com/pricing">PostHog pricing</a> and <a href="https://posthog.com/docs/privacy/data-storage">IP storage controls</a>.</p>
+<p>The allowance is shared across the organization's projects and resets with its billing cycle. On
+October 22, 2026, the EU project's billing page showed the Free plan with an invitation to add a card,
+a Product Analytics free allowance and matching Free-plan ingestion cap of one million events, and
+26 events used in the October 21–November 20 cycle. The Free UI labels these event counts "Free tier limit"
+and "Billing limit"; this is not verification of a separately configured monetary cap. Paid-plan billing
+limits are dollar amounts and require separate verification if the organization changes plans.
+Maintainers must recheck these settings before activation. PostHog documents
+that events beyond the billing limit are permanently dropped; legitimate events are also lost if abuse
+exhausts the allowance. See <a href="https://posthog.com/docs/billing/limits-alerts">billing limits</a> and
+<a href="https://posthog.com/docs/billing/common-questions">organization-wide usage</a>.</p>
+<h2 id="public-key-and-data-reliability">Public key and data reliability</h2>
+<p>The CLI contains a public project write key that identifies the PostHog destination. It is not proof that
+an event came from GitVersion. Keeping that key in a build secret would not keep it private after it is
+embedded in a distributed binary or sent in a request. GitVersion ships no personal/read/admin key.</p>
+<p>Someone can use the public key to submit fabricated events, distort usage estimates or consume the
+ingestion allowance. Client-side opt-outs, sampling, the disabled default and the three-month collection
+window do not restrict someone sending requests directly to PostHog. GitVersion sends directly to PostHog
+and operates no ingestion gateway or client-authentication service. Maintainers inspect ingestion quality,
+but plausible forged events cannot reliably be distinguished from real invocations. Dashboard results,
+including sampling-weighted estimates, are indicative usage signals rather than authenticated counts.</p>
+<h2 id="stored-event-retention">Stored-event retention</h2>
+<p>The three-month collection window stops <strong>new events</strong>. It does not automatically delete stored events.
+PostHog Free advertises one-year analytics retention. Any shorter deletion period requires a separate,
+verified provider-side deletion policy; GitVersion ships no read/admin or deletion credentials.</p>
+<p>Implementation, activation and statistical details are in <a href="/7.0/docs/usage/cli/telemetry">Telemetry</a>.</p>
+
+	</section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

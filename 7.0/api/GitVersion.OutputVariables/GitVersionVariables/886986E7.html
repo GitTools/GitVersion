@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - API - ToString() Method</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li><a href="/7.0/docs">Documentation</a></li>
+        <li class="active"><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    
+                </section>
+                <section class="sidebar">
+                    
+                         <script src="/7.0/assets/js/lunr.min.js"></script>
+    <script src="/7.0/assets/js/searchIndex.js"></script>
+    <div class="sidebar-form">
+        <div class="input-group">
+            <input type="text" name="search" id="search" class="form-control" placeholder="Search Types...">
+            <span class="input-group-btn">
+                <button class="btn btn-flat"><i class="fa fa-search"></i></button>
+            </span>
+        </div>
+    </div>
+    <div id="search-results">
+    </div>
+    <script>
+        function runSearch(query){
+            $("#search-results").empty();			
+            if( query.length < 2 ){
+                return;
+            }			
+            var results = searchModule.search("*" + query + "*");
+            var listHtml = "<ul class='sidebar-menu'>";	
+            listHtml += "<li class='header'>Type Results</li>";	
+            if(results.length == 0 ){
+                listHtml += "<li>No results found</li>";
+            } else {					
+                for(var i = 0; i < results.length; ++i){
+                    var res = results[i];
+                    listHtml += "<li><a href='" + res.url + "'>" + htmlEscape(res.title) + "</a></li>";
+                }				
+            }
+            listHtml += "</ul>";				
+            $("#search-results").append(listHtml);
+        }
+
+        $(document).ready(function(){
+            $("#search").on('input propertychange paste', function() {
+                runSearch($("#search").val());
+            });
+        });
+
+        function htmlEscape(html) {
+            return document.createElement('div')
+                .appendChild(document.createTextNode(html))
+                .parentNode
+                .innerHTML;
+        }
+    </script>
+ 
+                    <ul class="sidebar-menu">
+                         		<li class="header">Assembly</li>
+		<li><a href="/7.0/api/GitVersion.Core.dll">GitVersion<wbr>.Core<wbr>.dll</a></li>
+		<li class="header">Namespace</li>
+		<li><a href="/7.0/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a></li>
+		<li class="header">Type</li>
+		<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables">GitVersionVariables</a></li>
+		<li role="separator" class="divider"></li>
+			<li class="header">Constructors</li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/7058C25A">GitVersionVariables<wbr>(string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string)<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/EED4E890">GitVersionVariables<wbr>(<wbr>Git<wbr>Version<wbr>Variables)<wbr></a></li>
+			<li class="header">Method Members</li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/695BCBE3">Deconstruct<wbr>(string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string)<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/45F03275">Equals<wbr>(object)<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/C245BED4">Equals<wbr>(<wbr>Git<wbr>Version<wbr>Variables)<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/DE3F3758">get_<wbr>Assembly<wbr>Sem<wbr>File<wbr>Ver<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/277D4B45">get_AssemblySemVer<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/F276C965">get_BranchName<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/9E94A9B6">get_BuildMetaData<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/A1A7F541">get_CommitDate<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/CB281B44">get_CustomVersion<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/B02015A8">get_<wbr>Escaped<wbr>Branch<wbr>Name<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/C5AF4629">get_<wbr>Full<wbr>Build<wbr>Meta<wbr>Data<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/AF809A20">get_FullSemVer<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/884A9A29">get_<wbr>Informational<wbr>Version<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/B2459547">get_Major<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/D753799B">get_MajorMinorPatch<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/81C52885">get_Minor<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/8D2E8A98">get_Patch<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/A51F57DE">get_PreReleaseLabel<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/02E84F07">get_<wbr>Pre<wbr>Release<wbr>Label<wbr>Name<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/5D794239">get_<wbr>Pre<wbr>Release<wbr>Label<wbr>Name<wbr>With<wbr>Dash<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/410E7353">get_<wbr>Pre<wbr>Release<wbr>Label<wbr>With<wbr>Dash<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/36D22D9E">get_PreReleaseNumber<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/631F9336">get_SemVer<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/26528A03">get_<wbr>Sem<wbr>Ver<wbr>Source<wbr>Increment<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/F5398273">get_<wbr>Sem<wbr>Ver<wbr>Source<wbr>Sem<wbr>Ver<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/9FB4D0BB">get_SemVerSourceSha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/CAB8C7BD">get_Sha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/BEF4E4DC">get_ShortSha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/042129DB">get_<wbr>Uncommitted<wbr>Changes<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/EBC2D393">get_<wbr>Version<wbr>Source<wbr>Distance<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/508F60F8">get_<wbr>Version<wbr>Source<wbr>Increment<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/2CAE6C18">get_<wbr>Version<wbr>Source<wbr>Sem<wbr>Ver<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/FD92581A">get_VersionSourceSha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/B2C4A7D2">get_<wbr>Weighted<wbr>Pre<wbr>Release<wbr>Number<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/534DAF2C">GetEnumerator<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/6323EE9F">GetHashCode<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/DE8D1BE5">PrintMembers<wbr>(StringBuilder)<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/C05886E1">set_<wbr>Assembly<wbr>Sem<wbr>File<wbr>Ver<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/EA9E6C04">set_AssemblySemVer<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/DF64CCF3">set_BranchName<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/B154BCBC">set_BuildMetaData<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/36AC8E93">set_CommitDate<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/B5F0A7B9">set_CustomVersion<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/8325B380">set_<wbr>Escaped<wbr>Branch<wbr>Name<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/D2B7FCAF">set_<wbr>Full<wbr>Build<wbr>Meta<wbr>Data<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/BC5507A8">set_FullSemVer<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/C87AA3BB">set_<wbr>Informational<wbr>Version<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/C0AD5C90">set_Major<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/81FA303B">set_MajorMinorPatch<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/6D898F89">set_Minor<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/33E0E212">set_Patch<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/60A95359">set_PreReleaseLabel<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/2B467B61">set_<wbr>Pre<wbr>Release<wbr>Label<wbr>Name<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/84B7FB7A">set_<wbr>Pre<wbr>Release<wbr>Label<wbr>Name<wbr>With<wbr>Dash<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/DDCB4A81">set_<wbr>Pre<wbr>Release<wbr>Label<wbr>With<wbr>Dash<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/D841A14A">set_PreReleaseNumber<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/B8F1F092">set_SemVer<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/5F54B827">set_<wbr>Sem<wbr>Ver<wbr>Source<wbr>Increment<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/292B957E">set_<wbr>Sem<wbr>Ver<wbr>Source<wbr>Sem<wbr>Ver<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/FE68FE3D">set_SemVerSourceSha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/F98EB55B">set_Sha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/99FEBEE1">set_ShortSha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/28CB5E60">set_<wbr>Uncommitted<wbr>Changes<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/41FEE3A9">set_<wbr>Version<wbr>Source<wbr>Distance<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/183A0284">set_<wbr>Version<wbr>Source<wbr>Increment<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/81B4C3F5">set_<wbr>Version<wbr>Source<wbr>Sem<wbr>Ver<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/B88A7314">set_VersionSourceSha<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/2F8CA395">set_<wbr>Weighted<wbr>Pre<wbr>Release<wbr>Number<wbr>()<wbr></a></li>
+				<li class="selected"><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/886986E7">ToString<wbr>()<wbr></a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/F5505D8A">TryGetValue<wbr>(string, <wbr>string)<wbr></a></li>
+			<li class="header">Property Members</li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/D91603B8">Commit<wbr>Count<wbr>Source<wbr>Distance</a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/8E7B7C7E">CommitCountSourceSha</a></li>
+				<li><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables/C81B5F41">EqualityContract</a></li>
+ 
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                <div class="gv-api">
+    <header class="content-header">
+        <nav class="gv-api-breadcrumb" aria-label="Breadcrumb">
+            <a href="/7.0/api">API</a>
+ <span aria-hidden="true">/</span><a href="/7.0/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a>             <span aria-hidden="true">/</span><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables">GitVersionVariables</a>        </nav>
+        <h1>ToString<wbr>()<wbr> <small>Method</small></h1>
+    </header>
+    <div class="gv-api-body">
+        <section class="content">
+            
+            
+            
+		<div class="panel panel-default">
+  			<div class="panel-body">	
+				<dl class="dl-horizontal">	
+						<dt>Assembly</dt>
+						<dd><a href="/7.0/api/GitVersion.Core.dll">GitVersion<wbr>.Core<wbr>.dll</a></dd>
+						
+						<dt>Namespace</dt>
+						<dd><a href="/7.0/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a></dd>
+					
+						<dt>Containing Type</dt>
+						<dd><a href="/7.0/api/GitVersion.OutputVariables/GitVersionVariables">GitVersionVariables</a></dd>		
+					
+				</dl>
+  			</div>
+		</div>
+
+	<h1 id="Syntax">Syntax</h1>
+	<pre><code>public override string ToString()</code></pre>
+
+
+
+	<h1 id="Attributes">Attributes</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover two-cols">
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tbody><tr>
+						<td>Nullable<wbr>Context<wbr>Attribute</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Compiler<wbr>Generated<wbr>Attribute</td>
+						<td></td>
+					</tr>
+			</tbody></table>
+		</div>
+	</div>	
+
+
+
+	<h1 id="ReturnValue">Return Value</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover two-cols">
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody><tr>
+					<td>string</td>
+					<td></td>
+				</tr>
+			</tbody></table>
+		</div>
+	</div>	
+
+
+            
+        </section>
+        <aside class="gv-api-toc" aria-label="On this page" hidden="">
+            <strong>On this page</strong><nav aria-label="On this page"></nav>
+        </aside>
+    </div>
+</div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Set up GitVersion with an AI agent</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+    <script src="/7.0/assets/js/agent-onboarding.js?v=768741E2E4A7" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li class="active"><a href="/7.0/docs">Documentation</a></li>
+        <li><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    	
+        <div><p><a href="https://github.com/GitTools/GitVersion/tree/8fd9e294be12083242079edf2bf4dae4c0956164/docs/input/docs/usage/ai-agent-onboarding.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
+
+                </section>
+                <section class="sidebar">
+                    
+                    
+
+                    <ul class="sidebar-menu">
+                        
+        <li class="header gv-docs-version">7.0 · documentation</li>
+            <li class="treeview active">
+                <a href="/7.0/docs/getting-started">Getting started</a><a href="#" class="expand" aria-label="Expand Getting started"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/getting-started">Getting started</a></li>
+                            <li class="selected"><a href="/7.0/docs/usage/ai-agent-onboarding">AI-agent onboarding</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/installation">Installation</a></li>
+
+                <li><a href="/7.0/docs/reference/requirements">Requirements</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/usage">Guides</a><a href="#" class="expand" aria-label="Expand Guides"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/usage/choose-workflow">Choose a workflow</a></li>
+
+                <li><a href="/7.0/docs/usage/configure">Configure GitVersion</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies">Workflow examples</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/trunkbased">Trunk-based (preview)</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">Trunk-based examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/build-servers">CI integrations</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/output">Use version output</a></li>
+
+                <li><a href="/7.0/docs/usage/docker">Docker</a></li>
+
+                <li><a href="/7.0/docs/usage/msbuild">MSBuild Task</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                <li><a href="/7.0/docs/usage/library">Library</a></li>
+
+                <li><a href="/7.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn">Concepts</a><a href="#" class="expand" aria-label="Expand Concepts"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+
+                <li><a href="/7.0/docs/learn/how-it-works">How versions are calculated</a></li>
+
+                <li><a href="/7.0/docs/learn/version-calculation">Version calculation algorithm</a></li>
+
+                <li><a href="/7.0/docs/learn/workflows-modes-strategies">Workflows, modes, and strategies</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/modes">Deployment modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/reference/version-increments">Version Incrementing</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/reference">Reference</a><a href="#" class="expand" aria-label="Expand Reference"></a>
+                <ul class="treeview-menu">
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/configuration-topics">Configuration by topic</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/configuration-topics/branches">Branch configuration</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/output">Output and formatting</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/calculation">Version calculation</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/arguments">Arguments</a></li>
+
+                <li><a href="/7.0/docs/reference/version-sources">Calculation strategies</a></li>
+
+                <li><a href="/7.0/docs/reference/variables">Version Variables</a></li>
+
+                <li><a href="/7.0/docs/reference/custom-formatting">Format Strings</a></li>
+
+                <li><a href="/7.0/docs/reference/environment-variables">Environment variables</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn/faq">Troubleshooting</a><a href="#" class="expand" aria-label="Expand Troubleshooting"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/faq">Troubleshooting</a></li>
+
+                <li><a href="/7.0/docs/learn/git-setup">Repository setup</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/migration">Upgrading</a><a href="#" class="expand" aria-label="Expand Upgrading"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a></li>
+                </ul>
+            </li>
+
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Set up GitVersion with an AI agent</h1>
+		</section>
+	<section class="content">
+		<p>Use this guide with Claude Code, Codex, GitHub Copilot, or Antigravity in <strong>the repository you want to version</strong>. The agent should recommend settings from your release process and check them against existing history before adopting them.</p>
+<p>The primary path uses GitVersion <strong>v7's established CLI</strong>, built from <code>src/</code> in the GitVersion source repository. The experimental <code>new-cli/</code> tree has a different command structure and is outside this guide. If you retain an existing v6 installation, use the <a href="#optional-v6-compatibility-path">optional v6 path</a>.</p>
+<h2 id="give-the-agent-this-task">Give the agent this task</h2>
+<p>Use <strong>Copy setup prompt</strong>, or choose your agent from <strong>Use with an agent</strong>, to copy the task with this guide's links. Paste it into the agent session for your repository. You can also <a href="/7.0/docs/usage/ai-agent-onboarding.md">view the Markdown guide</a> or select the prompt below if copying is unavailable.</p>
+<p>Open your repository in your agent and provide this prompt together with this guide's URL or a local copy:</p>
+<div id="gv-agent-setup-prompt">
+<pre><code class="language-text">Read the GitVersion AI-agent onboarding guide. Inspect this repository's
+existing GitVersion installation, configuration, branch/tag history and
+release workflow. Recommend a pinned v7 distribution and minimal configuration
+that match our workflow, explaining alternatives and assumptions. Keep v6 as
+an option if we already depend on it or choose its compatibility guarantees.
+Verify that the pinned v7 artifact exists. If none is suitable, propose a
+source build from a reviewed v7 commit in a separate GitVersion checkout,
+using its pinned SDK and src/GitVersion.App; record the SHA and executable.
+
+Show proposed installation commands and file changes before applying them
+unless I have already authorized those actions. After installation, verify
+the selected executable's version. For v7, run gitversion --cli-schema using
+that executable and read its JSON to discover commands, aliases, options,
+arguments and accepted values before constructing commands. If schema export
+is unavailable, use that executable's --help rather than guessing commands.
+For v7, run gitversion config validate --config &lt;candidate-file&gt; to check
+the intended candidate first, using its absolute path.
+Inspect the effective configuration, then compare baseline and candidate
+results on representative existing branches, tags and commits. Explain
+unexpected versions before adjusting settings. Report evidence, remaining
+questions and the final diff.
+
+Preserve existing files, user edits and Git history. Do not create tags or
+commits, fetch or normalize refs merely to make a sample work, install globally,
+change authentication, publish, push or configure CI unless authorized.
+Do not read or expose secrets. Follow this repository's instructions.
+</code></pre>
+</div>
+<p>For reproducible team use, pin the guide to a reviewed GitVersion source commit or vendor a local copy and record its revision. A URL in an instruction file does not guarantee that an agent retrieves it: explicitly ask the agent to read it and report the guide revision and tool version it used.</p>
+<h3 id="give-the-agent-a-migration-task">Give the agent a migration task</h3>
+<p>For an existing v6.8 installation, use <strong>Copy migration prompt</strong> or select the text below. The same prompt works with Codex, Claude Code, GitHub Copilot and Antigravity. Follow the <a href="#migrate-an-existing-v6.8-repository-to-v7.0">v6.8-to-v7.0 recipe</a> rather than starting with a new configuration.</p>
+<div id="gv-agent-migration-prompt">
+<pre><code class="language-text">Read the GitVersion AI-agent onboarding guide, its v6.8-to-v7.0 migration
+recipe and the linked v6-to-v7 migration guide. Read applicable repository
+and agent instructions. Help migrate this repository's existing GitVersion
+v6.8 installation to v7.0 while preserving its release policy.
+
+Inventory the exact v6.8 executable, config, tool/integration pins and consumers.
+Keep that executable and config available for a baseline. Propose a separately
+pinned, verified v7.0 artifact or a reviewed source build; do not assume a stable
+v7.0 release exists. Discover commands from each executable's own help/schema.
+Show installation commands and file changes before applying them unless I have
+already authorized them. Do not replace the v6.8 pin before comparison.
+
+Capture v6.8 JSON and resolved configuration on representative existing refs
+and full commit SHAs. Use v7's config migrate to write a separate candidate,
+preserve the original and its comments, then validate and inspect the candidate.
+Compare v6.8 with its original config against v7.0 with its migrated config
+at the same commits and branch contexts, with fetching, normalization, caches
+and build-server/file updates disabled. Verify each reported Sha matches the
+requested commit; stop and investigate any mismatch. Map renamed fields before
+comparing, explain version differences, and report missing history as untested.
+
+Audit CLI scripts, JSON/format consumers, Azure variables, MSBuild properties,
+runtime/platform requirements and Docker tags/permissions against the migration
+guide. Treat parser, configuration and Git-backend selectors independently;
+record their removal schedule and test v7 defaults without compatibility
+overrides in an isolated process. Do not change global environment settings.
+
+Return the migration diff, both version pins/invocations, an expected/actual
+comparison table, consumer changes, unresolved decisions and rollback steps.
+Apply accepted changes only within my authorization. Preserve user edits,
+secrets and Git history. Do not create refs, fetch or normalize history, install
+globally, change credentials, publish, push or configure CI unless authorized.
+</code></pre>
+</div>
+<h2 id="inspect-before-changing-anything">1. Inspect before changing anything</h2>
+<p>The agent should establish:</p>
+<ul>
+<li>Repository root, current branch and commit, dirty/untracked paths, shallow status, and whether this is a linked worktree.</li>
+<li>Existing executables and their <code>--version</code>/<code>--help</code> output; local and relevant ancestor tool manifests; GitVersion package references, scripts, and CI tool pins. A PATH executable can differ from the local tool or CI version.</li>
+<li>Configuration in the working directory and repository root: <code>GitVersion.yml</code>, <code>GitVersion.yaml</code>, <code>.GitVersion.yml</code>, <code>.GitVersion.yaml</code>, and explicit paths in scripts. Resolve ambiguous files explicitly rather than creating another one.</li>
+<li>OS, architecture, shell, and available .NET SDK/runtime or Docker. Separate the tool's requirements from the language and target frameworks of the application being versioned.</li>
+<li>Existing release tags, branch names and a bounded history graph; merge, squash or rebase practice; release branches, prerelease channels and version consumers.</li>
+</ul>
+<p>Ask about release intent only where the evidence leaves a choice unresolved. For example, a branch named <code>develop</code> does not establish a Git Flow release policy. For a monorepo, agree whether components share one version before choosing settings. Inspect scoped project and workflow files; avoid <code>.env</code>, credential files, authenticated remote URLs and environment dumps.</p>
+<p>Record a baseline before editing. Preserve existing configuration and tool pins until the user accepts a replacement. See <a href="/7.0/docs/reference/requirements">repository requirements</a> for the history needed for a meaningful calculation.</p>
+<h2 id="select-and-acquire-v7">2. Select and acquire v7</h2>
+<p>Choose a distribution based on available tooling and intended consumers:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Situation</th>
+<th>Suggested option</th>
+<th>Tradeoff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Existing compatible pinned installation</td>
+<td>Reuse it</td>
+<td>Align local and CI versions before changing either.</td>
+</tr>
+<tr>
+<td>A .NET SDK is already available</td>
+<td>Pinned local <code>GitVersion.Tool</code></td>
+<td>A manifest keeps the project and team on one version. v7 tool installation requires the .NET 10 SDK.</td>
+</tr>
+<tr>
+<td>Docker is already available</td>
+<td>Versioned image, preferably pinned by digest</td>
+<td>Avoid host .NET setup; account for platform and writable mounts.</td>
+</tr>
+<tr>
+<td>Neither SDK nor Docker is appropriate</td>
+<td>Standalone release archive</td>
+<td>Select the actual OS/architecture and Linux glibc/musl asset; keep it in a project/task-local location.</td>
+</tr>
+<tr>
+<td>.NET assembly/package versions should follow builds</td>
+<td>Consider <code>GitVersion.MsBuild</code> after CLI verification</td>
+<td>This changes build behavior; coordinate existing version writers and supported MSBuild hosts.</td>
+</tr>
+<tr>
+<td>CI already integrates GitVersion</td>
+<td>Match the integration's tool pin</td>
+<td>The action/task version and GitVersion version are separate choices.</td>
+</tr>
+</tbody>
+</table>
+<p>GitVersion can calculate versions for JavaScript, Python, Go and other repositories too. Start with JSON output and decide which variable each consumer needs. Refer to <a href="/7.0/docs/usage/cli/installation">installation</a>, <a href="/7.0/docs/usage/msbuild">MSBuild integration</a> and <a href="/7.0/docs/reference/build-servers">CI integration</a> for details. Offer workstation-wide package managers or global tools only when the user wants global setup.</p>
+<h3 id="pin-a-real-artifact-or-source-revision">Pin a real artifact or source revision</h3>
+<p>Check <a href="https://github.com/GitTools/GitVersion/releases">published releases</a> and <a href="https://www.nuget.org/packages/GitVersion.Tool">NuGet packages</a> before installing. These are v7 development instructions: <strong>documentation for v7 does not establish that a stable v7 package or image is published</strong>. Do not let an unversioned install silently select v6. Verify the exact chosen package, archive or image and its provenance; do not invent a tag, asset or checksum file.</p>
+<p>For an existing local manifest, inspect its entries before restoring tools:</p>
+<pre><code class="language-shell">dotnet tool restore
+dotnet tool run dotnet-gitversion -- --version
+dotnet tool run dotnet-gitversion -- --help
+</code></pre>
+<p>For a new manifest, create it only when no applicable manifest exists, then install an exact, verified v7 package version. These are templates: replace angle-bracket values before execution.</p>
+<pre><code class="language-text">dotnet new tool-manifest
+dotnet tool install GitVersion.Tool --version &lt;verified-v7-package-version&gt;
+</code></pre>
+<p>Preserve other tools in an existing manifest. Do not change feeds or credentials to make installation succeed. If using .NET 10's one-shot <code>dotnet tool exec</code>, verify its version resolution: without a pin or applicable manifest it can download the latest package.</p>
+<p>If a suitable v7 artifact is unavailable, offer a source build in a <strong>separate GitVersion checkout</strong>, at a reviewed v7 commit. Use the SDK pinned in that checkout's <code>global.json</code>, publish <code>src/GitVersion.App/GitVersion.App.csproj</code>, and record the source SHA and resulting executable path. See the <a href="/7.0/docs/getting-started#install-gitversion">source-build example</a>. Building requires restoring dependencies; explain that setup cost before proceeding. Do not build experimental <code>new-cli/</code> as a substitute.</p>
+<p>In the remaining v7 examples, <code>gitversion</code> means the executable you verified. For a local tool replace it with <code>dotnet tool run dotnet-gitversion --</code>; for a source build use <code>dotnet /absolute/path/to/gitversion.dll</code>. Store both the pin and invocation in the handoff.</p>
+<h3 id="discover-commands-and-options">Discover commands and options</h3>
+<p>Confirm the executable's version, then ask it for its command grammar:</p>
+<pre><code class="language-shell">gitversion --version
+gitversion --cli-schema
+</code></pre>
+<p>Read the <a href="/7.0/docs/usage/cli/cli-schema">CLI schema</a> JSON before constructing commands. It describes the available commands and subcommands, aliases, options, positional arguments, value arity and accepted values where available. Include inherited options from parent commands marked <code>recursive: true</code>. Use the selected executable's schema to discover capabilities rather than guessing command names or copying examples from another version.</p>
+<p><code>--cli-schema</code> works outside a Git repository and does not load configuration, calculate a version or write files. This is the CLI grammar, <strong>not the configuration JSON Schema</strong> used to check YAML. Run it separately from <code>--version</code>, because schema export takes precedence when both flags are supplied.</p>
+<p>Schema export requires the v7 argument parser. If the selected executable or temporary v6 parser cannot export it, use that executable's <code>--help</code> and matching reference documentation. Check the discovered command tree before using newly added commands; an older v7 build may not expose them.</p>
+<h3 id="docker-mounts-and-permissions">Docker mounts and permissions</h3>
+<p>Use the selected image's exact version/platform. v7 images run as UID/GID <code>10001:10001</code>; the mounted repository must be writable by that user. On Linux, the non-root checkout owner's UID/GID may be appropriate. v7 handles an unwritable home using a private temporary home inside the container, without extra <code>HOME</code> or <code>DOTNET_CLI_HOME</code> flags. On Docker Desktop, check host file-sharing permissions. Follow <a href="/7.0/docs/usage/docker#non-root-containers-and-repository-permissions">Docker repository permissions</a>.</p>
+<p>Prefer a disposable standalone clone for Docker experiments. A linked worktree's <code>.git</code> file can point outside the mount, and GitVersion may write repository metadata/cache, so a read-only mount is not a general solution. Mount a candidate configuration deliberately and pass its container path. Do not use recursive permission changes, root or privileged execution as a workaround. Container environment changes do not universally reach the host; use JSON for these checks.</p>
+<h2 id="recommend-a-minimal-configuration">3. Recommend a minimal configuration</h2>
+<p>Choose defaults that fit how the repository already merges and releases. Present alternatives with evidence and assumptions:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Observed practice</th>
+<th>Candidate starting point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Short-lived branches merged into main through PRs</td>
+<td><code>GitHubFlow/v1</code></td>
+</tr>
+<tr>
+<td>Persistent development and release stages</td>
+<td><code>GitFlow/v1</code></td>
+</tr>
+<tr>
+<td>Trunk-based practice</td>
+<td>Evaluate existing presets first; offer <code>TrunkBased/preview1</code> only with its experimental status explained.</td>
+</tr>
+</tbody>
+</table>
+<p>A preset is a starting point, not a requirement to reorganize branches. Keep <a href="/7.0/docs/usage/choose-workflow">workflow, deployment mode and calculation strategy</a> separate. Discuss version increments, tag recognition, labels and package/assembly output needs independently.</p>
+<p>For a repository that selects GitHub Flow, this is a minimal v7 candidate:</p>
+<pre><code class="language-yaml">workflow: GitHubFlow/v1
+</code></pre>
+<p>Add overrides only for a stated requirement. For example, v7 calculation overrides belong under <code>calculation</code>:</p>
+<pre><code class="language-yaml">workflow: GitHubFlow/v1
+calculation:
+  tag-prefix: '[vV]?'
+</code></pre>
+<p>That tag prefix is the <a href="/7.0/docs/reference/configuration#tag-prefix">documented default</a>; confirm it with the selected executable's effective configuration, and do not add it unless explicitly recording it helps the team. Inspect existing tag names before changing it. Output settings belong under <code>output</code>. Use <a href="/7.0/docs/reference/configuration-topics">configuration by topic</a> and the <a href="/7.0/docs/reference/configuration">reference</a> rather than copying every resolved default into the file.</p>
+<p>Save a candidate separately from the existing config, preserving comments and unrelated settings. Select the candidate by absolute path during checks. Do not set <code>next-version</code> or ignore history merely to force a desired example result. For a v6-to-v7 migration, emit a separate candidate with <a href="/7.0/docs/migration/v6-to-v7">config migrate</a> and review the diff; in-place migration cannot preserve comments.</p>
+<h2 id="check-structure-and-resolved-settings">4. Check structure and resolved settings</h2>
+<p>Associate the candidate with the matching <a href="https://gitversion.net/schemas/7.0/GitVersion.configuration.json">configuration schema</a> in the editor or a YAML-aware validator. The v7 schema describes nested YAML. Editor schema comments/associations do not require adding a runtime <code>$schema</code> property. Schema validation checks structure; loading and history calculations check additional behavior.</p>
+<p>These templates use paths selected during inspection:</p>
+<pre><code class="language-text">gitversion config validate --config &lt;candidate-file&gt; --format json
+gitversion --target-path &lt;repository&gt; --config &lt;candidate-file&gt; --show-config
+gitversion --target-path &lt;repository&gt; config get calculation.tag-prefix --config &lt;candidate-file&gt;
+</code></pre>
+<p><code>--show-config</code> displays defaults and overrides. <code>config get</code> returns a JSON scalar for a supported v7 property; it does not return branch-specific inherited behavior or a calculated version. Both need a suitable repository in the established CLI. See <a href="/7.0/docs/usage/cli/arguments#query-a-configuration-property">configuration queries</a>.</p>
+<p>The v7 <code>config validate</code> command checks the candidate without calculating a version or changing files and refs. An explicit file works outside Git and offline. Require a successful exit and a valid result before continuing; <code>--format json</code> writes the result to stdout and diagnostics go to stderr. See <a href="/7.0/docs/usage/cli/arguments#validate-configuration">configuration validation</a> for supported options, diagnostics and limits.</p>
+<p>Successful validation still needs effective-config inspection and history-based verification to establish that versions fit the release workflow.</p>
+<h2 id="compare-results-against-real-history">5. Compare results against real history</h2>
+<p>Agree on representative existing points and expected behavior before tuning the candidate:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Sample</th>
+<th>Question to resolve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Current HEAD</td>
+<td>What version/channel should the next build produce?</td>
+</tr>
+<tr>
+<td>Latest reachable release tag and its commit</td>
+<td>Does GitVersion recognize the released version?</td>
+</tr>
+<tr>
+<td>Existing commit after that tag</td>
+<td>Does the increment match the release policy?</td>
+</tr>
+<tr>
+<td>Existing feature/PR branch</td>
+<td>Are the label, number and consumer version suitable?</td>
+</tr>
+<tr>
+<td>Existing merge, release or support branch point</td>
+<td>Does the version progress as expected across release stages?</td>
+</tr>
+</tbody>
+</table>
+<p>Record branch, full commit SHA, tag if applicable, selected tool/config and baseline/candidate results. If a scenario does not exist, mark it untested. Do not create tags, commits or branches to manufacture a sample in the user's repository.</p>
+<p>Use the verified v7 executable's branch and commit selection instead of switching the shared checkout. This template selects actual existing refs/commits:</p>
+<pre><code class="language-text">gitversion --target-path &lt;repository&gt; --config &lt;candidate-file&gt; --output json --no-fetch --no-normalize --no-cache --branch &lt;existing-branch&gt; --commit &lt;existing-sha&gt;
+</code></pre>
+<p>Run each sample with the baseline and the candidate. For a v6.8-to-v7.0 upgrade, use the <a href="#migrate-an-existing-v6.8-repository-to-v7.0">cross-version comparison recipe</a> below: the baseline must run on v6.8 with its original configuration. When no baseline file exists, omit <code>--config</code> for the v7 baseline and record that defaults were used. Keep the same selected file across samples rather than accidentally loading historical configuration. A commit reachable from multiple branches needs explicit branch context; a detached release tag may not reproduce the release branch's calculation.</p>
+<p>Use the full commit SHA for <code>--commit</code>. After every baseline and candidate run, verify that the <code>Sha</code> reported in stdout JSON exactly matches that requested SHA. If it differs, discard the result and investigate commit selection and execution context before comparing versions. Do not change refs or history to force a match.</p>
+<p>Capture exit status, stdout JSON and stderr separately. Keep build-server context out of local experiments and use JSON without assembly/project/WiX update options. <code>--no-fetch</code>, <code>--no-normalize</code> and <code>--no-cache</code> avoid fetching, build-server normalization and cache writes during comparison. For uncertain environments, use an isolated standalone copy with the existing relevant refs/history, preserving branch identity; do not normalize or synthesize refs just to make the calculation work.</p>
+<p>Compare <code>SemVer</code>, <code>FullSemVer</code>, <code>Sha</code>, <code>BranchName</code>, prerelease fields and <code>VersionSourceDistance</code> with the user's expectations. Check <a href="/7.0/docs/reference/variables">variable meanings</a> and the actual package/assembly consumer's constraints. A prerelease number is not a count of CI runs.</p>
+<p>When results differ, investigate in this order:</p>
+<ol>
+<li>Selected executable/version, parser, config layout and config path.</li>
+<li>Available history/tags, branch context and version source.</li>
+<li>Increment, mode, inheritance and label policy.</li>
+<li>Output formatting and downstream consumers.</li>
+</ol>
+<p>Use <code>--diagnose</code> or diagnostic verbosity when needed, keeping logs local and redacting paths, remote details and sensitive history before sharing. Explain one adjustment at a time, rerun affected samples and retain earlier agreed checks. If missing history prevents a conclusion, report the gap and propose an authorized fetch into a disposable clone; allowing a shallow calculation does not prove correctness. Stop for an unresolved release-policy decision instead of tuning indefinitely.</p>
+<h2 id="adopt-and-hand-off">6. Adopt and hand off</h2>
+<p>Within the user's authorization, apply the minimal accepted config change and retain the selected version pin. Return:</p>
+<ul>
+<li>Installation method, exact tool version/source SHA, guide revision and invocation.</li>
+<li>Configuration diff, preset rationale, alternatives and remaining assumptions.</li>
+<li>Baseline/candidate sample table with expected/actual versions, exit status and untested scenarios.</li>
+<li>Reproduction commands and any blockers or diagnostic findings.</li>
+</ul>
+<p>Check files and refs against the initial inventory and explain intentional changes. Keep user edits intact. Add MSBuild or CI integration only when requested, after CLI results agree. Avoid duplicate assembly-version writers; preserve the selected integration's output contract, including <code>GitVersion_</code> prefixes where applicable. Consult <a href="/7.0/docs/migration/v6-to-v7">v7 migration changes</a> before updating consumers. Release creation, tagging, publishing and pushing require their own authorization.</p>
+<h2 id="migrate-an-existing-v6.8-repository-to-v7.0">Migrate an existing v6.8 repository to v7.0</h2>
+<p>Use this recipe when upgrading an existing installation. Read the complete <a href="/7.0/docs/migration/v6-to-v7">v6-to-v7 migration guide</a> for the selected v7 revision; configuration conversion alone does not migrate scripts or output consumers. Keep the experimental <code>new-cli/</code> tree outside this upgrade.</p>
+<h3 id="preserve-the-v6.8-baseline-and-acquire-v7.0-separately">Preserve the v6.8 baseline and acquire v7.0 separately</h3>
+<p>Record the exact v6.8 patch version, executable invocation, configuration path, integration/tool manifest pins and relevant environment variables. Keep the original config, including comments, and inventory every consumer: scripts, JSON readers, custom formats, CI variables and MSBuild properties. If no config exists, record that v6.8 defaults supply the baseline.</p>
+<p>Select and acquire v7.0 using <a href="#pin-a-real-artifact-or-source-revision">the artifact checks above</a>. Keep both executables available, with independently verified versions and requirements. Use a task-local tool path, versioned archive/image or separate reviewed source checkout so acquiring v7 does not replace the team's v6.8 manifest or CI pin. A v7 prerelease or source build must be identified as such.</p>
+<p>Before converting configuration, capture resolved settings and baseline JSON with the v6.8 executable at the representative existing points in <a href="#compare-results-against-real-history">the history sample table</a>. These are command templates; replace placeholders and use absolute executable/config paths:</p>
+<pre><code class="language-text">&lt;verified-v6.8-executable&gt; &lt;repository&gt; /config &lt;original-v6-config&gt; /showconfig /nofetch /nonormalize /nocache
+&lt;verified-v6.8-executable&gt; &lt;repository&gt; /config &lt;original-v6-config&gt; /output json /nofetch /nonormalize /nocache /b &lt;existing-branch&gt; /c &lt;existing-full-sha&gt;
+</code></pre>
+<p>If v6.8 used defaults, omit <code>/config</code> rather than creating a baseline file. Capture stdout, stderr and exit status separately. Verify the reported <code>Sha</code> against each requested commit and retain explicit branch context. Use an isolated copy with existing history when required; do not move refs or manufacture tags to obtain expected results.</p>
+<h3 id="migrate-a-candidate-validate-it-and-compare-both-versions">Migrate a candidate, validate it and compare both versions</h3>
+<p>Use the verified v7 executable with its default POSIX parser to convert the original flat YAML into a separate, previously nonexistent candidate. The following commands use <code>gitversion</code> as the <a href="#pin-a-real-artifact-or-source-revision">verified v7 invocation</a>:</p>
+<pre><code class="language-text">gitversion config migrate --config &lt;original-v6-config&gt; --output &lt;new-v7-config&gt;
+gitversion config validate --config &lt;new-v7-config&gt; --format json
+gitversion --target-path &lt;repository&gt; --config &lt;new-v7-config&gt; --show-config --no-fetch --no-normalize --no-cache
+gitversion --target-path &lt;repository&gt; --config &lt;new-v7-config&gt; --output json --no-fetch --no-normalize --no-cache --branch &lt;existing-branch&gt; --commit &lt;existing-full-sha&gt;
+</code></pre>
+<p>Do not use <code>--in-place</code> or <code>--force</code> for this comparison. Review the nested <code>calculation</code> and <code>output</code> settings, keep <code>workflow</code> at the root, and carry required comments forward when adopting the candidate. If v6.8 had no config file, retain a no-file baseline and inspect v7 defaults or a separate minimal candidate; do not invoke migration on an invented input.</p>
+<p>Run the v6.8 baseline and v7 candidate for every agreed sample at the same full SHA and branch context. Use each version's own parser and configuration layout. A v7 run with the original flat file is not a v6.8 baseline. Require successful validation and matching <code>Sha</code> values before comparing results. Do not request build-server output, update assembly/project/WiX files or run a publishing build during this phase.</p>
+<p>Compare release versions, prerelease channels, increment policy and counting fields semantically. For example, v6 <code>CommitsSinceVersionSource</code> maps to v7 <code>VersionSourceDistance</code>. In v7, <code>PreReleaseLabel</code> means the full label (<code>beta.99</code>), while <code>PreReleaseLabelName</code> means its name (<code>beta</code>); a same-named property is not always equivalent across versions. Use the migration guide's complete mapping and check consumer requirements. Explain changed calculations before tuning config; do not force parity with <code>next-version</code> or ignored history.</p>
+<h3 id="audit-integration-changes-before-switching-pins">Audit integration changes before switching pins</h3>
+<p>Use this checklist with the complete <a href="/7.0/docs/migration/v6-to-v7">migration guide</a>:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Area</th>
+<th>Required migration check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scripts and CLI arguments</td>
+<td>Translate legacy switches to POSIX options using the argument mapping and the selected executable's help/schema. Check logging and machine-readable output channels.</td>
+</tr>
+<tr>
+<td>JSON, custom formats and generated outputs</td>
+<td>Replace removed <code>CommitsSinceVersionSource</code>, map all prerelease fields, and account for added source fields in strict JSON readers.</td>
+</tr>
+<tr>
+<td>Azure Pipelines and MSBuild</td>
+<td>Migrate Azure <code>GitVersion.Property</code> consumers to <code>GitVersion_Property</code>. Apply renamed fields to MSBuild properties too, verify task-host/runtime compatibility and avoid duplicate version writers.</td>
+</tr>
+<tr>
+<td>Branch context</td>
+<td>Check <code>GIT_BRANCH</code>/<code>Git_Branch</code> overrides and provider precedence; they no longer select or move the named branch tip.</td>
+</tr>
+<tr>
+<td>Installation and platforms</td>
+<td>Check .NET 10/11 runtime and MSBuild host requirements, RID-specific tool packages and Intel/Apple Silicon macOS support. A source build uses its pinned SDK.</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>Select a published v7 tag/digest and supported distribution/architecture. Check UID/GID <code>10001:10001</code> and writable repository mounts using the non-root migration guidance.</td>
+</tr>
+<tr>
+<td>Compatibility selectors</td>
+<td>Audit parser, configuration and backend environment variables independently, including the retired <code>GITVERSION_USE_V6_ARGUMENT_PARSER</code> variable.</td>
+</tr>
+</tbody>
+</table>
+<p>In an isolated invocation, remove inherited compatibility selectors and test the default v7 parser, nested config and managed backend. Do not unset variables in the user's global environment. The temporary <code>GITVERSION_ARGUMENT_PARSER_VERSION=v6</code>, <code>GITVERSION_CONFIGURATION_VERSION=v6</code> and <code>GITVERSION_GIT_BACKEND=libgit2</code> selections are independent v7.0 migration aids, scheduled for removal in v7.1; they do not run the old v6.8 executable. The selectors themselves are removed in v8. Record any temporary fallback and its removal plan.</p>
+<h3 id="adopt-with-a-comparison-record-and-rollback-path">Adopt with a comparison record and rollback path</h3>
+<p>Return a table containing branch, full SHA, both executable/config pins, expected versions, actual values, exit status and explained differences. Mark absent scenarios untested. Include consumer changes and any decisions that need the user; do not claim output compatibility from schema validation alone.</p>
+<p>Within the user's authorization, update the tool/config and integration pins together after acceptance, preserve unrelated edits and comments, then repeat the agreed checks with the adopted invocation. CI/integration builds need their own authorized validation, including package or assembly outputs where relevant. Keep the exact v6.8 executable/config/pins and a focused rollback diff until migration is accepted. Rolling back restores those files and pins; it does not reset the repository, rewrite history or publish another release.</p>
+<h2 id="optional-v6-compatibility-path">Optional v6 compatibility path</h2>
+<p>Retain v6 when the user chooses it or an existing pin depends on it. Verify that exact published version and its help; do not automatically migrate its config. v6 uses flat settings, for example:</p>
+<pre><code class="language-yaml">workflow: GitHubFlow/v1
+tag-prefix: '[vV]?'
+</code></pre>
+<p>Use the appropriate flat configuration schema, such as <a href="https://gitversion.net/schemas/6.3/GitVersion.configuration.json">the 6.3 schema</a> for compatible v6 versions, rather than the nested v7 schema. Schema versions do not necessarily match tool patch numbers. Keep v6 examples in a separate recipe:</p>
+<pre><code class="language-text">&lt;verified-v6-executable&gt; &lt;repository&gt; /config &lt;candidate-file&gt; /showconfig
+&lt;verified-v6-executable&gt; &lt;repository&gt; /config &lt;candidate-file&gt; /output json /nofetch /nonormalize /nocache /b &lt;existing-branch&gt; /c &lt;existing-sha&gt;
+</code></pre>
+<p>Use the same baseline/candidate history loop, but read v6 variable names, such as <code>CommitsSinceVersionSource</code>, from that tool's reference. <code>config get</code>, <code>config migrate</code>, <code>config validate</code> and <code>--cli-schema</code> are v7 features, unavailable in published v6 binaries. See <a href="/7.0/docs/migration/v6-to-v7">the migration guide</a> before selecting v7, including the independent temporary configuration/parser/backend selectors and their removal schedule. v7's temporary flat-v6 configuration mode is distinct from running a v6 executable.</p>
+<h2 id="optional-agent-discovery-adapters">Optional agent discovery adapters</h2>
+<p>The explicit prompt above works without modifying instruction files. GitVersion's own maintainer instructions are not automatically discovered from the user's repository. For repeated use, merge a small task-specific pointer into that repository's existing instructions, preserving their contents and scope:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Agent</th>
+<th>Where to put the pointer</th>
+<th>Discovery caveat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Codex</td>
+<td>Existing <code>AGENTS.md</code></td>
+<td>Overrides and nearer directory instructions affect discovery; see <a href="https://developers.openai.com/codex/guides/agents-md">Codex guidance</a>.</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td>Existing <code>CLAUDE.md</code>, optionally an <code>@path</code> import of a local guide</td>
+<td>Current <code>AGENTS.md</code> support depends on client version/settings and existing CLAUDE files; see <a href="https://code.claude.com/docs/en/memory">Claude memory</a>.</td>
+</tr>
+<tr>
+<td>GitHub Copilot</td>
+<td><code>.github/copilot-instructions.md</code></td>
+<td><code>AGENTS.md</code> and path-specific support vary by IDE/feature; check <a href="https://docs.github.com/en/copilot/reference/custom-instructions-support">the support matrix</a>.</td>
+</tr>
+<tr>
+<td>Antigravity</td>
+<td>Existing <code>AGENTS.md</code>/<code>GEMINI.md</code> or a scoped <code>.agents/rules/*.md</code> file</td>
+<td>Modular rules require valid activation frontmatter; see <a href="https://antigravity.google/docs/rules/">Antigravity rules</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>For example, adapt this pointer with the reviewed guide's location:</p>
+<pre><code class="language-text">When asked to adopt or adjust GitVersion, read our pinned copy of the
+GitVersion AI-agent onboarding guide at &lt;reviewed-guide-location&gt;.
+Use its inspect/propose/verify flow, preserve existing files and refs,
+and report the tool/config versions and history samples checked.
+</code></pre>
+<p>These are optional adapters to one canonical guide. Avoid copying the full procedure into four files, changing global agent settings, or assuming a link is an automatic import. Verify discovery in the actual client, then have the agent explicitly read the guide.</p>
+
+	</section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

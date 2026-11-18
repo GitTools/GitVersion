@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Arguments</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li class="active"><a href="/7.0/docs">Documentation</a></li>
+        <li><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    	
+        <div><p><a href="https://github.com/GitTools/GitVersion/tree/8fd9e294be12083242079edf2bf4dae4c0956164/docs/input/docs/usage/cli/arguments.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
+
+                </section>
+                <section class="sidebar">
+                    
+                    
+
+                    <ul class="sidebar-menu">
+                        
+        <li class="header gv-docs-version">7.0 · documentation</li>
+            <li class="treeview">
+                <a href="/7.0/docs/getting-started">Getting started</a><a href="#" class="expand" aria-label="Expand Getting started"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/getting-started">Getting started</a></li>
+                            <li><a href="/7.0/docs/usage/ai-agent-onboarding">AI-agent onboarding</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/installation">Installation</a></li>
+
+                <li><a href="/7.0/docs/reference/requirements">Requirements</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/usage">Guides</a><a href="#" class="expand" aria-label="Expand Guides"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/usage/choose-workflow">Choose a workflow</a></li>
+
+                <li><a href="/7.0/docs/usage/configure">Configure GitVersion</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies">Workflow examples</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/trunkbased">Trunk-based (preview)</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">Trunk-based examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/build-servers">CI integrations</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/output">Use version output</a></li>
+
+                <li><a href="/7.0/docs/usage/docker">Docker</a></li>
+
+                <li><a href="/7.0/docs/usage/msbuild">MSBuild Task</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                <li><a href="/7.0/docs/usage/library">Library</a></li>
+
+                <li><a href="/7.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn">Concepts</a><a href="#" class="expand" aria-label="Expand Concepts"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+
+                <li><a href="/7.0/docs/learn/how-it-works">How versions are calculated</a></li>
+
+                <li><a href="/7.0/docs/learn/version-calculation">Version calculation algorithm</a></li>
+
+                <li><a href="/7.0/docs/learn/workflows-modes-strategies">Workflows, modes, and strategies</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/modes">Deployment modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/reference/version-increments">Version Incrementing</a></li>
+                </ul>
+            </li>
+            <li class="treeview active">
+                <a href="/7.0/docs/reference">Reference</a><a href="#" class="expand" aria-label="Expand Reference"></a>
+                <ul class="treeview-menu">
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/configuration-topics">Configuration by topic</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/configuration-topics/branches">Branch configuration</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/output">Output and formatting</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/calculation">Version calculation</a></li>
+
+                    </ul>
+                </li>
+
+                <li class="selected"><a href="/7.0/docs/usage/cli/arguments">Arguments</a></li>
+
+                <li><a href="/7.0/docs/reference/version-sources">Calculation strategies</a></li>
+
+                <li><a href="/7.0/docs/reference/variables">Version Variables</a></li>
+
+                <li><a href="/7.0/docs/reference/custom-formatting">Format Strings</a></li>
+
+                <li><a href="/7.0/docs/reference/environment-variables">Environment variables</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn/faq">Troubleshooting</a><a href="#" class="expand" aria-label="Expand Troubleshooting"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/faq">Troubleshooting</a></li>
+
+                <li><a href="/7.0/docs/learn/git-setup">Repository setup</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/migration">Upgrading</a><a href="#" class="expand" aria-label="Expand Upgrading"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a></li>
+                </ul>
+            </li>
+
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Arguments</h1>
+		</section>
+	<section class="content">
+		<div class="alert alert-info"><p><strong>Note:</strong> GitVersion uses POSIX-style <code>--long-name</code> arguments from version 7 and up. Long-form
+arguments are recommended for readability in scripts and documentation. Short aliases
+(e.g. <code>-l</code>, <code>-o</code>, <code>-b</code>) are also supported. The legacy <code>/switch</code> and <code>-switch</code>
+syntax is available during v7.0 when <code>GITVERSION_ARGUMENT_PARSER_VERSION=v6</code> is set.
+The default is <code>v7</code>. Unset the retired <code>GITVERSION_USE_V6_ARGUMENT_PARSER</code>
+variable; it now produces a replacement diagnostic. The legacy parser is
+removed in v7.1 and the selector in v8.</p>
+<p>See <a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a> for upgrade guidance and the full argument mapping.</p>
+</div>
+<h2 id="help">Help</h2>
+<p>Optional POSIX CLI usage telemetry can be disabled with <code>--telemetry-opt-out</code>,
+<code>DO_NOT_TRACK=1</code>, or <code>GITVERSION_TELEMETRY_OPTOUT=true</code>. See <a href="/7.0/docs/usage/cli/telemetry">Telemetry</a> for collection scope,
+sampling, privacy and the fixed campaign window.
+The first eligible direct run with a positive direct sampling probability, or the first selected automated
+run, links to the <a href="/7.0/docs/usage/cli/telemetry-policy">Telemetry policy and collected data</a> on stderr.</p>
+<p>Below is the output from <code>gitversion --help</code> as a best effort to provide
+documentation for which arguments GitVersion supports and their meaning.</p>
+<pre><code class="language-bash">Use convention to derive a SemVer product version from a GitFlow or GitHub based
+repository.
+
+GitVersion [path]
+
+    path            The directory containing .git. If not defined current
+                    directory is used. (Must be first argument)
+    --version       Displays the version of GitVersion
+    --diagnose, -d  Runs GitVersion with additional diagnostic information;
+                    also needs the '--log-file' argument to specify a logfile
+                    or stdout (requires git.exe to be installed)
+    --help, -h      Shows Help
+    --cli-schema    Writes the complete OpenCLI 0.1 command schema as JSON and exits.
+
+    --target-path   Same as 'path', but not positional
+    --output, -o    Determines the output to the console. Can be either 'json',
+                    'file', 'buildserver' or 'dotenv', will default to 'json'.
+    --output-file   Path to output file. It is used in combination with
+                    --output 'file'.
+    --show-variable, -v
+                    Used in conjunction with --output json, will output just a
+                    particular variable.
+                    E.g. --output json --show-variable SemVer
+                    - will output `1.2.3+beta.4`
+    --format, -f    Used in conjunction with --output json, will output a format
+                    containing version variables.
+                    Supports C# format strings - see [Format Strings](/docs/reference/custom-formatting) for details.
+                    E.g. --output json --format {SemVer} - will output `1.2.3+beta.4`
+                         --output json --format {Major}.{Minor} - will output `1.2`
+    --log-file, -l  Path to logfile; specify 'console' to emit to stderr.
+    --config, -c    Path to config file (defaults to GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml)
+    --show-config   Outputs the effective GitVersion config (defaults + custom
+                    from GitVersion.yml, GitVersion.yaml, .GitVersion.yml or .GitVersion.yaml) in yaml format.
+                    With v7 configuration, runtime overrides are also included.
+    --override-config
+                    Overrides GitVersion config values inline (key=value pairs,
+                    e.g. --override-config workflow=GitHubFlow/v1).
+                    Repeat --override-config for multiple overrides.
+    --no-cache      Bypasses the cache, result will not be written to the cache.
+    --no-normalize  Disables normalize step on a build server.
+    --allow-shallow Allows GitVersion to run on a shallow clone.
+                    This is not recommended, but can be used if you are sure
+                    that the shallow clone contains all the information needed
+                    to calculate the version.
+    --verbosity     Specifies the amount of information to be displayed.
+                    (Quiet, Minimal, Normal, Verbose, Diagnostic)
+                    Default is Normal
+
+# AssemblyInfo updating
+
+    --update-assembly-info
+                    Will recursively search for all 'AssemblyInfo.cs' files in
+                    the git repo and update them
+    --update-project-files
+                    Will recursively search for all project files
+                    (.csproj/.vbproj/.fsproj/.sqlproj) files in the git repo and update
+                    them
+                    Note: This is only compatible with the newer Sdk projects
+    --ensure-assembly-info
+                    If the assembly info file specified with
+                    --update-assembly-info is not
+                    found, it will be created with these attributes:
+                    AssemblyFileVersion, AssemblyVersion and
+                    AssemblyInformationalVersion.
+                    Supports writing version info for: C#, F#, VB
+
+# Create or update Wix version file
+
+    --update-wix-version-file
+                   All the GitVersion variables are written to
+                   'GitVersion_WixVersion.wxi'. The variables can then be
+                   referenced in other WiX project files for versioning.
+
+# Remote repository args
+
+    --url           Url to remote git repository.
+    --branch, -b    Target branch to version (local or with --url). Takes
+                    precedence over GIT_BRANCH/Git_Branch, which only supply
+                    branch context at HEAD.
+    --username, -u  Username in case authentication is required.
+    --password, -p  Password in case authentication is required.
+    --commit        The commit id to check. If not specified, the latest
+                    available commit on the specified branch will be used.
+    --dynamic-repo-location
+                    By default dynamic repositories will be cloned to %tmp%.
+                    Use this switch to override
+    --no-fetch      Disables 'git fetch' during version calculation. Might cause
+                    GitVersion to not calculate your version as expected.
+</code></pre>
+<h2 id="validate-configuration">Validate configuration</h2>
+<p>Validate a candidate with the established v7 POSIX CLI before inspecting effective settings:</p>
+<pre><code class="language-shell">gitversion config validate --config GitVersion.yml
+gitversion config validate --target-path ./candidate-directory
+gitversion config validate --config "candidate configs/équipe.yml" --format json
+gitversion config validate --config GitVersion.yml --override-config calculation.tag-prefix='[vV]?'
+</code></pre>
+<p>An explicit file works outside Git and offline. Without <code>--config</code>, discovery checks
+the selected directory and, inside Git, the repository root. Files in both directories
+are ambiguous. Within a directory, existing priority is <code>GitVersion.yml</code>,
+<code>GitVersion.yaml</code>, <code>.GitVersion.yml</code>, then <code>.GitVersion.yaml</code>.
+Case variants at the same priority use ordinal path order.
+Missing/unreadable files fail; validation never substitutes defaults for a missing
+file. An existing empty document resolves workflow defaults.</p>
+<p>Validation shares normal execution's deserializer, layout mapper, workflow defaults,
+override precedence and builder. Both paths reject unknown/misplaced public keys,
+wrong types or enum names, invalid workflows, invalid configured regexes and
+references to unconfigured branch definitions. Regex checks include ignore paths,
+branches and tags, tag/branch version patterns, bump messages and merge-message
+formats. Diagnostics omit configuration values and report the first error.</p>
+<p><code>next-version</code> must parse with the selected <code>semantic-version-format</code> (<code>Strict</code>
+requires a complete version such as <code>2.0.0</code>; <code>Loose</code> permits partial versions).
+Commit cutoff dates are checked without inspecting commits.</p>
+<p>The command never calculates a version, constructs a Git backend, fetches, normalizes
+refs, writes caches, migrates configuration or emits build-server/file-update
+outputs. It accepts <code>--config</code>, <code>--override-config</code>, <code>--target-path</code> and its local
+<code>--format json</code>. A root positional directory must precede <code>config validate</code>.
+Calculation, remote, file-update and logging options are rejected, including when
+placed before the command. Help and <code>--cli-schema</code> remain informational operations.</p>
+<p>By default, the summary and diagnostics go to stderr and stdout is empty. Exit 0
+means the resolved configuration is valid; command-executed invocation,
+configuration and file-read errors return 1. Warnings do not fail validation;
+there is no strict-warning flag in this initial command.</p>
+<p><code>--format json</code> writes exactly one JSON document to stdout, followed by a newline.
+The human summary and diagnostics remain on stderr:</p>
+<pre><code class="language-json">{
+  "schemaVersion": 1,
+  "valid": true,
+  "configurationVersion": "v7",
+  "file": "/workspace/GitVersion.yml",
+  "diagnostics": []
+}
+</code></pre>
+<p><code>file</code> is the selected absolute path, or null when selection failed.
+Each diagnostic contains <code>code</code>, <code>severity</code> (<code>error</code> or <code>warning</code>), <code>path</code> (public
+property path, or empty for a document/invocation error), <code>message</code>, <code>line</code> and
+<code>column</code>. Locations are one-based when provided by YAML parsing, otherwise null.
+Codes are stable within schema version 1; human messages may change:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GVCONFIG_FILE</code></td>
+<td>Missing or unreadable configuration file</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_DISCOVERY</code></td>
+<td>Ambiguous discovery</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_INVOCATION</code></td>
+<td>Incompatible command option or output format</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_OVERRIDE</code></td>
+<td>Invalid override syntax or unsupported override path</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_YAML</code></td>
+<td>YAML syntax or deserialization error</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_LAYOUT</code></td>
+<td>Wrong layout or section ownership</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_PROPERTY</code></td>
+<td>Unknown key, invalid type or enum</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_WORKFLOW</code></td>
+<td>Unknown workflow</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_REGEX</code></td>
+<td>Invalid regular expression</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_BRANCH</code></td>
+<td>Missing branch regex or unresolved branch reference</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_VALUE</code></td>
+<td>Invalid semantic value or invocation path</td>
+</tr>
+<tr>
+<td><code>GVCONFIG_V6_COMPATIBILITY</code></td>
+<td>Non-failing temporary v6 compatibility warning</td>
+</tr>
+</tbody>
+</table>
+<p>Parser failures before command execution (unknown options, missing option arguments,
+extra positional arguments) retain ordinary stderr/exit 1 behavior without JSON.
+Feature-selector errors also occur before command execution.</p>
+<p>Configuration layout selection remains separate from parser selection. Explicit
+<code>GITVERSION_CONFIGURATION_VERSION=v6</code> accepts flat files during v7.0 and emits the
+existing warning; legacy loading is removed in v7.1. Invalid v7 documents never
+fall back to v6. Use <code>config migrate</code> to convert a legacy file. This command is
+unavailable with the legacy parser and published v6 tools.</p>
+<p>Validation does not establish that versions match your release policy. Inspect
+effective configuration next and verify calculations on representative existing
+history. A preview workflow, a different branching model, or the absence of matching
+branches in history is not itself a validation error.</p>
+<h2 id="query-a-configuration-property">Query a configuration property</h2>
+<p>Use <code>gitversion config get &lt;property-path&gt;</code> to read one scalar from the effective
+<strong>v7 configuration</strong>. It uses the same configuration discovery, workflow defaults,
+file settings and runtime overrides as <code>--show-config</code>. It requires a Git
+repository, but does not calculate a version or update build-agent outputs or
+version files. As with full display, conflicting configuration files in the
+working directory and repository root require an explicit <code>--config</code> path.</p>
+<pre><code class="language-shell"># Default tag prefix: "[vV]?"
+gitversion config get calculation.tag-prefix
+
+# Runtime override: false
+gitversion config get output.update-build-number --override-config output.update-build-number=false
+
+# Unknown property: diagnostic on stderr, empty stdout, exit status 1
+gitversion config get calculation.no-such-property
+</code></pre>
+<p>Paths are case-sensitive, dot-separated public configuration names, such as
+<code>calculation.tag-prefix</code>, <code>output.assembly-versioning-scheme</code>, root <code>workflow</code>,
+or <code>calculation.prevent-increment.of-merged-branch</code>. CLR names and flat v6 paths
+are not accepted. Empty segments, escaping, wildcards and array indexing are
+not supported. Maps (including branch entries and <code>merge-message-formats</code>),
+collections and whole objects cannot be queried. A missing map key therefore
+produces an unsupported-map diagnostic, not a null value.</p>
+<p>Successful stdout contains exactly one JSON scalar followed by a newline:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Value</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String or enum name</td>
+<td>JSON string, e.g. <code>"MajorMinorPatch"</code></td>
+</tr>
+<tr>
+<td>Empty string</td>
+<td><code>""</code></td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td><code>true</code> or <code>false</code></td>
+</tr>
+<tr>
+<td>Number</td>
+<td>Culture-independent JSON number, e.g. <code>60000</code></td>
+</tr>
+<tr>
+<td>Known property whose resolved value is null</td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
+<p>Strings retain their type: a string containing <code>null</code> is emitted as <code>"null"</code>.
+Quotes, newlines and other special characters are JSON-escaped. Version-format
+strings are returned literally; placeholders are not evaluated. A known null
+property remains queryable even when full YAML display omits it. The query
+returns the final resolved value and does not distinguish a default null from
+an explicitly configured null.</p>
+<p>Success, including null, returns status 0. Unknown properties, invalid paths,
+unsupported values and configuration errors return status 1 with a diagnostic
+on stderr and no value on stdout. Logging and warnings also use stderr or the
+selected log file. These are document settings, not branch-specific inherited
+runtime behavior or calculated version variables; <code>--show-variable</code> continues
+to select calculated version variables.</p>
+<p>Supported options are <code>--config</code>/<code>-c</code>, repeated <code>--override-config key=value</code>,
+<code>--target-path</code>, <code>--log-file</code>/<code>-l</code> and <code>--verbosity</code>. A positional repository path
+must precede <code>config get</code>. Version-output, calculation and file-update options
+cannot be combined with this command. Use <code>gitversion config get --help</code> for help.</p>
+<p>The command requires the default modern argument parser and default or explicit
+<code>GITVERSION_CONFIGURATION_VERSION=v7</code>. Selecting v6 configuration produces a
+v7-required error before configuration loading, even when the modern parser is
+selected; GitVersion does not switch versions implicitly. Existing v6 full
+configuration display retains its behavior. With v7 configuration,
+<code>--show-config</code> now includes runtime overrides, matching the query result.</p>
+<h2 id="cli-schema">CLI schema</h2>
+<p><code>gitversion --cli-schema</code> exports the command tree in the <a href="/7.0/docs/usage/cli/cli-schema">OpenCLI format</a>.
+It is available with the default v7 argument parser and does not require a Git repository.</p>
+<h2 id="configuration-migration">Configuration migration</h2>
+<p>The default POSIX-style argument parser exposes a <code>config migrate</code> subcommand for converting a v6
+configuration document to the v7 <code>calculation</code>/<code>output</code> layout:</p>
+<pre><code class="language-shell">gitversion config migrate
+gitversion config migrate --config GitVersion.yml --output GitVersion.v7.yml
+gitversion config migrate --config GitVersion.yml --in-place
+</code></pre>
+<p>It discovers a supported configuration filename when <code>--config</code> is omitted and
+writes YAML to stdout unless <code>--output</code> or <code>--in-place</code> is selected. <code>--output</code>
+will not replace an existing file without <code>--force</code>; it cannot be combined with
+<code>--in-place</code>. Replacing a file warns that comments are not preserved. The
+command does not require a Git repository and is unavailable when
+<code>GITVERSION_ARGUMENT_PARSER_VERSION=v6</code> selects the legacy parser. Migration
+remains available after v6 runtime support is removed in v7.1.</p>
+<h2 id="override-config">Override config</h2>
+<p><code>--override-config key=value</code> will override appropriate <code>key</code> from 'GitVersion.yml', 'GitVersion.yaml', '.GitVersion.yml' or '.GitVersion.yaml'.</p>
+<p>With the v7 default configuration layout, use a version-aware nested key. For
+example, <code>calculation.tag-prefix=custom</code>,
+<code>calculation.branches.main.increment=Patch</code>, and
+<code>output.branches.main.pre-release-weight=55000</code>. Flat v6 keys are rejected in
+v7 mode with their nested replacement. Set
+<code>GITVERSION_CONFIGURATION_VERSION=v6</code> only while validating a legacy file in
+v7.0.</p>
+<p>When that temporary v6 fallback is selected, use the legacy branch override
+path, for example <code>--override-config branches.main.increment=Patch</code>.</p>
+<p>To specify multiple options add multiple <code>--override-config key=value</code> entries:
+<code>--override-config key1=value1 --override-config key2=value2</code>.</p>
+<p>To have <strong>space characters</strong> as a part of <code>value</code>, <code>value</code> has to be enclosed with double quotes - <code>key="My value"</code>.</p>
+<p>Double quote character inside of the double quoted <code>value</code> has to be escaped with a backslash '\' - <code>key="My \"escaped-quotes\""</code>.</p>
+<p>The following override paths are supported in v7. For the temporary v6
+fallback, omit the <code>calculation.</code> or <code>output.</code> prefix. The shared <code>workflow</code>
+key stays at the root in both versions:</p>
+<ol>
+<li><code>output.assembly-file-versioning-format</code></li>
+<li><code>output.assembly-file-versioning-scheme</code></li>
+<li><code>output.assembly-informational-format</code></li>
+<li><code>output.assembly-versioning-format</code></li>
+<li><code>output.assembly-versioning-scheme</code></li>
+<li><code>output.commit-date-format</code></li>
+<li><code>calculation.commit-message-incrementing</code></li>
+<li><code>output.custom-version-format</code></li>
+<li><code>calculation.label</code></li>
+<li><code>calculation.increment</code></li>
+<li><code>calculation.major-version-bump-message</code></li>
+<li><code>calculation.minor-version-bump-message</code></li>
+<li><code>calculation.mode</code></li>
+<li><code>calculation.next-version</code></li>
+<li><code>calculation.no-bump-message</code></li>
+<li><code>calculation.patch-version-bump-message</code></li>
+<li><code>calculation.tag-prefix</code></li>
+<li><code>output.tag-pre-release-weight</code></li>
+<li><code>output.update-build-number</code></li>
+<li><code>calculation.version-bump-reset-message</code></li>
+<li><code>workflow</code></li>
+</ol>
+<p>Read more about <a href="/7.0/docs/reference/configuration">Configuration</a>.</p>
+<p>Using <code>override-config</code> on the command line will not change the contents of the config file <code>GitVersion.yml</code>, <code>GitVersion.yaml</code>, <code>.GitVersion.yml</code> or <code>.GitVersion.yaml</code>.</p>
+<h3 id="example-how-to-override-configuration-option-tag-prefix-to-use-prefix-custom">Example: How to override configuration option 'tag-prefix' to use prefix 'custom'</h3>
+<p><code>GitVersion.exe --output json --override-config calculation.tag-prefix=custom</code></p>
+<h3 id="example-how-to-override-configuration-option-assembly-versioning-format">Example: How to override configuration option 'assembly-versioning-format'</h3>
+<p><code>GitVersion.exe --output json --override-config output.assembly-versioning-format="{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 0}"</code></p>
+<p>Uses the environment variable <code>BUILD_NUMBER</code>, or falls back to zero for the assembly revision number.</p>
+<h3 id="example-how-to-override-configuration-option-assembly-versioning-scheme">Example: How to override configuration option 'assembly-versioning-scheme'</h3>
+<p><code>GitVersion.exe --output json --override-config output.assembly-versioning-scheme=MajorMinor</code></p>
+<p>Will use only major and minor version numbers for assembly version. Assembly build and revision numbers will be 0 (e.g. <code>1.2.0.0</code>)</p>
+<h3 id="example-how-to-override-multiple-configuration-options">Example: How to override multiple configuration options</h3>
+<p><code>GitVersion.exe --output json --override-config calculation.tag-prefix=custom --override-config output.assembly-versioning-scheme=MajorMinor</code></p>
+<h3 id="example-how-to-override-configuration-option-update-build-number">Example: How to override configuration option 'update-build-number'</h3>
+<p><code>GitVersion.exe --output json --override-config output.update-build-number=true</code></p>
+<h3 id="example-how-to-override-configuration-option-next-version">Example: How to override configuration option 'next-version'</h3>
+<p><code>GitVersion.exe --output json --override-config calculation.next-version=6</code></p>
+
+	</section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

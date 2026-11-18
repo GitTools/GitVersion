@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Calculation strategies</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li class="active"><a href="/7.0/docs">Documentation</a></li>
+        <li><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    	
+        <div><p><a href="https://github.com/GitTools/GitVersion/tree/8fd9e294be12083242079edf2bf4dae4c0956164/docs/input/docs/reference/version-sources.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
+
+                </section>
+                <section class="sidebar">
+                    
+                    
+
+                    <ul class="sidebar-menu">
+                        
+        <li class="header gv-docs-version">7.0 · documentation</li>
+            <li class="treeview">
+                <a href="/7.0/docs/getting-started">Getting started</a><a href="#" class="expand" aria-label="Expand Getting started"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/getting-started">Getting started</a></li>
+                            <li><a href="/7.0/docs/usage/ai-agent-onboarding">AI-agent onboarding</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/installation">Installation</a></li>
+
+                <li><a href="/7.0/docs/reference/requirements">Requirements</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/usage">Guides</a><a href="#" class="expand" aria-label="Expand Guides"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/usage/choose-workflow">Choose a workflow</a></li>
+
+                <li><a href="/7.0/docs/usage/configure">Configure GitVersion</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies">Workflow examples</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/trunkbased">Trunk-based (preview)</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">Trunk-based examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/build-servers">CI integrations</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/output">Use version output</a></li>
+
+                <li><a href="/7.0/docs/usage/docker">Docker</a></li>
+
+                <li><a href="/7.0/docs/usage/msbuild">MSBuild Task</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                <li><a href="/7.0/docs/usage/library">Library</a></li>
+
+                <li><a href="/7.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn">Concepts</a><a href="#" class="expand" aria-label="Expand Concepts"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+
+                <li><a href="/7.0/docs/learn/how-it-works">How versions are calculated</a></li>
+
+                <li><a href="/7.0/docs/learn/version-calculation">Version calculation algorithm</a></li>
+
+                <li><a href="/7.0/docs/learn/workflows-modes-strategies">Workflows, modes, and strategies</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/modes">Deployment modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/reference/version-increments">Version Incrementing</a></li>
+                </ul>
+            </li>
+            <li class="treeview active">
+                <a href="/7.0/docs/reference">Reference</a><a href="#" class="expand" aria-label="Expand Reference"></a>
+                <ul class="treeview-menu">
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/configuration-topics">Configuration by topic</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/configuration-topics/branches">Branch configuration</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/output">Output and formatting</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/calculation">Version calculation</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/arguments">Arguments</a></li>
+
+                <li class="selected"><a href="/7.0/docs/reference/version-sources">Calculation strategies</a></li>
+
+                <li><a href="/7.0/docs/reference/variables">Version Variables</a></li>
+
+                <li><a href="/7.0/docs/reference/custom-formatting">Format Strings</a></li>
+
+                <li><a href="/7.0/docs/reference/environment-variables">Environment variables</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn/faq">Troubleshooting</a><a href="#" class="expand" aria-label="Expand Troubleshooting"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/faq">Troubleshooting</a></li>
+
+                <li><a href="/7.0/docs/learn/git-setup">Repository setup</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/migration">Upgrading</a><a href="#" class="expand" aria-label="Expand Upgrading"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a></li>
+                </ul>
+            </li>
+
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Calculation strategies</h1>
+		</section>
+	<section class="content">
+		<p>Strategies are selected with the <a href="/7.0/docs/reference/configuration#strategies"><code>strategies</code> configuration setting</a>. They work with branch configuration and deployment modes; they do not independently define the final version.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ConfiguredNextVersion</code></td>
+<td>Uses <code>next-version</code> as a candidate.</td>
+</tr>
+<tr>
+<td><code>TaggedCommit</code></td>
+<td>Finds applicable semantic versions in tags.</td>
+</tr>
+<tr>
+<td><code>MergeMessage</code></td>
+<td>Extracts version information from matching merge messages.</td>
+</tr>
+<tr>
+<td><code>VersionInBranchName</code></td>
+<td>Extracts a version from a matching branch name.</td>
+</tr>
+<tr>
+<td><code>TrackReleaseBranches</code></td>
+<td>Considers release-branch history according to effective branch configuration.</td>
+</tr>
+<tr>
+<td><code>Mainline</code></td>
+<td>Calculates increments while walking history using mainline rules.</td>
+</tr>
+<tr>
+<td><code>Fallback</code></td>
+<td>Supplies a starting candidate when no other selected strategy provides one; its increment is determined from configuration.</td>
+</tr>
+</tbody>
+</table>
+<p><a id="version-sources"></a></p>
+<h2 id="selection-and-increments">Selection and increments</h2>
+<p>The order of entries in <code>strategies</code> is not a priority list. GitVersion evaluates candidates and selects a next version, preserving its semantic source separately from the commit-count anchor. Fallback is deferred until other strategies have been considered.</p>
+<p>Do not interpret a source as “always increments” or “never increments” without the relevant branch configuration. Tagged commits, merge handling, increment inheritance, and deployment mode affect the outcome.</p>
+<p>For the sequence of operations, see <a href="/7.0/docs/learn/how-it-works">how versions are calculated</a>.
+The <a href="/7.0/docs/learn/version-calculation">version calculation algorithm</a> expands that
+sequence into Mermaid decision diagrams and a versioning scenario map.</p>
+<h2 id="semantic-source-and-commit-count-source">Semantic source and commit-count source</h2>
+<p>The <strong>semantic source</strong> supplies the baseline version and its final increment. Tags and merge messages have associated commits. Configuration values and branch names are external sources: they do not intrinsically belong to a commit. Mainline can fold several operations into a derived baseline while retaining its source provenance. The source is not a detector for every commit that contains a version-bump message.</p>
+<p>The <strong>commit-count source</strong> anchors the count of commits reachable from the current commit, excluding commits reachable from the anchor and applying the configured ignore filters. This is a graph count, not first-parent distance or a count of builds. A null anchor counts all reachable, non-ignored history.</p>
+<p>GitVersion compares candidates by their incremented semantic version. For multiple equal candidates with source commits, it selects the latest source timestamp. Otherwise the counting search prefers a commit-backed candidate by descending incremented version and then source timestamp. When the winning version is stable, pre-release base candidates are excluded from this counting search. Only when no commit-backed candidate remains does it use a null anchor. The order in <code>strategies</code> does not establish precedence.</p>
+<p>For example, a <code>1.0.0</code> tag can remain the counting anchor while configuration or the branch name <code>release/5.0.0</code> supplies a <code>5.0.0</code> baseline. Replacing that anchor with the external semantic source would reset the meaning of the count. A later tag that raises the numeric version is reflected in semantic provenance without changing the selected counting anchor.</p>
+<p>See the <code>SemVerSource*</code> and <code>CommitCountSource*</code> <a href="/7.0/docs/reference/variables">output variables</a>. The legacy <code>VersionSource*</code> fields retain their existing values for compatibility; they mix the two concepts.</p>
+<h2 id="existing-source-topics">Existing source topics</h2>
+<p>The following anchors are retained for older links.</p>
+<h3 id="tag-name">Tag name</h3>
+<p>See <code>TaggedCommit</code> above and <a href="/7.0/docs/reference/configuration#tag-prefix">tag-prefix</a>.</p>
+<h3 id="version-in-branch-name">Version in branch name</h3>
+<p>See <code>VersionInBranchName</code> and <a href="/7.0/docs/reference/configuration#version-in-branch-pattern">version-in-branch-pattern</a>.</p>
+<h3 id="merge-message">Merge message</h3>
+<p>See <code>MergeMessage</code> and <a href="/7.0/docs/reference/configuration#merge-message-formats">merge-message-formats</a>.</p>
+<h3 id="gitversion.yml">GitVersion.yml</h3>
+<p>See <code>ConfiguredNextVersion</code> and <a href="/7.0/docs/reference/configuration#next-version">next-version</a>.</p>
+<h3 id="develop-branch">Develop branch</h3>
+<p>See <code>TrackReleaseBranches</code> and the <a href="/7.0/docs/reference/configuration#global-configuration">GitFlow configuration</a>.</p>
+<h3 id="fallback">Fallback</h3>
+<p>Fallback determines an increment using the effective configuration. Do not rely on a fixed final version independent of branch settings.</p>
+<p><a id="others"></a></p>
+<p>For configuration combinations, see <a href="/7.0/docs/learn/branching-strategies">workflow examples</a>. To propose additional strategy behavior, start a <a href="https://github.com/GitTools/GitVersion/discussions">discussion</a>.</p>
+
+	</section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

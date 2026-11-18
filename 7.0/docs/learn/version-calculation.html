@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Version calculation algorithm</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li class="active"><a href="/7.0/docs">Documentation</a></li>
+        <li><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    	
+        <div><p><a href="https://github.com/GitTools/GitVersion/tree/8fd9e294be12083242079edf2bf4dae4c0956164/docs/input/docs/learn/version-calculation.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
+
+                </section>
+                <section class="sidebar">
+                    
+                    
+
+                    <ul class="sidebar-menu">
+                        
+        <li class="header gv-docs-version">7.0 · documentation</li>
+            <li class="treeview">
+                <a href="/7.0/docs/getting-started">Getting started</a><a href="#" class="expand" aria-label="Expand Getting started"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/getting-started">Getting started</a></li>
+                            <li><a href="/7.0/docs/usage/ai-agent-onboarding">AI-agent onboarding</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/installation">Installation</a></li>
+
+                <li><a href="/7.0/docs/reference/requirements">Requirements</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/usage">Guides</a><a href="#" class="expand" aria-label="Expand Guides"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/usage/choose-workflow">Choose a workflow</a></li>
+
+                <li><a href="/7.0/docs/usage/configure">Configure GitVersion</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies">Workflow examples</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/trunkbased">Trunk-based (preview)</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">Trunk-based examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/build-servers">CI integrations</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/output">Use version output</a></li>
+
+                <li><a href="/7.0/docs/usage/docker">Docker</a></li>
+
+                <li><a href="/7.0/docs/usage/msbuild">MSBuild Task</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                <li><a href="/7.0/docs/usage/library">Library</a></li>
+
+                <li><a href="/7.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                </ul>
+            </li>
+            <li class="treeview active">
+                <a href="/7.0/docs/learn">Concepts</a><a href="#" class="expand" aria-label="Expand Concepts"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+
+                <li><a href="/7.0/docs/learn/how-it-works">How versions are calculated</a></li>
+
+                <li class="selected"><a href="/7.0/docs/learn/version-calculation">Version calculation algorithm</a></li>
+
+                <li><a href="/7.0/docs/learn/workflows-modes-strategies">Workflows, modes, and strategies</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/modes">Deployment modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/reference/version-increments">Version Incrementing</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/reference">Reference</a><a href="#" class="expand" aria-label="Expand Reference"></a>
+                <ul class="treeview-menu">
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/configuration-topics">Configuration by topic</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/configuration-topics/branches">Branch configuration</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/output">Output and formatting</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/calculation">Version calculation</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/arguments">Arguments</a></li>
+
+                <li><a href="/7.0/docs/reference/version-sources">Calculation strategies</a></li>
+
+                <li><a href="/7.0/docs/reference/variables">Version Variables</a></li>
+
+                <li><a href="/7.0/docs/reference/custom-formatting">Format Strings</a></li>
+
+                <li><a href="/7.0/docs/reference/environment-variables">Environment variables</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn/faq">Troubleshooting</a><a href="#" class="expand" aria-label="Expand Troubleshooting"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/faq">Troubleshooting</a></li>
+
+                <li><a href="/7.0/docs/learn/git-setup">Repository setup</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/migration">Upgrading</a><a href="#" class="expand" aria-label="Expand Upgrading"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a></li>
+                </ul>
+            </li>
+
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Version calculation algorithm</h1>
+		</section>
+	<section class="content">
+		<p>GitVersion gathers candidate versions from enabled strategies and selects the
+highest <strong>incremented semantic version</strong>. Several strategies can contribute to
+one calculation. The order of entries in <code>strategies</code> does not define their
+priority.</p>
+<p>This page expands <a href="/7.0/docs/learn/how-it-works">how versions are calculated</a> into decision
+diagrams. A <a href="/7.0/docs/learn/workflows-modes-strategies">workflow</a> supplies defaults, a strategy supplies a
+candidate, and a <a href="/7.0/docs/reference/modes">deployment mode</a> processes the selected
+candidate. Read each scenario together with its effective configuration.</p>
+<p>For the established v7 CLI, run <code>gitversion config validate --config GitVersion.yml</code>
+before calculating a version. This checks configuration structure, property values,
+regular expressions, and branch configuration references without accessing a Git
+backend. Validation does not calculate candidates or prove release-policy outcomes;
+inspect the effective configuration and calculate over representative history too.</p>
+<h2 id="on-this-page">On this page</h2>
+<ul>
+<li><a href="#calculation-overview">Calculation overview</a></li>
+<li><a href="#all-calculation-strategies">All calculation strategies</a></li>
+<li><a href="#branch-inheritance">Branch inheritance</a></li>
+<li><a href="#candidate-increments">Candidate increments</a></li>
+<li><a href="#select-the-version-and-its-sources">Select the version and its sources</a></li>
+<li><a href="#mainline-traversal">Mainline traversal</a></li>
+<li><a href="#all-deployment-modes">All deployment modes</a></li>
+<li><a href="#versioning-scenario-map">Versioning scenario map</a></li>
+<li><a href="#executable-checkpoints">Executable checkpoints</a></li>
+<li><a href="#diagram-maintenance">Diagram maintenance</a></li>
+</ul>
+<h2 id="calculation-overview">Calculation overview</h2>
+<pre class="mermaid" aria-label="Version calculation from branch configuration through candidate selection to output">flowchart TD
+    Context["Current commit, branch and configuration"] --&gt; Config["Resolve branch configuration"]
+    Config --&gt; Tagged{"Matching current-commit tag,<br>resolved increment and<br>prevent increment when tagged?"}
+    Tagged --&gt;|Yes| TagResult["Use tag and build metadata"]
+    Tagged --&gt;|No| Inherit["Resolve effective configurations<br>including branch inheritance"]
+    Inherit --&gt; Candidates["Collect and increment strategy candidates"]
+    Candidates --&gt; Any{"Any accepted candidates?"}
+    Any --&gt;|No| Error["No base versions: error"]
+    Any --&gt;|Yes| Select["Select maximum incremented SemVer<br>Resolve ties and count source"]
+    Select --&gt; InheritedTag{"Inherited increment resolved;<br>matching current tag and<br>prevent increment when tagged?"}
+    InheritedTag --&gt;|Yes| TagResult
+    InheritedTag --&gt;|No| Mode["Apply deployment mode"]
+    Mode --&gt; Floor["Raise numeric version if<br>an eligible branch tag is higher"]
+    Floor --&gt; Result["Semantic version and source metadata"]
+    TagResult --&gt; Result
+    Result --&gt; Output["Version variables and output formatting"]
+
+</pre>
+<p>A tag on the current commit can determine the result when it matches the
+branch-label rules and the configuration prevents incrementing tagged commits.
+When the branch increment requires inheritance, GitVersion resolves candidate
+configurations before repeating this tag check with the selected configuration.</p>
+<p>Otherwise, GitVersion collects candidates, compares their incremented versions,
+resolves source metadata, and applies deployment behavior. The final numeric
+version cannot be lower than the eligible branch tag selected by the final tag
+check. This check compares major, minor, and patch without the prerelease label.
+It can update semantic provenance while retaining the counting anchor.</p>
+<p>An empty branch history or a calculation with no accepted base candidates
+produces an error. Output formatting happens after version calculation.</p>
+<h2 id="all-calculation-strategies">All calculation strategies</h2>
+<pre class="mermaid" aria-label="Seven version strategies and conditional fallback candidate discovery">flowchart TD
+    Config["One effective configuration"] --&gt; Strategies["Evaluate enabled non-fallback strategies"]
+    Strategies --&gt; Configured["ConfiguredNextVersion<br>Configured next-version"]
+    Strategies --&gt; Tagged["TaggedCommit<br>Eligible tags"]
+    Strategies --&gt; Merge["MergeMessage<br>Release merge messages"]
+    Strategies --&gt; Name["VersionInBranchName<br>Release branch name"]
+    Strategies --&gt; Release["TrackReleaseBranches<br>Related release targets"]
+    Strategies --&gt; Mainline["Mainline<br>Commit and merge traversal"]
+    Configured --&gt; Filter["Ignore filters and candidate increment"]
+    Tagged --&gt; Filter
+    Merge --&gt; Filter
+    Name --&gt; Filter
+    Release --&gt; Filter
+    Mainline --&gt; Filter
+    Filter --&gt; Any{"Any accepted candidate<br>from these strategies?"}
+    Any --&gt;|Yes| Pool["Add candidates to global comparison"]
+    Any --&gt;|No| Enabled{"Fallback enabled?"}
+    Enabled --&gt;|Yes| Fallback["Fallback candidate:<br>apply filters and increment"]
+    Fallback --&gt; Pool
+    Enabled --&gt;|No| None["No candidate from this configuration"]
+
+</pre>
+<p>The branches in this diagram represent independent candidate producers. They
+do not imply parallel execution or a priority order. Each strategy checks its
+enabled flag and eligibility conditions. GitVersion applies candidate ignore
+filters before adding a candidate to the comparison.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Strategy</th>
+<th>When it can contribute</th>
+<th>Candidate evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ConfiguredNextVersion</code></td>
+<td><code>next-version</code> exists, parses, and matches branch-label rules.</td>
+<td>The configured version, with its label operation; this is an external semantic source.</td>
+</tr>
+<tr>
+<td><code>TaggedCommit</code></td>
+<td>The tag service finds eligible semantic versions.</td>
+<td>Tags selected according to prefix, format, label, history, and branch tracking; configured and message-derived increments apply.</td>
+</tr>
+<tr>
+<td><code>MergeMessage</code></td>
+<td>Merge-message tracking is enabled and a parsable message supplies a version from a configured release branch.</td>
+<td>The version and message commit; the merged-branch prevent-increment setting controls its increment.</td>
+</tr>
+<tr>
+<td><code>VersionInBranchName</code></td>
+<td>The effective configuration describes a release branch, and the current or inherited branch name contains a version.</td>
+<td>The branch-name version and label, with no explicit numeric increment; this is an external semantic source.</td>
+</tr>
+<tr>
+<td><code>TrackReleaseBranches</code></td>
+<td>The branch tracks releases, and a related release has a target version and a merge base with the current branch.</td>
+<td>A version in the release name, or an eligible prerelease tag on the release's own history; the current branch's increment applies.</td>
+</tr>
+<tr>
+<td><code>Mainline</code></td>
+<td>Mainline is enabled.</td>
+<td>A candidate calculated by traversing commit, tag, branch, and merge history.</td>
+</tr>
+<tr>
+<td><code>Fallback</code></td>
+<td>It is enabled and no other strategy produced an accepted candidate for this effective configuration.</td>
+<td>A starting version with an increment derived from effective configuration and relevant commit messages.</td>
+</tr>
+</tbody>
+</table>
+<p><code>TrackReleaseBranches</code> prefers a versioned release name. Its tag alternative
+examines the release's first-parent history while excluding main's first-parent
+history. It treats the target as a stable numeric version before calculating
+the tracking branch's increment.</p>
+<p>Fallback is considered separately for each effective configuration. It is not
+an unconditional final version of <code>0.1.0</code>. If every candidate is excluded or no
+enabled strategy can produce one, calculation fails.</p>
+<p>See <a href="/7.0/docs/reference/version-sources">calculation strategies</a> for source semantics and
+<a href="/7.0/docs/reference/configuration">configuration</a> for the tracking and ignore controls.</p>
+<h2 id="branch-inheritance">Branch inheritance</h2>
+<pre class="mermaid" aria-label="Resolving explicit increments, inherited source branches, pull request targets and orphaned branches">flowchart TD
+    Branch["Branch configuration"] --&gt; Inherit{"Increment is Inherit?"}
+    Inherit --&gt;|No| Effective["Effective configuration"]
+    Inherit --&gt;|Yes| PR{"Allowed pull-request target<br>identified from merge context?"}
+    PR --&gt;|Yes| Target["Use target as source branch"]
+    PR --&gt;|No| Sources["Find allowed source branches"]
+    Sources --&gt; Found{"Source branches found?"}
+    Found --&gt;|Yes| Recursive["Recursively inherit configuration<br>with cycle guard"]
+    Target --&gt; Recursive
+    Recursive --&gt; Results["Zero, one or multiple<br>effective configurations"]
+    Found --&gt;|No| Global{"Global increment is Inherit?"}
+    Global --&gt;|Yes| Skip["Skip orphaned branch"]
+    Global --&gt;|No| Fallback["Use global fallback configuration"]
+    Effective --&gt; Results
+    Fallback --&gt; Results
+
+</pre>
+<p>An explicit branch increment produces an effective configuration directly.
+<code>Inherit</code> follows allowed source branches and combines their configuration with
+the child branch's settings. A recognized pull-request target can supply this
+inheritance source. The traversal guards against cycles.</p>
+<p>Several possible sources can produce several effective configurations. Their
+strategy candidates enter the same version comparison. An orphaned branch is
+skipped when the global increment also requires inheritance; otherwise global
+fallback configuration supplies the remaining settings.</p>
+<h2 id="candidate-increments">Candidate increments</h2>
+<p>Each candidate carries a base version, source information, and an increment
+operation. Strategies using the shared increment finder follow these rules:</p>
+<ol>
+<li>Select the relevant history between the candidate source and current commit.
+Apply ignore rules and omit history already covered by eligible version tags.</li>
+<li>Apply the commit-message mode: disabled, enabled, or merge messages only.</li>
+<li>Within a message, check no-bump, major, minor, and patch patterns in that
+order. Combine the increments across the selected commits. A matching
+version-bump reset changes accumulation and ends the scan at that point.</li>
+<li>Use the branch increment when no message override supplies one and an
+increment is requested. The branch increment normally sets the minimum;
+reset behavior can override that minimum.</li>
+<li>Apply the candidate's label, force-increment, and alternative-version rules.</li>
+</ol>
+<p>Some strategies explicitly supply an increment of <code>None</code>. Mainline also folds
+its own traversal operations. A no-bump message is therefore not a universal
+instruction to suppress every strategy's operation. See
+<a href="/7.0/docs/reference/version-increments">version increments</a> for the configurable controls.</p>
+<h2 id="select-the-version-and-its-sources">Select the version and its sources</h2>
+<pre class="mermaid" aria-label="Selecting the maximum incremented version, resolving equal-version ties and choosing the counting anchor">flowchart TD
+    Pool["All accepted incremented candidates"] --&gt; Maximum["Find maximum SemVer"]
+    Maximum --&gt; Tie{"Multiple source-backed candidates<br>produce this same version?"}
+    Tie --&gt;|Yes| Latest["Latest source timestamp chooses<br>winner and count source"]
+    Tie --&gt;|No| Winner["Keep maximum semantic candidate"]
+    Winner --&gt; Stable{"Winning version is stable?"}
+    Stable --&gt;|Yes| Exclude["Exclude prerelease baselines<br>from count-source search"]
+    Stable --&gt;|No| Count["Prefer source-backed candidate:<br>highest incremented version,<br>then latest source timestamp"]
+    Exclude --&gt; Count
+    Count --&gt; Found{"Source-backed candidate found?"}
+    Found --&gt;|Yes| Anchor["Use its source as counting anchor"]
+    Found --&gt;|No| External["Use highest remaining external candidate:<br>null counting anchor"]
+    Latest --&gt; Resolved["Resolved semantic and counting sources"]
+    Anchor --&gt; Resolved
+    External --&gt; Resolved
+
+</pre>
+<p>GitVersion compares the incremented candidates using semantic-version ordering.
+When several candidates with source commits produce the same maximum version,
+the latest source timestamp selects the candidate and counting source.</p>
+<p>Otherwise, the semantic winner remains the maximum candidate, while the
+count-source search prefers a candidate with a source commit, ordered by
+incremented version and then source timestamp. For a stable winning version,
+this search excludes prerelease baselines. If no source-backed candidate
+remains, the highest remaining external candidate supplies a null counting
+anchor.</p>
+<p>The <strong>semantic source</strong> explains where the version came from. The
+<strong>commit-count source</strong> anchors counting through the Git graph. They can differ:
+a configured version can supply the semantic baseline while a tag supplies
+the counting anchor. A null anchor counts all reachable, non-ignored history.
+Counting is not a count of builds or a first-parent distance.</p>
+<p>Use the <code>SemVerSource*</code> and <code>CommitCountSource*</code> <a href="/7.0/docs/reference/variables">variables</a> to inspect
+these sources. In a candidate trace, keep these fields separate:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>What it explains</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strategy and effective branch</td>
+<td>Which rules produced the candidate.</td>
+</tr>
+<tr>
+<td>Base version and semantic source</td>
+<td>Which tag, message, branch name, configuration value, or traversal supplied the version.</td>
+</tr>
+<tr>
+<td>Increment and incremented version</td>
+<td>Which operation was applied and which value entered the comparison.</td>
+</tr>
+<tr>
+<td>Counting source</td>
+<td>Which commit anchors the history count.</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td>Selected, lower version, filtered, disabled, ineligible, fallback skipped, or error.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mainline-traversal">Mainline traversal</h2>
+<pre class="mermaid" aria-label="Mainline commit traversal, increment rules, accumulated operations and unsupported cross-mainline merges">flowchart TD
+    Enabled["Mainline enabled"] --&gt; Tags["Gather eligible tags and branch context"]
+    Tags --&gt; Traverse["Traverse commits;<br>inspect branch points and merges"]
+    Traverse --&gt; State["Build commit state and recursive iterations"]
+    State --&gt; Pre["Enrich version and increment context"]
+    Pre --&gt; Rules["Apply matching trunk/non-trunk rules"]
+    Rules --&gt; Post["Clean up context after each commit"]
+    Post --&gt; Fold["Fold baseline operands<br>and increment operators"]
+    Fold --&gt; Candidate["Mainline candidate enters shared selection"]
+    Traverse --&gt; Unsupported["Recognized merge between two main branches:<br>currently unsupported"]
+
+</pre>
+<p>Mainline gathers tags and branch context, builds recursive iterations for
+history, and applies matching commit rules. Those rules produce baseline
+operands and increment operators, which are folded into a candidate for the
+shared selection process.</p>
+<p>The rule families distinguish these events on trunk/main and non-trunk
+branches:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Event</th>
+<th>Trunk/main</th>
+<th>Non-trunk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ordinary commit</td>
+<td>Direct-commit rule.</td>
+<td>Direct-commit rule.</td>
+</tr>
+<tr>
+<td>Stable tag</td>
+<td>Tagged-commit and last-commit rules.</td>
+<td>Tagged-commit and last-commit rules.</td>
+</tr>
+<tr>
+<td>Prerelease tag</td>
+<td>Tagged-commit and last-commit rules.</td>
+<td>Tagged-commit and last-commit rules.</td>
+</tr>
+<tr>
+<td>Merge</td>
+<td>Merge and last-merge rules.</td>
+<td>Merge and last-merge rules.</td>
+</tr>
+<tr>
+<td>Branch point</td>
+<td>Branching to trunk or non-trunk.</td>
+<td>Branching to trunk or non-trunk.</td>
+</tr>
+<tr>
+<td>First release commit</td>
+<td>No dedicated trunk rule.</td>
+<td>Dedicated first-release-commit rule.</td>
+</tr>
+</tbody>
+</table>
+<p>These event families do not imply one fixed bump for each event. Tags,
+configuration, accumulated context, and commit messages determine which
+operations apply.</p>
+<p>A recognized merge between two branches configured as main branches currently
+has an unsupported path in Mainline. A current-commit tag shortcut can bypass
+that traversal. The merged-commit helper also rejects a merge with multiple
+source parents. Include these failure paths when investigating a history.</p>
+<h2 id="all-deployment-modes">All deployment modes</h2>
+<pre class="mermaid" aria-label="Manual deployment, continuous delivery and continuous deployment after candidate selection">flowchart TD
+    Candidate["Selected candidate and resolved sources"] --&gt; Mode{"Deployment mode"}
+    Mode --&gt;|ManualDeployment| Manual["Keep candidate prerelease state<br>Attach build metadata"]
+    Mode --&gt;|ContinuousDelivery| Numbered{"Numbered prerelease present?"}
+    Numbered --&gt;|No| Error["Error: prerelease tag required"]
+    Numbered --&gt;|Yes| Delivery["Prerelease number +=<br>commits since source - 1<br>Record source distance"]
+    Mode --&gt;|ContinuousDeployment| Deployment["Remove prerelease tag<br>Record source distance"]
+    Manual --&gt; Floor["Check eligible branch-tag numeric version floor"]
+    Delivery --&gt; Floor
+    Deployment --&gt; Floor
+
+</pre>
+<table class="table">
+<thead>
+<tr>
+<th>Mode</th>
+<th>Processing after candidate selection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ManualDeployment</code></td>
+<td>Preserves the candidate's prerelease state and attaches build metadata.</td>
+</tr>
+<tr>
+<td><code>ContinuousDelivery</code></td>
+<td>Requires a numbered prerelease; adds commits since the counting source minus one to that number and records source distance.</td>
+</tr>
+<tr>
+<td><code>ContinuousDeployment</code></td>
+<td>Removes the prerelease tag and records source distance.</td>
+</tr>
+</tbody>
+</table>
+<p>Tagged-commit shortcuts use their own metadata handling and bypass this normal
+dispatch. ContinuousDeployment removes the tag's prerelease component there
+as well. In the normal path, the branch-tag numeric floor follows mode
+processing.</p>
+<h2 id="versioning-scenario-map">Versioning scenario map</h2>
+<p>These dimensions describe the scenario families across the calculation. They
+combine: the branch name alone does not choose a strategy. Arbitrary Git
+histories and custom configurations create more combinations than any finite
+example catalogue can enumerate.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Scenarios</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workflow</td>
+<td>GitFlow, GitHubFlow, trunk-based, custom defaults, switching workflows, and Mainline strategy combinations.</td>
+</tr>
+<tr>
+<td>Branch role</td>
+<td>Main, develop, feature, release, hotfix, support, pull request, and other branches; feature branches originating from releases.</td>
+</tr>
+<tr>
+<td>Inheritance</td>
+<td>Explicit increment, one or several source branches, PR target, orphaned branch, and a branch without unique commits.</td>
+</tr>
+<tr>
+<td>Repository context</td>
+<td>Local and remote refs, worktrees, tag checkout, detached context, and historical commits.</td>
+</tr>
+<tr>
+<td>Version evidence</td>
+<td>Configured version, branch-name version, merge message, stable tag, prerelease tag, competing evidence, and fallback.</td>
+</tr>
+<tr>
+<td>Tag tracking</td>
+<td>Current commit, ancestor, merge target, main or release branch; prefix, format, label compatibility, and ignored evidence.</td>
+</tr>
+<tr>
+<td>Release tracking</td>
+<td>Versioned name, unversioned release with eligible prerelease tag, several releases, missing merge base, and main-history tag exclusion.</td>
+</tr>
+<tr>
+<td>Topology</td>
+<td>Linear commits, branch points, fast-forward, merge commits, nested or repeated merges, reverse merges, deleted source refs, and unsupported merge shapes.</td>
+</tr>
+<tr>
+<td>Increment</td>
+<td>None, Patch, Minor, Major, Inherit, message modes, no-bump, bump reset, already-tagged history, and prevent-increment controls.</td>
+</tr>
+<tr>
+<td>Label</td>
+<td>Stable, prerelease, branch-derived or SHA labels; matching and mismatching labels and numeric prerelease identifiers.</td>
+</tr>
+<tr>
+<td>Ignore</td>
+<td>Commit SHA, date, path, and reference controls affecting discovery, inheritance, or counting.</td>
+</tr>
+<tr>
+<td>Selection</td>
+<td>One or several strategies/configurations, equal-version ties, distinct semantic/count sources, skipped fallback, and no candidate.</td>
+</tr>
+<tr>
+<td>Finalization</td>
+<td>All three deployment modes, source distance, higher branch-tag floor, provenance, and output formatting.</td>
+</tr>
+<tr>
+<td>Failure</td>
+<td>Empty history, no accepted candidates, invalid version/configuration, delivery without numbered prerelease, and unsupported merges.</td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow examples</a>, <a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow examples</a>,
+and <a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">trunk-based examples</a> show histories with asserted
+versions. The <a href="https://github.com/GitTools/GitVersion/tree/main/src/GitVersion.Core.Tests/IntegrationTests">integration scenarios</a> and
+<a href="https://github.com/GitTools/GitVersion/tree/main/src/GitVersion.Core.Tests/VersionCalculation">calculation tests</a> provide the larger executable catalogue.</p>
+<h2 id="executable-checkpoints">Executable checkpoints</h2>
+<p>These histories are generated by tests that assert the displayed versions.
+The calculation examples also assert the semantic source, counting source,
+and distance. They provide representative checkpoints for the rules above;
+the algorithm flowcharts themselves remain authored diagrams.</p>
+<h3 id="competing-candidates">Competing candidates</h3>
+<p>With GitHubFlow defaults, a configured <code>next-version</code> of <code>5.0.0</code> wins over
+the incremented <code>1.0.0</code> tag. It supplies an external semantic source, while
+the tag remains the counting source. Lowering <code>next-version</code> to <code>0.5.0</code>
+makes the tag candidate win instead.</p>
+<pre class="mermaid" aria-label="Test-generated history where configured version wins over the tag candidate">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 5.0.0-1
+    end
+    Note over main: next-version: 5.0.0
+
+</pre>
+<pre class="mermaid" aria-label="Test-generated history where the tag candidate wins over configured version">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.0.1-1
+    end
+    Note over main: next-version: 0.5.0
+
+</pre>
+<h3 id="inherited-increments">Inherited increments</h3>
+<p>These GitHubFlow examples set the feature branch increment to <code>Inherit</code>.
+Changing its source branch <code>main</code> from <code>Patch</code> to <code>Minor</code> changes the
+feature version from <code>1.0.1-work.1+1</code> to <code>1.1.0-work.1+1</code>.</p>
+<pre class="mermaid" aria-label="Test-generated feature history inheriting a patch increment">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    create participant feature_work as feature/work
+    main-&gt;&gt;feature_work: branch from main
+    feature_work-&gt;&gt;feature_work: commit
+    rect rgb(211, 211, 211)
+        Note over feature_work: 1.0.1-work.1+1
+    end
+    Note over feature_work: main increment: Patch#59; feature increment: Inherit
+
+</pre>
+<pre class="mermaid" aria-label="Test-generated feature history inheriting a minor increment">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    create participant feature_work as feature/work
+    main-&gt;&gt;feature_work: branch from main
+    feature_work-&gt;&gt;feature_work: commit
+    rect rgb(211, 211, 211)
+        Note over feature_work: 1.1.0-work.1+1
+    end
+    Note over feature_work: main increment: Minor#59; feature increment: Inherit
+
+</pre>
+<h3 id="equal-versions-and-separate-sources">Equal versions and separate sources</h3>
+<p>The tie example supplies two controlled strategy candidates of <code>2.0.0</code>,
+anchored at consecutive commits in a real repository. It isolates selection
+from strategy discovery: the latest commit supplies both sources, leaving
+one commit to count. ManualDeployment produces <code>2.0.0+1</code>.</p>
+<pre class="mermaid" aria-label="Test-generated selection history with two controlled equal-version candidates">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    Note over main: Controlled candidate A: 2.0.0 at this commit
+    main-&gt;&gt;main: commit
+    Note over main: Controlled candidate B: 2.0.0 at this later commit
+    main-&gt;&gt;main: commit
+    Note over main: Equal candidates: 2.0.0 at tag commit and next commit#59; latest source wins
+    rect rgb(211, 211, 211)
+        Note over main: 2.0.0+1
+    end
+
+</pre>
+<p>In the GitFlow release merge below, the merge message supplies <code>2.0.0</code>.
+The older <code>1.0.0</code> tag supplies the counting source. The release commit,
+merge commit, and following main commit all count, giving a distance of three.</p>
+<pre class="mermaid" aria-label="Test-generated release merge with distinct semantic and counting sources">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    create participant release_2_0_0 as release/2.0.0
+    main-&gt;&gt;release_2_0_0: branch from main
+    release_2_0_0-&gt;&gt;release_2_0_0: commit
+    release_2_0_0-&gt;&gt;main: merge
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 2.0.0-3
+    end
+
+</pre>
+<h3 id="deployment-modes-on-the-same-history">Deployment modes on the same history</h3>
+<p>Each example uses GitHubFlow with the main branch label set to <code>beta</code> and
+the named deployment mode. Two commits after <code>1.0.0</code> give the same semantic
+source, patch increment, and counting distance in all three modes.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Mode</th>
+<th>Asserted full version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ManualDeployment</code></td>
+<td><code>1.0.1-beta.1+2</code></td>
+</tr>
+<tr>
+<td><code>ContinuousDelivery</code></td>
+<td><code>1.0.1-beta.2</code></td>
+</tr>
+<tr>
+<td><code>ContinuousDeployment</code></td>
+<td><code>1.0.1</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid" aria-label="Test-generated manual deployment history">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.0.1-beta.1+2
+    end
+
+</pre>
+<pre class="mermaid" aria-label="Test-generated continuous delivery history">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.0.1-beta.2
+    end
+
+</pre>
+<pre class="mermaid" aria-label="Test-generated continuous deployment history">sequenceDiagram
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.0.0
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.0.1
+    end
+
+</pre>
+<h3 id="tags-and-commit-messages">Tags and commit messages</h3>
+<p>These trunk-based examples check tag shortcuts and commit-message increments.</p>
+<pre class="mermaid" aria-label="Test-generated history of direct commits and release tags">sequenceDiagram
+    activate main
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.2.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.0
+    end
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.1
+    end
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.2
+    end
+    main-&gt;&gt;main: tag v1.2.2
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.2
+    end
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.3
+    end
+
+</pre>
+<pre class="mermaid" aria-label="Test-generated history of patch, minor and major commit-message increments">sequenceDiagram
+    activate main
+    main-&gt;&gt;main: commit
+    main-&gt;&gt;main: tag 1.2.0
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.0
+    end
+    main-&gt;&gt;main: Commit 'Fix a bug +semver: patch'
+    rect rgb(211, 211, 211)
+        Note over main: 1.2.1
+    end
+    main-&gt;&gt;main: Commit 'Add an API +semver: minor'
+    rect rgb(211, 211, 211)
+        Note over main: 1.3.0
+    end
+    main-&gt;&gt;main: Commit 'Break an API +semver: major'
+    rect rgb(211, 211, 211)
+        Note over main: 2.0.0
+    end
+    main-&gt;&gt;main: commit
+    rect rgb(211, 211, 211)
+        Note over main: 2.0.1
+    end
+
+</pre>
+<h2 id="diagram-maintenance">Diagram maintenance</h2>
+<p>These algorithm flowcharts are authored Mermaid sources in <code>docs/diagrams</code>,
+included in the page with the same renderer and shared theme as the workflow
+examples. The existing syntax validator checks all <code>.mmd</code> files:</p>
+<pre><code class="language-bash">node docs/scripts/validate-mermaid.mjs
+</code></pre>
+<p>The <code>GenerateMermaidSources</code> task regenerates test-derived
+<code>DocumentationSamplesFor*.mmd</code> scenario diagrams; it leaves these algorithm
+flowcharts intact. See <a href="/7.0/docs/learn/branching-strategies/contribute-examples">contributing examples</a> when
+changing a worked history and its asserted versions.</p>
+<p>The implementation entry points for maintaining this map are
+<a href="https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core/VersionCalculation/VersionCalculators/NextVersionCalculator.cs">candidate calculation</a>,
+<a href="https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core/VersionCalculation/EffectiveBranchConfigurationFinder.cs">configuration inheritance</a>,
+<a href="https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core/VersionCalculation/IncrementStrategyFinder.cs">increment selection</a>, and
+<a href="https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core/VersionCalculation/VersionSearchStrategies/MainlineVersionStrategy.cs">Mainline traversal</a>. Update the diagram and accompanying
+explanation when those decision rules change.</p>
+
+	</section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

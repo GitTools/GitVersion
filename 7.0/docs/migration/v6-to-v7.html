@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/7.0/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Migration v6 to v7</title>
+        <link href="/7.0/assets/css/highlight.css" rel="stylesheet">
+        <link href="/7.0/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/7.0/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/7.0/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/7.0/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/7.0/assets/css/override.css" rel="stylesheet">
+        <script src="/7.0/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/7.0/assets/js/bootstrap.min.js"></script>
+        <script src="/7.0/assets/js/app.min.js"></script>
+        <script src="/7.0/assets/js/highlight.pack.js"></script>
+        <script src="/7.0/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/7.0/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/7.0/assets/js/mermaid.min.js"></script>
+        <script src="/7.0/assets/js/svg-pan-zoom.min.js"></script>
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/7.0/assets/img/icon.svg" type="image/svg">
+<link rel="stylesheet" href="/7.0/assets/css/redesign.css?v=768741E2E4A7">
+<script src="/7.0/assets/js/theme.js"></script>
+<script src="/7.0/assets/js/versions.js" defer=""></script>
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">
+
+                <a href="/7.0/" class="logo">
+                            <span>GitVersion</span>
+                </a>
+
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <button type="button" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                                    <li class="active"><a href="/7.0/docs">Documentation</a></li>
+        <li><a href="/7.0/api">API</a></li>
+<li class="gv-version-item"><label class="sr-only" for="docs-version">Documentation version</label><select id="docs-version" aria-label="Documentation version"><option>7.0</option></select></li>
+<li class="gv-theme-item"><button type="button" class="gv-theme-toggle" role="switch" aria-checked="false" aria-label="Dark theme" title="Switch theme" data-theme-toggle=""><i class="fa fa-moon-o gv-theme-moon" aria-hidden="true"></i><i class="fa fa-sun-o gv-theme-sun" aria-hidden="true"></i></button></li>
+<li class="gv-github-item"><a href="https://github.com/GitTools/GitVersion" aria-label="GitVersion on GitHub" title="GitVersion on GitHub"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside aria-label="Documentation navigation" class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+                    	
+        <div><p><a href="https://github.com/GitTools/GitVersion/tree/8fd9e294be12083242079edf2bf4dae4c0956164/docs/input/docs/migration/v6-to-v7.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"></div>
+
+                </section>
+                <section class="sidebar">
+                    
+                    
+
+                    <ul class="sidebar-menu">
+                        
+        <li class="header gv-docs-version">7.0 · documentation</li>
+            <li class="treeview">
+                <a href="/7.0/docs/getting-started">Getting started</a><a href="#" class="expand" aria-label="Expand Getting started"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/getting-started">Getting started</a></li>
+                            <li><a href="/7.0/docs/usage/ai-agent-onboarding">AI-agent onboarding</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/installation">Installation</a></li>
+
+                <li><a href="/7.0/docs/reference/requirements">Requirements</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/usage">Guides</a><a href="#" class="expand" aria-label="Expand Guides"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/usage/choose-workflow">Choose a workflow</a></li>
+
+                <li><a href="/7.0/docs/usage/configure">Configure GitVersion</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies">Workflow examples</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/7.0/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/7.0/docs/learn/branching-strategies/trunkbased">Trunk-based (preview)</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/learn/branching-strategies/trunkbased/examples">Trunk-based examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/build-servers">CI integrations</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/bitbucket-pipelines">BitBucket Pipelines</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/buildkite">Buildkite</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/github-actions">GitHub Actions</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/7.0/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/output">Use version output</a></li>
+
+                <li><a href="/7.0/docs/usage/docker">Docker</a></li>
+
+                <li><a href="/7.0/docs/usage/msbuild">MSBuild Task</a></li>
+
+                <li><a href="/7.0/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                <li><a href="/7.0/docs/usage/library">Library</a></li>
+
+                <li><a href="/7.0/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn">Concepts</a><a href="#" class="expand" aria-label="Expand Concepts"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+
+                <li><a href="/7.0/docs/learn/how-it-works">How versions are calculated</a></li>
+
+                <li><a href="/7.0/docs/learn/version-calculation">Version calculation algorithm</a></li>
+
+                <li><a href="/7.0/docs/learn/workflows-modes-strategies">Workflows, modes, and strategies</a></li>
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/modes">Deployment modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/modes/manual-deployment">Manual Deployment</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/7.0/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/reference/version-increments">Version Incrementing</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/reference">Reference</a><a href="#" class="expand" aria-label="Expand Reference"></a>
+                <ul class="treeview-menu">
+
+                <li class="treeview">
+                    <a href="/7.0/docs/reference/configuration-topics">Configuration by topic</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/7.0/docs/reference/configuration-topics/branches">Branch configuration</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/output">Output and formatting</a></li>
+                <li><a href="/7.0/docs/reference/configuration-topics/calculation">Version calculation</a></li>
+
+                    </ul>
+                </li>
+
+                <li><a href="/7.0/docs/usage/cli/arguments">Arguments</a></li>
+
+                <li><a href="/7.0/docs/reference/version-sources">Calculation strategies</a></li>
+
+                <li><a href="/7.0/docs/reference/variables">Version Variables</a></li>
+
+                <li><a href="/7.0/docs/reference/custom-formatting">Format Strings</a></li>
+
+                <li><a href="/7.0/docs/reference/environment-variables">Environment variables</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="/7.0/docs/learn/faq">Troubleshooting</a><a href="#" class="expand" aria-label="Expand Troubleshooting"></a>
+                <ul class="treeview-menu">
+
+                <li><a href="/7.0/docs/learn/faq">Troubleshooting</a></li>
+
+                <li><a href="/7.0/docs/learn/git-setup">Repository setup</a></li>
+                </ul>
+            </li>
+            <li class="treeview active">
+                <a href="/7.0/docs/migration">Upgrading</a><a href="#" class="expand" aria-label="Expand Upgrading"></a>
+                <ul class="treeview-menu">
+
+                <li class="selected"><a href="/7.0/docs/migration/v6-to-v7">Migration v6 to v7</a></li>
+                </ul>
+            </li>
+
+                    </ul>
+                    
+                </section>
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div id="gv-content" class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Migration v6 to v7</h1>
+		</section>
+	<section class="content">
+		<p>This document summarizes the relevant breaking changes when migrating from GitVersion v6 to v7.</p>
+<h2 id="validate-candidate-configuration">Validate candidate configuration</h2>
+<p>The established v7 POSIX CLI supports repository-independent validation:</p>
+<pre><code class="language-shell">gitversion config validate --config GitVersion.yml
+gitversion config validate --config GitVersion.yml --format json
+</code></pre>
+<p>Validation shares workflow/default/override resolution with normal execution.
+Both paths now reject unknown public keys and invalid types, configured regexes
+and resolvable branch relationships early. Use supported enum names rather than
+undefined numeric values. After migration, validate the nested v7 file, inspect
+effective settings and compare representative history. For older binaries, retain
+matching-version schema and loader checks.</p>
+<p><code>next-version</code> is checked against the selected <code>semantic-version-format</code> during
+resolution, without waiting for calculation. With <code>Strict</code>, use a complete version
+such as <code>2.0.0</code>. Select <code>Loose</code> explicitly when using partial values such as <code>2.1</code>.</p>
+<p>Explicit <code>GITVERSION_CONFIGURATION_VERSION=v6</code> retains its existing v7.0 warning
+and v7.1 removal schedule. It selects the flat layout independently of the parser;
+invalid v7 documents never trigger automatic v6 fallback. See
+<a href="/7.0/docs/usage/cli/arguments#validate-configuration">configuration validation</a> for output and error contracts.</p>
+<h2 id="docker-images-run-as-non-root">Docker images run as non-root</h2>
+<p>GitVersion v7 Docker images default to UID/GID <code>10001:10001</code>. GitVersion can write
+repository metadata and cache files, so bind-mounted repositories must be
+writable by the selected user.</p>
+<p>On Linux, run the container as the non-root checkout owner when the image's
+default user cannot write to the repository:</p>
+<pre><code class="language-sh">docker run --rm --user "$(id -u):$(id -g)" \
+  -v "$(pwd):/repo" gittools/gitversion:{tag} /repo
+</code></pre>
+<p>Replace <code>{tag}</code> with the v7 image tag you use. Run this command from the checkout
+owner's non-root shell. If the selected user cannot write to the configured home,
+the image automatically creates a private temporary home inside the container;
+no <code>HOME</code> or <code>DOTNET_CLI_HOME</code> flags are needed.</p>
+<p>For Docker Desktop on Windows/macOS, ensure the shared directory is writable by
+the image's default user through the host's file-sharing permissions. If you
+maintain a derived Dockerfile, use <code>USER root</code> for system installation steps and
+restore <code>USER 10001:10001</code> before runtime. See <a href="/7.0/docs/usage/docker">Docker usage</a> for
+details.</p>
+<h2 id="azure-pipelines-variable-names">Azure Pipelines variable names</h2>
+<p>The CLI's build-server output and <code>GitVersion.MsBuild</code> now emit
+<code>GitVersion_&lt;Property&gt;</code> for both ordinary and output variables. Dotted
+<code>GitVersion.&lt;Property&gt;</code> names are removed without aliases in v7.0.</p>
+<p>For a producer step named <code>version</code>, job <code>Build</code>, and stage <code>Compile</code>:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Consumer</th>
+<th>v6</th>
+<th>v7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Later-step macro</td>
+<td><code>$(GitVersion.SemVer)</code></td>
+<td><code>$(GitVersion_SemVer)</code></td>
+</tr>
+<tr>
+<td>Expression</td>
+<td><code>variables['GitVersion.SemVer']</code></td>
+<td><code>variables['GitVersion_SemVer']</code></td>
+</tr>
+<tr>
+<td>Named-step macro</td>
+<td><code>$(version.GitVersion.SemVer)</code></td>
+<td><code>$(version.GitVersion_SemVer)</code></td>
+</tr>
+<tr>
+<td>Dependent job</td>
+<td><code>$[ dependencies.Build.outputs['version.GitVersion.SemVer'] ]</code></td>
+<td><code>$[ dependencies.Build.outputs['version.GitVersion_SemVer'] ]</code></td>
+</tr>
+<tr>
+<td>Dependent stage's job</td>
+<td><code>$[ stageDependencies.Compile.Build.outputs['version.GitVersion.SemVer'] ]</code></td>
+<td><code>$[ stageDependencies.Compile.Build.outputs['version.GitVersion_SemVer'] ]</code></td>
+</tr>
+</tbody>
+</table>
+<p>Update conditions, templates, explicit environment mappings, and custom log
+parsers as well as task inputs. Pin the previous tool version until consumers
+are migrated. The ordinary shell environment name remains <code>GITVERSION_SEMVER</code>;
+check for user-defined underscore variables that the new pipeline outputs could
+overwrite and dotted variables that normalize to the same environment key.</p>
+<p>Build-number interpolation still accepts both dotted and underscore placeholders.
+JSON property names, DotEnv keys, and MSBuild properties are unaffected by this
+separator change. Other build agents retain their existing naming conventions.</p>
+<p>GitTools' Azure <code>gitversion-execute</code> task already emits underscore-prefixed and
+camel-case names from JSON. Its output names need no separator migration for this
+change; check the task's supported tool versions separately before adopting v7.
+See <a href="/7.0/docs/reference/build-servers/azure-devops">Azure DevOps</a> for complete dependency and environment examples.</p>
+<h2 id="branch-environment-overrides">Branch environment overrides</h2>
+<p><code>GIT_BRANCH</code> and its cross-platform alias <code>Git_Branch</code> now supply branch context at
+the checked-out commit, including local builds and detached HEAD. They no longer
+select the named branch's tip or cause its ref to move. The branch need not exist.
+Invalid branch names fail; empty or whitespace-only values are ignored. Do not
+pass tag refs through these variables.</p>
+<p>Explicit <code>--branch</code> / API <code>RepositoryInfo.TargetBranch</code> wins over the environment,
+which wins over provider detection. When both aliases are nonblank on a
+case-sensitive platform, <code>GIT_BRANCH</code> wins. In particular, Jenkins <code>GIT_BRANCH</code>
+now wins over <code>BRANCH_NAME</code> / <code>GIT_LOCAL_BRANCH</code>, and explicit targets win over
+Azure Pipelines branch detection. Check ambient CI variables when upgrading.</p>
+<p>Use <code>--branch</code> if you intend to select a different branch's history. Explicit
+commit selection retains its existing semantics. See <a href="/7.0/docs/reference/environment-variables">environment variables</a>
+for reference-name forms, dynamic repositories and normalization behavior.</p>
+<h2 id="pre-release-output-variables-renamed">Pre-release output variables renamed</h2>
+<p>The pre-release output variables now use SemVer terminology consistently. Update JSON consumers, <code>--show-variable</code> arguments, custom format strings, build-agent environment variables, generated version-information files, and <code>GitVersion.MsBuild</code> properties according to this mapping:</p>
+<table class="table">
+<thead>
+<tr>
+<th>GitVersion v6</th>
+<th>GitVersion v7</th>
+<th>Example value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PreReleaseTag</code></td>
+<td><code>PreReleaseLabel</code></td>
+<td><code>beta.99</code></td>
+</tr>
+<tr>
+<td><code>PreReleaseTagWithDash</code></td>
+<td><code>PreReleaseLabelWithDash</code></td>
+<td><code>-beta.99</code></td>
+</tr>
+<tr>
+<td><code>PreReleaseLabel</code></td>
+<td><code>PreReleaseLabelName</code></td>
+<td><code>beta</code></td>
+</tr>
+<tr>
+<td><code>PreReleaseLabelWithDash</code></td>
+<td><code>PreReleaseLabelNameWithDash</code></td>
+<td><code>-beta</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>PreReleaseNumber</code> is unchanged. In MSBuild and build-agent environments, apply the same mapping to the <code>GitVersion_</code>-prefixed names. For example, <code>GitVersion_PreReleaseTag</code> becomes <code>GitVersion_PreReleaseLabel</code>.</p>
+<div class="alert alert-warning"><p><code>PreReleaseLabel</code> and <code>PreReleaseLabelWithDash</code> retain their names but change from the label name (<code>beta</code>) to the full label (<code>beta.99</code>). Consumers that require only the name must use <code>PreReleaseLabelName</code> and <code>PreReleaseLabelNameWithDash</code>.</p>
+</div>
+<h2 id="intel-macos-support">Intel macOS support</h2>
+<p>GitVersion v7 ships tool packages and standalone archives for Intel (<code>osx-x64</code>) and Apple Silicon (<code>osx-arm64</code>) macOS.</p>
+<h2 id="net-8-and.net-9-target-frameworks-removed">.NET 8 and .NET 9 target frameworks removed</h2>
+<p>GitVersion v7 targets .NET 10 and .NET 11. Install the runtime matching the CLI or global-tool target framework. Standalone archives continue to use .NET 10.</p>
+<p><code>GitVersion.MsBuild</code> selects its .NET 11 tools for compatible projects and .NET 10 tools otherwise. Use an MSBuild host that supports the selected task assembly. Projects targeting earlier frameworks remain supported: the CLI launcher uses <code>dotnet exec --roll-forward Major</code>, but this does not change the runtime required by the MSBuild host. See <a href="/7.0/docs/usage/msbuild">MSBuild usage</a> for details.</p>
+<h2 id="docker-distribution-versions-updated">Docker distribution versions updated</h2>
+<p>The default Docker distribution is now Ubuntu 26.04. Update pinned distribution tags using this mapping:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Previous distribution</th>
+<th>Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ubuntu 22.04</td>
+<td>Ubuntu 26.04</td>
+</tr>
+<tr>
+<td>CentOS Stream 9</td>
+<td>CentOS Stream 10</td>
+</tr>
+<tr>
+<td>Debian 12</td>
+<td>Debian 13</td>
+</tr>
+<tr>
+<td>Fedora 43</td>
+<td>Fedora 44</td>
+</tr>
+</tbody>
+</table>
+<p>Ubuntu 24.04 and Alpine 3.23 remain available. Images are built for .NET 10 and .NET 11. For example, use <code>gittools/gitversion:latest-ubuntu.26.04</code> for the default Ubuntu distribution.</p>
+<p>Existing images for retired distributions are not deleted, but will no longer receive new GitVersion builds.</p>
+<h2 id="rid-specific-global-tool-packages">RID-specific global-tool packages</h2>
+<p>GitVersion v7 packages <code>GitVersion.Tool</code> per runtime identifier. Install it with
+the .NET 10 SDK as before; NuGet automatically selects the dedicated package for
+Windows x64 and ARM64, Linux x64 and ARM64 (including musl), or Intel and Apple
+Silicon macOS.</p>
+<h2 id="commitssinceversionsource-output-variable-removed"><code>CommitsSinceVersionSource</code> output variable removed</h2>
+<p><code>CommitsSinceVersionSource</code> is no longer emitted in JSON output, build-agent environment variables, generated version-information files, or the MSBuild <code>GetVersion</code> task. It can no longer be used in custom format strings.</p>
+<p>Use <code>VersionSourceDistance</code> instead; it has the same value.</p>
+<h2 id="separate-semantic-and-counting-sources">Separate semantic and counting sources</h2>
+<p>Five additive output variables distinguish semantic provenance from counting: <code>SemVerSourceSemVer</code>, <code>SemVerSourceSha</code>, <code>SemVerSourceIncrement</code>, <code>CommitCountSourceSha</code>, and <code>CommitCountSourceDistance</code>. They are available in JSON, custom formats, generated version-information files, build-server output, and MSBuild.</p>
+<p>Existing <code>VersionSource*</code> fields keep their values. <code>VersionSourceSha</code> identifies the counting anchor, which may not be the artifact supplying <code>VersionSourceSemVer</code>. The legacy <code>VersionSourceIncrement</code> can be <code>None</code> after candidate resolution even when an increment was applied; new integrations should use <code>SemVerSourceIncrement</code>.</p>
+<p>For the removed v6 <code>CommitsSinceVersionSource</code>, <code>VersionSourceDistance</code> remains a compatible replacement; <code>CommitCountSourceDistance</code> is the explicit name for the same count. Do not replace that count with a distance from <code>SemVerSourceSha</code>: configuration and branch-name sources have no intrinsic SHA. New nullable source fields use JSON null; textual outputs use an empty string.</p>
+<p>Update strict JSON property-set consumers for the five added fields. Public source interfaces and existing constructors remain available. This change does not alter candidate ordering, version numbers, or commit counts. See <a href="/7.0/docs/reference/variables">version variables</a> for a concrete example.</p>
+<h2 id="cli-arguments-posix-style-syntax">CLI Arguments - POSIX-style syntax</h2>
+<p>GitVersion now uses POSIX-style command-line arguments powered by System.CommandLine.</p>
+<div class="alert alert-warning"><p><strong>Breaking change:</strong> Legacy Windows-style (<code>/switch</code>) and legacy single-dash long-form (<code>-switch</code>) arguments are no longer accepted by default.</p>
+<p>As a temporary v7.0 migration aid, set <code>GITVERSION_ARGUMENT_PARSER_VERSION=v6</code> to restore legacy argument handling. The legacy parser is removed in v7.1. Unset the retired <code>GITVERSION_USE_V6_ARGUMENT_PARSER</code> variable: its presence is an error, even when set to <code>false</code>; it is not an alias for the new selector.</p>
+</div>
+<h3 id="what-you-need-to-change">What you need to change</h3>
+<ol>
+<li>Replace old argument names with POSIX-style <code>--long-name</code> arguments.</li>
+<li>Prefer <code>--long-name</code> arguments for readability and maintainability. Supported short aliases (<code>-o</code>, <code>-v</code>, <code>-f</code>, <code>-c</code>, <code>-l</code>, <code>-d</code>, <code>-b</code>, <code>-u</code>, <code>-p</code>) remain available for interactive use.</li>
+<li>Update scripts that used <code>-c &lt;commit&gt;</code> to <code>--commit &lt;commit&gt;</code>.</li>
+<li>Optionally use <code>GITVERSION_REMOTE_USERNAME</code> and <code>GITVERSION_REMOTE_PASSWORD</code> instead of passing credentials on the command line.</li>
+</ol>
+<h3 id="full-argument-mapping">Full argument mapping</h3>
+<table class="table">
+<thead>
+<tr>
+<th>Old argument</th>
+<th>New argument</th>
+<th>Short alias</th>
+<th>Env var alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/targetpath &lt;path&gt;</code></td>
+<td><code>--target-path &lt;path&gt;</code></td>
+<td><em>(positional <code>path</code> argument)</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/output &lt;type&gt;</code></td>
+<td><code>--output &lt;type&gt;</code></td>
+<td><code>-o</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/outputfile &lt;path&gt;</code></td>
+<td><code>--output-file &lt;path&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/showvariable &lt;var&gt;</code></td>
+<td><code>--show-variable &lt;var&gt;</code></td>
+<td><code>-v</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/format &lt;format&gt;</code></td>
+<td><code>--format &lt;format&gt;</code></td>
+<td><code>-f</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/config &lt;path&gt;</code></td>
+<td><code>--config &lt;path&gt;</code></td>
+<td><code>-c</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/showconfig</code></td>
+<td><code>--show-config</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/overrideconfig &lt;k=v&gt;</code></td>
+<td><code>--override-config &lt;k=v&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/nocache</code></td>
+<td><code>--no-cache</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/nofetch</code></td>
+<td><code>--no-fetch</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/nonormalize</code></td>
+<td><code>--no-normalize</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/allowshallow</code></td>
+<td><code>--allow-shallow</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/verbosity &lt;level&gt;</code></td>
+<td><code>--verbosity &lt;level&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/l &lt;path&gt;</code></td>
+<td><code>--log-file &lt;path&gt;</code></td>
+<td><code>-l</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/diag</code></td>
+<td><code>--diagnose</code></td>
+<td><code>-d</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/updateassemblyinfo [files]</code></td>
+<td><code>--update-assembly-info [files]</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/updateprojectfiles [files]</code></td>
+<td><code>--update-project-files [files]</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/ensureassemblyinfo</code></td>
+<td><code>--ensure-assembly-info</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/updatewixversionfile</code></td>
+<td><code>--update-wix-version-file</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/url &lt;url&gt;</code></td>
+<td><code>--url &lt;url&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/b &lt;branch&gt;</code></td>
+<td><code>--branch &lt;branch&gt;</code></td>
+<td><code>-b</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/u &lt;username&gt;</code></td>
+<td><code>--username &lt;username&gt;</code></td>
+<td><code>-u</code></td>
+<td><code>GITVERSION_REMOTE_USERNAME</code></td>
+</tr>
+<tr>
+<td><code>/p &lt;password&gt;</code></td>
+<td><code>--password &lt;password&gt;</code></td>
+<td><code>-p</code></td>
+<td><code>GITVERSION_REMOTE_PASSWORD</code></td>
+</tr>
+<tr>
+<td><code>/c &lt;commit&gt;</code></td>
+<td><code>--commit &lt;commit&gt;</code></td>
+<td><em>(no short alias)</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code>/dynamicRepoLocation &lt;path&gt;</code></td>
+<td><code>--dynamic-repo-location &lt;path&gt;</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="alert alert-danger"><p><strong>Important:</strong> <code>-c</code> now maps to <code>--config</code>.</p>
+<p>If you previously used <code>-c &lt;commit-id&gt;</code>, you must replace it with <code>--commit &lt;commit-id&gt;</code>.</p>
+</div>
+<h3 id="example-updates">Example updates</h3>
+<pre><code class="language-bash"># Before
+gitversion /output json /showvariable SemVer /config GitVersion.yml
+
+# After
+gitversion --output json --show-variable SemVer --config GitVersion.yml
+</code></pre>
+<pre><code class="language-bash"># Before
+gitversion /url https://github.com/org/repo.git /b main /u user /p pass /c a1b2c3
+
+# After
+gitversion --url https://github.com/org/repo.git --branch main --username user --password pass --commit a1b2c3
+</code></pre>
+<p>For current command details and examples, see <a href="/7.0/docs/usage/cli/arguments">CLI Arguments</a>.</p>
+<h2 id="configuration-migration">Configuration migration</h2>
+<p>GitVersion v7 stores settings under <code>calculation</code> and <code>output</code>. Convert an
+existing flat v6 YAML document with the migration command using the default
+POSIX-style argument parser. This works on all supported operating systems;
+the legacy v6 argument parser does not support the command:</p>
+<pre><code class="language-shell">gitversion config migrate
+gitversion config migrate --config GitVersion.yml --output GitVersion.v7.yml
+gitversion config migrate --config GitVersion.yml --in-place
+</code></pre>
+<p>The first command discovers <code>GitVersion.yml</code> and emits v7 YAML to stdout.
+<code>--output</code> requires <code>--force</code> to replace an existing file and cannot be used
+with <code>--in-place</code>. In-place migration warns because comments cannot be
+preserved. The command does not need a Git repository and migrating its v7
+output again is idempotent. In v7.0, you can temporarily validate a flat file
+with <code>GITVERSION_CONFIGURATION_VERSION=v6</code>; GitVersion warns once for that
+fallback.</p>
+<p>GitVersion 7 publishes a nested-only schema at
+<code>https://gitversion.net/schemas/7.0/GitVersion.configuration.json</code>. If you
+temporarily select <code>GITVERSION_CONFIGURATION_VERSION=v6</code>, keep the existing v6
+<code>$schema</code> reference (for example,
+<code>https://gitversion.net/schemas/6.3/GitVersion.configuration.json</code>) until you
+migrate. Do not point a flat document at the 7.0 schema. New v7 configuration
+settings require migrating to the nested layout with <code>gitversion config migrate</code> to retain schema validation.</p>
+<h2 id="git-backend">Git backend</h2>
+<p>GitVersion v7.0 uses the managed Git backend by default. The <code>GITVERSION_GIT_BACKEND</code> environment variable accepts <code>managed</code> or the temporary <code>libgit2</code> fallback.</p>
+<div class="alert alert-info"><p>In v7.0, use <code>GITVERSION_GIT_BACKEND=libgit2</code> only if you need the temporary native backend fallback. LibGit2Sharp and its native binaries are scheduled for removal in v7.1. Explicit <code>managed</code> remains accepted throughout v7.x; the selector is removed in v8.</p>
+</div>
+<ul>
+<li><code>libgit2</code> — the temporary native backend fallback in v7.0.</li>
+<li><code>managed</code> — the v7.0 default: a managed implementation for all read/history operations, combined with the <code>git</code> command-line executable for network and write operations (clone, fetch, checkout, and CI repository normalization).</li>
+</ul>
+<div class="alert alert-warning"><p>When using the <code>managed</code> backend, the <code>git</code> executable must be available on the <code>PATH</code> <strong>only</strong> for the network/normalization scenarios above (dynamic repositories, build-agent normalization). Plain version calculation on an already-prepared checkout does not require <code>git</code> on the <code>PATH</code>.</p>
+</div>
+<h2 id="environment-variables">Environment variables</h2>
+<p>The environment variables relevant to migrating from v6 to v7:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GITVERSION_CONFIGURATION_VERSION</code></td>
+<td>Selects the configuration layout: <code>v7</code> (default) or temporary flat <code>v6</code> fallback.</td>
+</tr>
+<tr>
+<td><code>GITVERSION_GIT_BACKEND</code></td>
+<td>Selects the Git backend: <code>managed</code> (default) or temporary <code>libgit2</code> fallback. See <a href="#git-backend">Git backend</a>.</td>
+</tr>
+<tr>
+<td><code>GITVERSION_ARGUMENT_PARSER_VERSION</code></td>
+<td>Selects the argument parser: <code>v7</code> (default, POSIX syntax) or temporary <code>v6</code> fallback (<code>/switch</code> and <code>-switch</code>).</td>
+</tr>
+<tr>
+<td><code>GITVERSION_REMOTE_USERNAME</code></td>
+<td>Alternative to <code>--username</code> for dynamic-repository credentials.</td>
+</tr>
+<tr>
+<td><code>GITVERSION_REMOTE_PASSWORD</code></td>
+<td>Alternative to <code>--password</code> for dynamic-repository credentials.</td>
+</tr>
+</tbody>
+</table>
+<p>The three selectors are independent: selecting the v6 parser does not select
+flat configuration or libgit2. Values are trimmed and case-insensitive;
+unset, empty, and whitespace-only values use the defaults. Unknown values
+fail before execution and list the accepted values. Replace
+<code>GITVERSION_USE_V6_ARGUMENT_PARSER=true</code> with
+<code>GITVERSION_ARGUMENT_PARSER_VERSION=v6</code> and unset the old variable.</p>
+<p>Effective selections are logged at information level. Use <code>--log-file &lt;path&gt;</code>
+to capture them or <code>--log-file console</code> to see them on stderr. Console logs
+also use stderr when build-server output is selected, including combinations
+with JSON or other machine-readable output. Build-server integration commands
+retain their normal output channel. For migration, place logging options before the command:
+<code>gitversion --log-file console config migrate --config GitVersion.yml</code>.</p>
+<p>In v7.1, legacy parser and flat configuration runtime support are scheduled
+for removal alongside libgit2. Retired <code>v6</code>/<code>libgit2</code> selections will report
+actionable errors; explicit <code>v7</code>/<code>managed</code> selections remain accepted during
+v7.x. All three selectors are removed in v8. <code>gitversion config migrate</code>
+remains available to convert flat files after runtime support is removed.</p>
+
+	</section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                <div class="gv-footer-brand"><img src="/7.0/assets/img/icon.svg" alt="" width="30" height="30"><strong>GitVersion</strong><span>From git log to SemVer.</span></div>
+<div class="gv-footer-links"><a href="/7.0/docs/learn/credits">Credits</a><a href="/7.0/docs/learn/who">Who uses GitVersion</a><a href="/7.0/docs/learn/branching-strategies/contribute-examples">Contribute examples</a><a href="https://github.com/GitTools/GitVersion/blob/main/LICENSE">MIT License</a></div>
+
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <script src="/7.0/assets/js/site.js" defer=""></script>
+<script src="/7.0/assets/js/mermaid-config.js"></script>
+<script>
+    (() => {
+        const initializeMermaid = window.mermaid.initialize.bind(window.mermaid);
+
+        window.mermaid.initialize = (themeConfig) => initializeMermaid({
+            ...themeConfig,
+            ...window.gitVersionMermaidConfig,
+            flowchart: { ...themeConfig?.flowchart, ...window.gitVersionMermaidConfig.flowchart },
+            sequence: { ...themeConfig?.sequence, ...window.gitVersionMermaidConfig.sequence }
+        });
+    })();
+</script>
+
+        <script>
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+
+            $(document).ready(async function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });
+                await mermaid.run({ querySelector: ".mermaid" });
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+
+</body></html>

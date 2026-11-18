@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-	<id>/</id>
-	<title>GitVersion</title>
-	<link rel="self" href="/" />
-	<rights>2026</rights>
-	<updated>2026-07-10T07:46:33Z</updated>
-</feed>
