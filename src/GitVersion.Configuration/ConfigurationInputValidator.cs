@@ -6,10 +6,10 @@ namespace GitVersion.Configuration;
 // Names and types come from the runtime configuration model, not a second schema.
 internal static class ConfigurationInputValidator
 {
-    public static void Validate(IReadOnlyDictionary<object, object?> document, ConfigurationVersion version)
-        => ValidateObject(document, typeof(GitVersionConfiguration), "", version);
+    public static void Validate(IReadOnlyDictionary<object, object?> document)
+        => ValidateObject(document, typeof(GitVersionConfiguration), "");
 
-    private static void ValidateObject(IReadOnlyDictionary<object, object?> document, Type type, string prefix, ConfigurationVersion version)
+    private static void ValidateObject(IReadOnlyDictionary<object, object?> document, Type type, string prefix)
     {
         var properties = type.GetProperties().Where(p => p.GetCustomAttribute<JsonPropertyNameAttribute>() is not null)
             .ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name);
@@ -17,7 +17,7 @@ internal static class ConfigurationInputValidator
         {
             var name = key as string ?? "<key>";
             var path = prefix + name;
-            if (prefix.Length == 0 && name != "workflow" && version == ConfigurationVersion.V7)
+            if (prefix.Length == 0 && name != "workflow")
             {
                 path = (ConfigurationDocumentMapper.IsOutputProperty(name) ? "output." : "calculation.") + name;
             }
@@ -27,7 +27,7 @@ internal static class ConfigurationInputValidator
                 throw Error(path, "Unknown configuration property.");
             }
 
-            if (version == ConfigurationVersion.V7 && prefix.StartsWith("calculation.branches.", StringComparison.Ordinal)
+            if (prefix.StartsWith("calculation.branches.", StringComparison.Ordinal)
                 && ConfigurationDocumentMapper.IsOutputBranchProperty(name))
             {
                 path = "output." + path["calculation.".Length..];
@@ -42,11 +42,11 @@ internal static class ConfigurationInputValidator
                 throw Error(path, "Expected a valid commit cutoff date.");
             }
 
-            ValidateValue(value, property.PropertyType, path, version);
+            ValidateValue(value, property.PropertyType, path);
         }
     }
 
-    private static void ValidateValue(object? value, Type type, string path, ConfigurationVersion version)
+    private static void ValidateValue(object? value, Type type, string path)
     {
         if (value is null)
         {
@@ -66,17 +66,17 @@ internal static class ConfigurationInputValidator
         }
         if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
         {
-            ValidateDictionary(value, type.GenericTypeArguments[1], path, version);
+            ValidateDictionary(value, type.GenericTypeArguments[1], path);
             return;
         }
         if (type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>))
         {
             var elementType = type.IsArray ? type.GetElementType()! : type.GenericTypeArguments[0];
-            ValidateSequence(value, elementType, path, version);
+            ValidateSequence(value, elementType, path);
             return;
         }
 
-        ValidateLeaf(value, type, path, version);
+        ValidateLeaf(value, type, path);
     }
 
     private static void ValidateStrategies(object value, string path)
@@ -95,7 +95,7 @@ internal static class ConfigurationInputValidator
         }
     }
 
-    private static void ValidateDictionary(object value, Type elementType, string path, ConfigurationVersion version)
+    private static void ValidateDictionary(object value, Type elementType, string path)
     {
         if (value is not IReadOnlyDictionary<object, object?> map)
         {
@@ -108,11 +108,11 @@ internal static class ConfigurationInputValidator
             {
                 throw Error(path + "." + key, "Expected a non-null mapping value.");
             }
-            ValidateValue(item, elementType, path + "." + key, version);
+            ValidateValue(item, elementType, path + "." + key);
         }
     }
 
-    private static void ValidateSequence(object value, Type elementType, string path, ConfigurationVersion version)
+    private static void ValidateSequence(object value, Type elementType, string path)
     {
         if (value is not IEnumerable sequence || value is string or IDictionary or IReadOnlyDictionary<object, object?>)
         {
@@ -126,11 +126,11 @@ internal static class ConfigurationInputValidator
             {
                 throw Error($"{path}[{index}]", "Expected a non-null sequence item.");
             }
-            ValidateValue(list[index], elementType, $"{path}[{index}]", version);
+            ValidateValue(list[index], elementType, $"{path}[{index}]");
         }
     }
 
-    private static void ValidateLeaf(object value, Type type, string path, ConfigurationVersion version)
+    private static void ValidateLeaf(object value, Type type, string path)
     {
         if (type == typeof(string))
         {
@@ -162,7 +162,7 @@ internal static class ConfigurationInputValidator
         }
         else if (value is IReadOnlyDictionary<object, object?> nested)
         {
-            ValidateObject(nested, type, path + ".", version);
+            ValidateObject(nested, type, path + ".");
         }
         else
         {

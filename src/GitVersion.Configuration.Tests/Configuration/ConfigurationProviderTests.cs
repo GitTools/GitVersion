@@ -19,7 +19,7 @@ public class ConfigurationProviderTests : TestBase
     public void Setup()
     {
         this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
         this.repoPath = FileSystemHelper.Path.Combine(FileSystemHelper.Path.GetTempPath(), "MyGitRepo");
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
@@ -48,7 +48,7 @@ public class ConfigurationProviderTests : TestBase
                                   custom-version-format: '{SemVer}'
                                   pre-release-weight: 42
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -60,7 +60,7 @@ public class ConfigurationProviderTests : TestBase
     }
 
     [Test]
-    public void ResolvesEquivalentV6AndV7Configuration()
+    public void MigratedV6ConfigurationMatchesNativeV7()
     {
         const string v6 = """
                           tag-prefix: custom-
@@ -83,9 +83,9 @@ public class ConfigurationProviderTests : TestBase
                                 pre-release-weight: 42
                           """;
 
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
         IGitVersionConfiguration legacy;
-        using (this.fileSystem.SetupConfigFile(path: this.repoPath, text: v6))
+        using (this.fileSystem.SetupConfigFile(path: this.repoPath, text: new ConfigurationMigrationService(new ConfigurationSerializer()).Migrate(v6)))
         {
             legacy = this.configurationProvider.ProvideForDirectory(this.repoPath);
         }
@@ -105,7 +105,7 @@ public class ConfigurationProviderTests : TestBase
     [TestCase("TrunkBased/preview1")]
     public void V7SerializationRoundTripsDefaultsAndBuiltInWorkflows(string? workflow)
     {
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
         using var configurationFile = workflow is null
             ? null
             : this.fileSystem.SetupConfigFile(path: this.repoPath, text: $"workflow: {workflow}");
@@ -131,7 +131,7 @@ public class ConfigurationProviderTests : TestBase
                               tag-prefix: custom-
                             update-build-number: false
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var exception = Should.Throw<ConfigurationException>(() =>
             this.configurationProvider.ProvideForDirectory(this.repoPath));
@@ -151,7 +151,7 @@ public class ConfigurationProviderTests : TestBase
                                     mode: ContinuousDelivery
                                     label: dev
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
@@ -170,7 +170,7 @@ public class ConfigurationProviderTests : TestBase
     {
         // Arrange
         const string text = "strategies: [ConfiguredNextVersion, TaggedCommit]";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         // Act
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
@@ -189,7 +189,7 @@ public class ConfigurationProviderTests : TestBase
                 release:
                     label: ""
             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
@@ -205,16 +205,16 @@ public class ConfigurationProviderTests : TestBase
                                 bug:
                                     label: bugfix
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe("Configuration property 'branches.bug.regex': Branch configuration requires a regex.");
+        ex.Message.ShouldBe("Configuration property 'calculation.branches.bug.regex': Branch configuration requires a regex.");
     }
 
     [Test]
     public void CanConfigureVersionBumpResetMessage()
     {
         const string text = @"version-bump-reset-message: 'baseline:'";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -231,9 +231,9 @@ public class ConfigurationProviderTests : TestBase
                                     label: bugfix
                                     source-branches: [notconfigured]
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe("Configuration property 'branches.bug.source-branches': Referenced branch configuration does not exist.");
+        ex.Message.ShouldBe("Configuration property 'calculation.branches.bug.source-branches': Referenced branch configuration does not exist.");
     }
 
     [Test(Description = "Well-known branches may not be present in the configuration file. This test confirms the validation check succeeds when the source-branches configuration contain these well-known branches.")]
@@ -248,7 +248,7 @@ public class ConfigurationProviderTests : TestBase
                             label: bugfix
                             source-branches: [{wellKnownBranchKey}]
                     """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["bug"].SourceBranches.ShouldBe([wellKnownBranchKey]);
@@ -265,7 +265,7 @@ public class ConfigurationProviderTests : TestBase
                                     label: bugfix
                                     source-branches: []
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["bug"].RegularExpression.ShouldBe(@"bug[\/-]");
@@ -276,7 +276,7 @@ public class ConfigurationProviderTests : TestBase
     public void NextVersionCanBeInteger()
     {
         const string text = "next-version: 2\nsemantic-version-format: Loose";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0");
@@ -286,7 +286,7 @@ public class ConfigurationProviderTests : TestBase
     public void NextVersionCanHaveEnormousMinorVersion()
     {
         const string text = "next-version: 2.118998723\nsemantic-version-format: Loose";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.118998723");
@@ -296,7 +296,7 @@ public class ConfigurationProviderTests : TestBase
     public void NextVersionCanHavePatch()
     {
         const string text = "next-version: 2.12.654651698";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.12.654651698");
@@ -320,7 +320,7 @@ public class ConfigurationProviderTests : TestBase
                             assembly-informational-format: '{NugetVersion}'
                             """;
 
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
@@ -337,7 +337,7 @@ public class ConfigurationProviderTests : TestBase
                             assembly-informational-format: '{Major}.{Minor}.{Patch}'
                             """;
 
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
@@ -357,7 +357,7 @@ public class ConfigurationProviderTests : TestBase
                             branches: {}
                             """;
 
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
@@ -369,7 +369,7 @@ public class ConfigurationProviderTests : TestBase
     public void CanReadCustomVersionFormat()
     {
         const string text = "custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -385,7 +385,7 @@ public class ConfigurationProviderTests : TestBase
                               feature:
                                 custom-version-format: '{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}'
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -397,7 +397,7 @@ public class ConfigurationProviderTests : TestBase
     public void CanOverrideCustomVersionFormat()
     {
         const string text = "custom-version-format: '{SemVer}'";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var overrideConfiguration = new Dictionary<object, object?>
         {
             ["custom-version-format"] = "{Major:00}{Minor:00}{Patch:000}"
@@ -412,7 +412,7 @@ public class ConfigurationProviderTests : TestBase
     public void CanReadDefaultDocument()
     {
         const string text = "";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
@@ -438,97 +438,6 @@ public class ConfigurationProviderTests : TestBase
     }
 
     [Test]
-    public void WarnsOnceWhenExplicitV6LoadsAConfigurationFile()
-    {
-        const string text = "";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
-
-        var logMessages = new List<string>();
-
-        var loggerFactory = new TestLoggerFactory(logMessages.Add);
-
-        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
-        var sp = ConfigureServices(services =>
-        {
-            services.AddSingleton(options);
-            loggerFactory.RegisterWith(services);
-        });
-        this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
-
-        this.configurationProvider.ProvideForDirectory(this.repoPath);
-        this.configurationProvider.ProvideForDirectory(this.repoPath);
-
-        var filePath = FileSystemHelper.Path.Combine(this.repoPath, ConfigurationFileLocator.DefaultFileName);
-        logMessages.ShouldContain(message => message.Contains($"Configuration file '{filePath}' uses the temporary v6 compatibility mode.", StringComparison.Ordinal));
-        logMessages.Count(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal)).ShouldBe(1);
-        logMessages.ShouldContain(message => message.Contains("GitVersion 7.1", StringComparison.Ordinal));
-        logMessages.ShouldContain(message => message.Contains("gitversion config migrate", StringComparison.Ordinal));
-    }
-
-    [TestCase(null)]
-    [TestCase("v7")]
-    public void DoesNotWarnWhenV6IsNotExplicitlySelected(string? configurationVersion)
-    {
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, configurationVersion);
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: "");
-        var logMessages = new List<string>();
-        var loggerFactory = new TestLoggerFactory(logMessages.Add);
-        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
-        var sp = ConfigureServices(services =>
-        {
-            services.AddSingleton(options);
-            loggerFactory.RegisterWith(services);
-        });
-        this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
-
-        this.configurationProvider.ProvideForDirectory(this.repoPath);
-
-        logMessages.ShouldNotContain(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal));
-    }
-
-    [Test]
-    public void DoesNotWarnForExplicitV6BuiltInDefaults()
-    {
-        var logMessages = new List<string>();
-        var loggerFactory = new TestLoggerFactory(logMessages.Add);
-        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
-        var sp = ConfigureServices(services =>
-        {
-            services.AddSingleton(options);
-            loggerFactory.RegisterWith(services);
-        });
-        this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
-
-        this.configurationProvider.ProvideForDirectory(this.repoPath);
-
-        logMessages.ShouldNotContain(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal));
-    }
-
-    [Test]
-    public void DoesNotWarnWhenExplicitV6ConfigurationFailsNormalization()
-    {
-        const string text = """
-                            calculation:
-                              next-version: 2.0.0
-                            output: {}
-                            """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
-        var logMessages = new List<string>();
-        var loggerFactory = new TestLoggerFactory(logMessages.Add);
-        var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.repoPath });
-        var sp = ConfigureServices(services =>
-        {
-            services.AddSingleton(options);
-            loggerFactory.RegisterWith(services);
-        });
-        this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
-
-        Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-
-        logMessages.ShouldNotContain(message => message.Contains("temporary v6 compatibility mode", StringComparison.Ordinal));
-    }
-
-    [Test]
     public void ShouldUseSpecifiedSourceBranchesForDevelop()
     {
         const string text = """
@@ -539,7 +448,7 @@ public class ConfigurationProviderTests : TestBase
                                     source-branches: ['develop']
                                     label: dev
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["develop"].SourceBranches.ShouldBe(["develop"]);
@@ -555,7 +464,7 @@ public class ConfigurationProviderTests : TestBase
                                     mode: ContinuousDeployment
                                     label: dev
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["develop"].SourceBranches.ShouldBe(["main"]);
@@ -572,7 +481,7 @@ public class ConfigurationProviderTests : TestBase
                                     source-branches: ['develop', 'release']
                                     label: dev
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["feature"].SourceBranches.ShouldBe(["develop", "release"]);
@@ -588,7 +497,7 @@ public class ConfigurationProviderTests : TestBase
                                     mode: ContinuousDeployment
                                     label: dev
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["feature"].SourceBranches.ShouldBe(
@@ -602,7 +511,7 @@ public class ConfigurationProviderTests : TestBase
                             next-version: 1.2.3
                             tag-prefix: custom-tag-prefix-from-yml
                             """;
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
 
         var expectedConfig = GitFlowConfigurationBuilder.New
             .WithNextVersion("1.2.3")
@@ -642,7 +551,7 @@ public class ConfigurationProviderTests : TestBase
     public void ShouldUseDefaultTagPrefixWhenNotSetInConfigFile()
     {
         const string text = "";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.TagPrefixPattern.ShouldBe(RegexPatterns.Configuration.DefaultTagPrefixRegexPattern);
@@ -652,7 +561,7 @@ public class ConfigurationProviderTests : TestBase
     public void ShouldUseTagPrefixFromConfigFileWhenProvided()
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.TagPrefixPattern.ShouldBe("custom-tag-prefix-from-yml");
@@ -662,7 +571,7 @@ public class ConfigurationProviderTests : TestBase
     public void ShouldOverrideTagPrefixWithOverrideConfigValue([Values] bool tagPrefixSetAtYmlFile)
     {
         var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "tag-prefix", "tag-prefix-from-override-configuration" }
@@ -676,7 +585,7 @@ public class ConfigurationProviderTests : TestBase
     public void ShouldNotOverrideDefaultTagPrefixWhenNotSetInOverrideConfig()
     {
         const string text = "";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", "1.0.0" }
@@ -691,7 +600,7 @@ public class ConfigurationProviderTests : TestBase
     public void ShouldNotOverrideTagPrefixFromConfigFileWhenNotSetInOverrideConfig()
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "next-version", "1.0.0" }
@@ -705,7 +614,7 @@ public class ConfigurationProviderTests : TestBase
     public void ShouldOverrideTagPrefixFromConfigFileWhenSetInOverrideConfig()
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
-        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: text);
+        using var _ = this.fileSystem.SetupConfigFile(path: this.repoPath, text: NestConfiguration(text));
         var overrideConfiguration = new Dictionary<object, object?>
         {
             { "tag-prefix", "custom-tag-prefix-from-console" }
@@ -714,4 +623,24 @@ public class ConfigurationProviderTests : TestBase
 
         configuration.TagPrefixPattern.ShouldBe("custom-tag-prefix-from-console");
     }
+    [Test]
+    public void FlatV6RuntimeDocumentRequiresMigration()
+    {
+        using var file = this.fileSystem.SetupConfigFile(path: this.repoPath, text: "next-version: 2.0.0");
+        var error = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
+        error.Message.ShouldContain("removed in GitVersion 7.1");
+        error.Message.ShouldContain("gitversion config migrate");
+    }
+
+    private static string NestConfiguration(string yaml)
+    {
+        var serializer = new ConfigurationSerializer();
+        var document = serializer.Deserialize<Dictionary<object, object?>>(yaml);
+        return ConfigurationDocumentMapper.Detect(document) == ConfigurationDocumentKind.V6
+            ? ConfigurationSerializer.SerializeDocument(ConfigurationDocumentMapper.Nest(document))
+            : yaml;
+    }
+
+
+
 }

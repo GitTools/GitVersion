@@ -538,7 +538,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    private static string PublicPath(string path) => ConfigurationVersionSelector.Resolve() == ConfigurationVersion.V7 ? "calculation." + path : path;
+    private static string PublicPath(string path) => "calculation." + path;
 
     private static void ValidateRegex(string path, string? expression)
     {

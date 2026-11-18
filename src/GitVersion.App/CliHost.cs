@@ -36,12 +36,12 @@ internal static class CliHost
         services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionConfigurationModule());
         services.AddModule(new GitVersionOutputModule());
-        services.AddModule(new GitVersionTelemetryModule(selections.ArgumentParser == ArgumentParserVersion.V6));
+        services.AddModule(new GitVersionTelemetryModule());
 
         services.AddModule(selections.GitBackend == GitBackend.Managed
             ? new GitVersionManagedGitModule()
             : new GitVersionLibGit2SharpModule());
 
-        services.AddModule(new GitVersionAppModule(args, selections.ArgumentParser == ArgumentParserVersion.V6));
+        services.AddModule(new GitVersionAppModule(args));
     }
 }

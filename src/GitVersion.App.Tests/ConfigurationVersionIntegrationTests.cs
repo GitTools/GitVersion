@@ -9,7 +9,7 @@ public class ConfigurationVersionIntegrationTests
 {
     [TestCase("ShortSha")]
     [TestCase("Sha")]
-    public async Task V6V7AndMigratedConfigurationCalculateCurrentCommitLabel(string placeholder)
+    public async Task MigratedAndNativeV7ConfigurationCalculateCurrentCommitLabel(string placeholder)
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -20,7 +20,6 @@ public class ConfigurationVersionIntegrationTests
         var configurationPath = Path.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
         await File.WriteAllTextAsync(configurationPath, $"next-version: 2.0.0\nbranches:\n  feature:\n    label: '{label}'");
 
-        var v6 = Execute(fixture.RepositoryPath, "v6");
         var migration = await new ProgramFixture(fixture.RepositoryPath).Run("config", "migrate");
 
         migration.ExitCode.ShouldBe(0);
@@ -33,14 +32,14 @@ public class ConfigurationVersionIntegrationTests
         await File.WriteAllTextAsync(configurationPath, $"calculation:\n  next-version: 2.0.0\n  branches:\n    feature:\n      label: '{label}'\noutput: {{}}");
         var v7 = Execute(fixture.RepositoryPath, "v7");
 
-        foreach (var result in new[] { v6, v7, migrated })
+        foreach (var result in new[] { v7, migrated })
         {
             result.ExitCode.ShouldBe(0);
             using var json = JsonDocument.Parse(result.StandardOutput!);
             json.RootElement.GetProperty("PreReleaseLabelName").GetString().ShouldBe("ci." + (placeholder == "Sha" ? sha : sha[..7]));
             json.RootElement.GetProperty("Sha").GetString().ShouldBe(sha);
             json.RootElement.GetProperty("ShortSha").GetString().ShouldBe(sha[..7]);
-            GetFullSemVer(result.StandardOutput!).ShouldBe(GetFullSemVer(v6.StandardOutput!));
+            GetFullSemVer(result.StandardOutput!).ShouldBe(GetFullSemVer(v7.StandardOutput!));
         }
     }
 
@@ -244,58 +243,7 @@ public class ConfigurationVersionIntegrationTests
         }
     }
 
-    [Test]
-    public void V6AndV7ConfigurationCalculateTheSameVersion()
-    {
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeACommit();
-        var configurationPath = FileSystemHelper.Path.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
-
-        FileSystemHelper.File.WriteAllText(configurationPath, "next-version: 2.0.0");
-        var v6Result = Execute(fixture.RepositoryPath, "v6");
-
-        FileSystemHelper.File.WriteAllText(configurationPath, """
-                                                             calculation:
-                                                               next-version: 2.0.0
-                                                             output: {}
-                                                             """);
-        var v7Result = Execute(fixture.RepositoryPath, "v7");
-
-        v6Result.ExitCode.ShouldBe(0);
-        v7Result.ExitCode.ShouldBe(0);
-        GetFullSemVer(v7Result.StandardOutput!).ShouldBe(GetFullSemVer(v6Result.StandardOutput!));
-    }
-
-    [TestCase(false)]
-    [TestCase(true)]
-    public void ExplicitV6WarningUsesStandardErrorOnceWithoutContaminatingJson(bool logToFile)
-    {
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeACommit();
-        var configurationPath = Path.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
-        File.WriteAllText(configurationPath, "next-version: 2.0.0");
-
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, " --no-cache", logToFile,
-            new KeyValuePair<string, string?>(ConfigurationVersionSelector.EnvironmentVariableName, "v6"));
-
-        result.ExitCode.ShouldBe(0);
-        GetFullSemVer(result.StandardOutput!).ShouldBe("2.0.0-1");
-        result.StandardError.ShouldNotBeNull();
-        result.StandardError.Split("temporary v6 compatibility mode").Length.ShouldBe(2);
-        result.StandardError.ShouldContain(configurationPath);
-        result.StandardError.ShouldContain("GitVersion 7.1");
-        result.StandardError.ShouldContain("gitversion config migrate");
-        result.StandardError.ShouldContain("GITVERSION_CONFIGURATION_VERSION=v7");
-        if (logToFile)
-        {
-            result.Log.ShouldNotBeNull();
-            result.Log.ShouldContain("temporary v6 compatibility mode");
-        }
-    }
-
-    [TestCase("v6", "")]
     [TestCase("v7", "")]
-    [TestCase("v6", "workflow: GitHubFlow/v1")]
     [TestCase("v7", "workflow: GitHubFlow/v1")]
     public void CalculatesVersionWithSharedRootConfiguration(string version, string configuration)
     {
@@ -349,20 +297,6 @@ public class ConfigurationVersionIntegrationTests
         effective.Branches["main"].PreReleaseWeight.ShouldBe(hasOverrides ? 42 : 55000);
     }
 
-    [Test]
-    public void ExplicitV6WithoutUserConfigurationDoesNotWarnOnStandardError()
-    {
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeACommit();
-
-        var result = Execute(fixture.RepositoryPath, "v6");
-
-        result.ExitCode.ShouldBe(0);
-        result.StandardError.ShouldBeEmpty();
-        GetFullSemVer(result.StandardOutput!).ShouldNotBeNullOrEmpty();
-    }
-
-    [TestCase("v6", false)]
     [TestCase("v7", true)]
     public void ShowConfigUsesSelectedConfigurationStructure(string version, bool nested)
     {
@@ -408,7 +342,7 @@ public class ConfigurationVersionIntegrationTests
         result.Output.ShouldNotBeNull();
         result.Output.ShouldContain("An error occurred:");
         result.Output.ShouldContain("Unrecognized GITVERSION_CONFIGURATION_VERSION value 'invalid'");
-        result.Output.ShouldContain("Valid values are 'v6' and 'v7'");
+        result.Output.ShouldContain("Valid value is 'v7'");
     }
 
     private static ExecutionResults Execute(string repositoryPath, string version) =>
