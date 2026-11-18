@@ -28,6 +28,8 @@ on:
       - .remarkrc.yaml
       - mkdocs.yml
       - .github/workflows/docs.yml
+      - .github/workflows/schemastore.yml
+      - .github/scripts/schemastore*.mjs
   pull_request:
     branches:
       - main
@@ -45,6 +47,8 @@ on:
       - .remarkrc.yaml
       - mkdocs.yml
       - .github/workflows/docs.yml
+      - .github/workflows/schemastore.yml
+      - .github/scripts/schemastore*.mjs
 env:
   DOTNET_ROLL_FORWARD: "Major"
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -140,6 +144,7 @@ jobs:
       - name: Verify reference links in scoped Markdown documentation
         run: |
           npm ci --ignore-scripts
+          node --test .github/scripts/schemastore.test.mjs
           npm run test:links
           npm run check:links
 
@@ -255,3 +260,13 @@ jobs:
         with:
           path: artifacts/docs/cache
           key: docs-inputs-v2-${{ runner.os }}-${{ hashFiles('docs/versions.json') }}-${{ hashFiles('artifacts/docs/cache/**/*.sha512') }}
+
+  schemastore:
+    name: Update SchemaStore
+    needs: [ publish ]
+    if: needs.publish.result == 'success' && github.repository == 'GitTools/GitVersion' && github.ref == 'refs/heads/main'
+    uses: $/.github/workflows/schemastore.yml # NOSONAR -- $/ resolves to the running commit.
+    permissions:
+      contents: read
+    secrets:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}

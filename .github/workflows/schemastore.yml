@@ -1,0 +1,72 @@
+name: Update SchemaStore
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Optional stable published major.minor edition to backfill'
+        type: string
+        required: false
+        default: ''
+    secrets:
+      OP_SERVICE_ACCOUNT_TOKEN:
+        required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Optional stable published major.minor edition to backfill'
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: schemastore-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'GitTools/GitVersion' && github.ref == 'refs/heads/main'
+    name: Open SchemaStore PR
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout publisher
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: source
+          persist-credentials: false
+
+      - name: Checkout published documentation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: gh-pages
+          path: published
+          persist-credentials: false
+
+      - name: Detect stable schema updates
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SCHEMA_VERSION: ${{ inputs.version }}
+        run: node source/.github/scripts/schemastore.mjs plan --published-dir published
+
+      - name: Load GitHub release token
+        id: github-creds
+        if: steps.plan.outputs.changed == 'true'
+        uses: gittools/cicd/github-creds@35132578146a11af8758159e9a9d4f69c7041297 # v6
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: Publish SchemaStore update
+        if: steps.plan.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.github-creds.outputs.github_release_token }}
+          SCHEMA_VERSION: ${{ inputs.version }}
+        run: node source/.github/scripts/schemastore.mjs publish --published-dir published
