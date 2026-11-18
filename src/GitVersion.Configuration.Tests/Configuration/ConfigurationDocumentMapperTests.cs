@@ -109,7 +109,7 @@ public class ConfigurationDocumentMapperTests
     }
 
     [Test]
-    public void RejectsMixedAndSelectedVersionMismatches()
+    public void RejectsFlatAndMixedRuntimeDocuments()
     {
         Dictionary<object, object?> flat = new() { ["tag-prefix"] = "v" };
         Dictionary<object, object?> nested = new() { ["calculation"] = new Dictionary<object, object?>() };
@@ -120,11 +120,10 @@ public class ConfigurationDocumentMapperTests
         };
 
         Should.Throw<ConfigurationException>(() =>
-            ConfigurationDocumentMapper.Normalize(flat, ConfigurationVersion.V7, "test"));
+            ConfigurationDocumentMapper.Normalize(flat, "test"));
+        ConfigurationDocumentMapper.Normalize(nested, "test").ShouldBeEmpty();
         Should.Throw<ConfigurationException>(() =>
-            ConfigurationDocumentMapper.Normalize(nested, ConfigurationVersion.V6, "test"));
-        Should.Throw<ConfigurationException>(() =>
-            ConfigurationDocumentMapper.Normalize(mixed, ConfigurationVersion.V7, "test"));
+            ConfigurationDocumentMapper.Normalize(mixed, "test"));
     }
 
     [Test]
@@ -151,11 +150,9 @@ public class ConfigurationDocumentMapperTests
             .Message.ShouldContain("calculation.branches.<branch>.increment");
     }
 
-    [TestCase(false, false)]
-    [TestCase(false, true)]
-    [TestCase(true, false)]
-    [TestCase(true, true)]
-    public void AcceptsEmptyAndWorkflowOnlyDocumentsInEitherVersion(bool v7, bool hasWorkflow)
+    [TestCase(false)]
+    [TestCase(true)]
+    public void AcceptsEmptyAndWorkflowOnlyDocuments(bool hasWorkflow)
     {
         Dictionary<object, object?> document = [];
         if (hasWorkflow)
@@ -164,7 +161,7 @@ public class ConfigurationDocumentMapperTests
         }
 
         ConfigurationDocumentMapper.Detect(document).ShouldBe(hasWorkflow ? ConfigurationDocumentKind.Shared : ConfigurationDocumentKind.Empty);
-        var normalized = ConfigurationDocumentMapper.Normalize(document, v7 ? ConfigurationVersion.V7 : ConfigurationVersion.V6, "test");
+        var normalized = ConfigurationDocumentMapper.Normalize(document, "test");
         var internalNormalized = ConfigurationDocumentMapper.NormalizeInternal(document, "template");
 
         normalized.ShouldBe(document);
@@ -185,9 +182,8 @@ public class ConfigurationDocumentMapperTests
         ConfigurationDocumentMapper.Detect(document).ShouldBe(nested ? ConfigurationDocumentKind.V7 : ConfigurationDocumentKind.V6);
     }
 
-    [TestCase(false)]
-    [TestCase(true)]
-    public void RootWorkflowDoesNotMakeMixedDocumentValid(bool v7)
+    [Test]
+    public void RootWorkflowDoesNotMakeMixedDocumentValid()
     {
         Dictionary<object, object?> document = new()
         {
@@ -197,7 +193,7 @@ public class ConfigurationDocumentMapperTests
         };
 
         ConfigurationDocumentMapper.Detect(document).ShouldBe(ConfigurationDocumentKind.Mixed);
-        Should.Throw<ConfigurationException>(() => ConfigurationDocumentMapper.Normalize(document, v7 ? ConfigurationVersion.V7 : ConfigurationVersion.V6, "test"))
+        Should.Throw<ConfigurationException>(() => ConfigurationDocumentMapper.Normalize(document, "test"))
             .Message.ShouldContain("unsupported root-level properties");
     }
 
@@ -217,7 +213,7 @@ public class ConfigurationDocumentMapperTests
         }
 
         var exception = Should.Throw<ConfigurationException>(() =>
-            ConfigurationDocumentMapper.Normalize(document, ConfigurationVersion.V7, "test"));
+            ConfigurationDocumentMapper.Normalize(document, "test"));
 
         exception.Message.ShouldContain($"{section}.workflow");
         exception.Message.ShouldContain("root");

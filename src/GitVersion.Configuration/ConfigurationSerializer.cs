@@ -29,7 +29,7 @@ internal class ConfigurationSerializer : IConfigurationSerializer
 
         if (typeof(T) == typeof(GitVersionConfiguration))
         {
-            return (T)(object)DeserializeConfiguration(input, ConfigurationVersionSelector.Resolve(), "configuration document")!;
+            return (T)(object)DeserializeConfiguration(input, "configuration document")!;
         }
 
         return YamlSerializer.Deserialize<T>(input, SerializerOptions)!;
@@ -37,9 +37,10 @@ internal class ConfigurationSerializer : IConfigurationSerializer
 
     public string Serialize(object graph) // NOSONAR: IConfigurationSerializer requires an instance method.
     {
+        _ = ConfigurationVersionSelector.Resolve();
         var yaml = SerializeLegacy(graph);
         var configuration = YamlSerializer.Deserialize<Dictionary<string, object?>>(yaml, SerializerOptions) ?? [];
-        if (graph is IGitVersionConfiguration && ConfigurationVersionSelector.Resolve() == ConfigurationVersion.V7)
+        if (graph is IGitVersionConfiguration)
         {
             configuration = ConfigurationDocumentMapper.Nest(configuration);
         }
@@ -63,23 +64,23 @@ internal class ConfigurationSerializer : IConfigurationSerializer
     }
 
     public static IGitVersionConfiguration? ReadConfiguration(string input)
-        => DeserializeConfiguration(input, ConfigurationVersionSelector.Resolve(), "configuration document");
+        => DeserializeConfiguration(input, "configuration document");
 
     internal static string SerializeLegacy(object graph) => YamlSerializer.Serialize(graph, SerializerOptions);
 
     internal static GitVersionConfiguration? DeserializeLegacyConfiguration(string input)
-        => DeserializeConfiguration(input, ConfigurationVersion.V6, "internal effective configuration");
+        => YamlSerializer.Deserialize<GitVersionConfiguration>(input, GeneratedContext);
 
     private static GitVersionConfiguration? DeserializeConfiguration(
         string input,
-        ConfigurationVersion version,
         string source)
     {
+        _ = ConfigurationVersionSelector.Resolve();
         try
         {
             var graph = YamlSerializer.Deserialize<Dictionary<string, object?>>(input, SerializerOptions);
             var objectGraph = ConvertToObjectDictionary(graph);
-            var normalized = ConfigurationDocumentMapper.Normalize(objectGraph, version, source);
+            var normalized = ConfigurationDocumentMapper.Normalize(objectGraph, source);
             var normalizedYaml = YamlSerializer.Serialize(normalized, SerializerOptions);
             return YamlSerializer.Deserialize<GitVersionConfiguration>(normalizedYaml, GeneratedContext);
         }

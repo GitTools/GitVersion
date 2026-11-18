@@ -4,10 +4,7 @@ internal static class ConfigurationPropertyQuery
 {
     public static object? GetValue(IGitVersionConfiguration configuration, string path)
     {
-        if (ConfigurationVersionSelector.Resolve() != ConfigurationVersion.V7)
-        {
-            throw new ConfigurationException("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
-        }
+        _ = ConfigurationVersionSelector.Resolve();
 
         var segments = ParsePath(path);
         var offset = GetPropertyOffset(segments, path);

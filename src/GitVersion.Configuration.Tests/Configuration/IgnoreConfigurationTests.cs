@@ -16,7 +16,7 @@ public class IgnoreConfigurationTests : TestBase
     public void Setup()
     {
         this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
     }
 
     [TearDown]
@@ -33,7 +33,7 @@ public class IgnoreConfigurationTests : TestBase
                 sha: [b6c0c9fda88830ebcd563e500a5a7da5a1658e98]
             """;
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
@@ -53,7 +53,7 @@ public class IgnoreConfigurationTests : TestBase
                     - 6c19c7c219ecf8dbc468042baefa73a1b213e8b1
             """;
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
@@ -66,7 +66,7 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml = "ignore:\n  branches: ['^legacy/', '^release/old$']";
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.Branches.ShouldBe(["^legacy/", "^release/old$"]);
@@ -77,7 +77,7 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml = "ignore:\n  tags: ['^preview-', '^v0\\.']";
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.Tags.ShouldBe(["^preview-", "^v0\\."]);
@@ -96,7 +96,7 @@ public class IgnoreConfigurationTests : TestBase
                     - ^preview-
             """;
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.Branches.ShouldBe(["^legacy/", "^release/old$"]);
@@ -114,7 +114,7 @@ public class IgnoreConfigurationTests : TestBase
                     - ^v0\.
             """;
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.Tags.ShouldBe(["^preview-", "^v0\\."]);
@@ -125,7 +125,7 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml = "next-version: 1.0";
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.Ignore.ShouldNotBeNull();
@@ -225,7 +225,7 @@ public class IgnoreConfigurationTests : TestBase
                 commits-before: bad format date
             """;
 
-        Should.Throw<YamlException>(() => ConfigurationSerializer.ReadConfiguration(yaml));
+        Should.Throw<YamlException>(() => ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml)));
     }
 
     [Test]
@@ -233,7 +233,7 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml = "strategies: ConfiguredNextVersion, TaggedCommit";
 
-        var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
+        var configuration = ConfigurationSerializer.ReadConfiguration(NestConfiguration(yaml));
 
         configuration.ShouldNotBeNull();
         configuration.VersionStrategy.ShouldBe(VersionStrategies.ConfiguredNextVersion | VersionStrategies.TaggedCommit);
@@ -246,4 +246,15 @@ public class IgnoreConfigurationTests : TestBase
 
         ignoreConfig.IsEmpty.ShouldBeTrue();
     }
+    private static string NestConfiguration(string yaml)
+    {
+        var serializer = new ConfigurationSerializer();
+        var document = serializer.Deserialize<Dictionary<object, object?>>(yaml);
+        return ConfigurationDocumentMapper.Detect(document) == ConfigurationDocumentKind.V6
+            ? ConfigurationSerializer.SerializeDocument(ConfigurationDocumentMapper.Nest(document))
+            : yaml;
+    }
+
+
+
 }

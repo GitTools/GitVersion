@@ -4,22 +4,13 @@ using GitVersion.Telemetry;
 namespace GitVersion;
 
 /// <summary>Registers CLI services and the allowlisted invocation projection used by telemetry.</summary>
-internal class GitVersionAppModule(string[]? args = null, bool useLegacyParser = false) : IGitVersionModule
+internal class GitVersionAppModule(string[]? args = null) : IGitVersionModule
 {
     /// <summary>Registers argument parsing, execution, and the deferred telemetry argument projection.</summary>
     public void RegisterTypes(IServiceCollection services)
     {
-        if (useLegacyParser)
-        {
-            services.AddSingleton<IArgumentParser, LegacyArgumentParser>();
-            services.AddSingleton<IHelpWriter, HelpWriter>();
-            services.AddSingleton<IVersionWriter, VersionWriter>();
-        }
-        else
-        {
-            services.AddSingleton<IArgumentParser, ArgumentParser>();
-            services.AddSingleton<CliSchemaExporter>();
-        }
+        services.AddSingleton<IArgumentParser, ArgumentParser>();
+        services.AddSingleton<CliSchemaExporter>();
 
         services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
         services.AddSingleton<IGitVersionExecutor, GitVersionExecutor>();

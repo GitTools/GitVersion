@@ -48,7 +48,7 @@ GitVersion reads the configuration file from the working/project directory as
 usual; an environment branch override does not check out another configuration file.
 Provider-specific detection is described in the [CI guides][ci-guides].
 
-The [v6 to v7 migration guide][v6-to-v7-migration-guide] documents the independent selectors `GITVERSION_ARGUMENT_PARSER_VERSION`, `GITVERSION_CONFIGURATION_VERSION`, and `GITVERSION_GIT_BACKEND`. Their v7.0 defaults are `v7`, `v7`, and `managed`; temporary fallbacks are `v6`, `v6`, and `libgit2`. Values are trimmed and case-insensitive; blank values use the defaults and unknown values fail with accepted-value guidance. The retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable must be unset. Legacy implementations are removed in v7.1 and selectors in v8.
+The [v6 to v7 migration guide][v6-to-v7-migration-guide] documents the independent selectors `GITVERSION_ARGUMENT_PARSER_VERSION`, `GITVERSION_CONFIGURATION_VERSION`, and `GITVERSION_GIT_BACKEND`. Their v7.0 defaults are `v7`, `v7`, and `managed`. In v7.1, parser/configuration `v6` values are rejected with removal guidance; unset those variables or use `v7` as a compatibility no-op. Flat v6 files can still be converted with `gitversion config migrate`. Git backend removal is tracked separately in #5040. Values are trimmed and case-insensitive; blank values use the defaults and unknown values fail with accepted-value guidance. The retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable must be unset. Parser/configuration runtime fallbacks were removed in v7.1; selector variables remain until v8.
 
 ## Output variables
 

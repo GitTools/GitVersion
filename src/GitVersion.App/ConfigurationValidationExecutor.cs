@@ -25,10 +25,7 @@ internal sealed class ConfigurationValidationExecutor(
             ValidateInvocation(options);
             file = SelectFile(options);
             ValidateFile(file, info.ValidationOverrides);
-            if (ConfigurationVersionSelector.IsExplicitV6())
-            {
-                diagnostics.Add(new("GVCONFIG_V6_COMPATIBILITY", "warning", "", "Temporary v6 compatibility mode is removed in GitVersion 7.1. Run 'gitversion config migrate' and validate with GITVERSION_CONFIGURATION_VERSION=v7."));
-            }
+
         }
         catch (ConfigurationValidationException exception)
         {
