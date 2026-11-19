@@ -36,10 +36,11 @@ public sealed class PackageValidateCollected : FrostingTask<BuildContext>
         }
         foreach (var runtime in context.NativeRuntimes[PlatformFamily.Linux])
         {
-            var count = context.GetFiles($"{root}/native/gitversion-{runtime}-*.tar.gz").Count;
-            if (count != 1)
+            var archives = context.GetFiles($"{root}/native/gitversion-{runtime}-*.tar.gz");
+            var expectedName = $"gitversion-{runtime}-{version}.tar.gz";
+            if (archives.Count != 1 || !string.Equals(archives.Single().GetFilename().FullPath, expectedName, StringComparison.OrdinalIgnoreCase))
             {
-                throw new CakeException($"Expected one archive for {runtime}; found {count}.");
+                throw new CakeException($"Expected one archive named {expectedName}; found {archives.Count} archive(s) for {runtime}.");
             }
         }
     }

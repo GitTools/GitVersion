@@ -61,7 +61,8 @@ jobs:
         if: matrix.os != 'windows-2025-vs2026'
         with:
           name: nuget-${{ matrix.rid }}
-          path: ${{ github.workspace }}/artifacts/packages/nuget/GitVersion.Tool.${{ matrix.rid }}.*.nupkg
+          # macOS packaging produces both Intel and ARM64 tool packages.
+          path: ${{ github.workspace }}/artifacts/packages/nuget/GitVersion.Tool.${{ startsWith(matrix.os, 'macos-') && 'osx-*' || matrix.rid }}.*.nupkg
           if-no-files-found: error
 
       - name: 'Upload native packages'
