@@ -354,6 +354,73 @@ public class IgnoreCommitScenarios : TestBase
         fixture.AssertFullSemver("0.0.3", configuration);
     }
 
+    [TestCase(true, true, false, "0.2.0")]
+    [TestCase(true, true, true, "0.2.0")]
+    [TestCase(true, false, false, "0.2.0")]
+    [TestCase(true, false, true, "0.2.0")]
+    [TestCase(false, true, false, "0.1.0")]
+    [TestCase(false, true, true, "0.1.0")]
+    [TestCase(false, false, false, "0.1.0")]
+    [TestCase(false, false, true, "0.1.0")]
+    public void TrunkBasedFeatureMergePreservesMinorIncrementAfterIgnoredBase(
+        bool includeFirstFeature, bool mergeDocs, bool ignoreBySha, string expectedVersion)
+    {
+        // Regression for #5501: an ignored branch point must not turn feature work into trunk/Patch commits.
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit("Initial configuration");
+        var ignore = new IgnoreConfiguration();
+        if (!ignoreBySha)
+        {
+            ignore.Paths.Add("^docs/");
+        }
+        var configuration = TrunkBasedConfigurationBuilder.New.WithIgnoreConfiguration(ignore).Build();
+
+        if (includeFirstFeature)
+        {
+            fixture.BranchTo("feature/first");
+            fixture.MakeACommit("First feature");
+            fixture.Checkout(MainBranch);
+            fixture.MergeNoFF("feature/first");
+            fixture.AssertFullSemver("0.1.0", configuration);
+        }
+
+        if (mergeDocs)
+        {
+            fixture.BranchTo("feature/docs");
+        }
+        var docsPath = Path.Combine(fixture.RepositoryPath, "docs", "readme.txt");
+        Directory.CreateDirectory(Path.GetDirectoryName(docsPath)!);
+        File.WriteAllText(docsPath, "Documentation only");
+        LibGit2Sharp.Commands.Stage(fixture.Repository, docsPath);
+        var signature = Generate.SignatureNow();
+        var docsCommit = fixture.Repository.Commit("Documentation only", signature, signature, new LibGit2Sharp.CommitOptions());
+        if (mergeDocs)
+        {
+            fixture.Checkout(MainBranch);
+            fixture.MergeNoFF("feature/docs");
+        }
+        var ignoredBase = fixture.Repository.Head.Tip;
+        if (ignoreBySha)
+        {
+            ignore.Shas.UnionWith([docsCommit.Sha, ignoredBase.Sha]);
+        }
+        fixture.AssertFullSemver(includeFirstFeature ? "0.1.0" : "0.0.1", configuration);
+
+        fixture.BranchTo("feature/second");
+        fixture.MakeACommit("Second feature");
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("feature/second");
+        var merge = fixture.Repository.Head.Tip;
+        var parents = merge.Parents.ToArray();
+        fixture.Repository.ObjectDatabase.FindMergeBase(parents[0], parents[1]).ShouldNotBeNull().Sha.ShouldBe(ignoredBase.Sha);
+
+        var version = fixture.GetVersion(configuration);
+
+        version.FullSemVer.ShouldBe(expectedVersion);
+        version.SemVerSourceIncrement.ShouldBe("Minor");
+        version.Sha.ShouldBe(merge.Sha);
+    }
+
     [Test]
     public void GivenTrunkBasedWorkflowWithIgnoreConfigurationForPathAndCommitParameterCThenVersionShouldBeCorrect()
     {

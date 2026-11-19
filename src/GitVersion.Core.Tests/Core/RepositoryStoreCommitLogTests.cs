@@ -13,6 +13,38 @@ public class RepositoryStoreCommitLogTests : TestBase
 {
     private static readonly IReadOnlySet<string> NothingExcluded = new HashSet<string>();
 
+    [TestCase(0)]
+    [TestCase(1)]
+    public void MergedCommitSelectionKeepsIgnoredBaseAsBoundaryAndPreservesOrder(int parentIndex)
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeACommit("initial");
+        var ignoredBase = fixture.MakeACommit();
+        fixture.BranchTo("feature/source");
+        var sourceFirst = fixture.MakeACommit();
+        var ignoredSource = fixture.MakeACommit();
+        var sourceLast = fixture.MakeACommit();
+        fixture.Checkout(MainBranch);
+        var receiverFirst = fixture.MakeACommit();
+        var receiverLast = fixture.MakeACommit();
+        fixture.MergeNoFF("feature/source");
+
+        using var repository = fixture.Repository.ToGitRepository();
+        var store = new RepositoryStore(NullLogger<RepositoryStore>.Instance, repository);
+        var tags = new TaggedSemanticVersionRepository(NullLogger<TaggedSemanticVersionRepository>.Instance, store);
+        var finder = new IncrementStrategyFinder(store, tags);
+        var merge = repository.Head.Tip.ShouldNotBeNull();
+        var ignore = new IgnoreConfiguration { Shas = [ignoredBase, ignoredSource] };
+        string[] expected = parentIndex == 0 ? [receiverFirst, receiverLast] : [sourceFirst, sourceLast];
+
+        finder.GetMergedCommits(merge, parentIndex, ignore).Select(commit => commit.Sha).ShouldBe(expected);
+
+        // Reusing the finder with another policy must not reuse an already filtered commit list.
+        string[] unfiltered = parentIndex == 0 ? [receiverFirst, receiverLast] : [sourceFirst, ignoredSource, sourceLast];
+        finder.GetMergedCommits(merge, parentIndex, new IgnoreConfiguration())
+            .Select(commit => commit.Sha).ShouldBe(unfiltered);
+    }
+
     /// <summary>
     /// The derived log has to be indistinguishable from a walk which hides the base version source, for every
     /// commit of a branched and merged history.
