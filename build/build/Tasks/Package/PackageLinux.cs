@@ -7,6 +7,8 @@ namespace Build.Tasks;
 [TaskArgument(Arguments.NativeContainer, "glibc", "musl")]
 public sealed class PackageLinux : FrostingTask<BuildContext>
 {
+    private const string EnvironmentOption = "--env";
+
     private static readonly string[] BuildEnvironment =
     [
         "CI", "GITHUB_ACTIONS", "GITHUB_REF", "GITHUB_REF_TYPE", "GITHUB_SHA",
@@ -49,15 +51,15 @@ public sealed class PackageLinux : FrostingTask<BuildContext>
             .Append("--volume").AppendQuoted($"{root.FullPath}:{root.FullPath}")
             .Append("--volume").AppendQuoted($"{gitDirectory}:{gitDirectory}")
             .Append("--workdir").AppendQuoted(root.FullPath)
-            .Append("--env").AppendQuoted("GIT_CONFIG_COUNT=1")
-            .Append("--env").AppendQuoted("GIT_CONFIG_KEY_0=safe.directory")
-            .Append("--env").AppendQuoted($"GIT_CONFIG_VALUE_0={root.FullPath}");
+            .Append(EnvironmentOption).AppendQuoted("GIT_CONFIG_COUNT=1")
+            .Append(EnvironmentOption).AppendQuoted("GIT_CONFIG_KEY_0=safe.directory")
+            .Append(EnvironmentOption).AppendQuoted($"GIT_CONFIG_VALUE_0={root.FullPath}");
         foreach (var name in BuildEnvironment)
         {
             var value = context.EnvironmentVariable(name);
             if (value is not null)
             {
-                args.Append("--env").AppendQuoted($"{name}={value}");
+                args.Append(EnvironmentOption).AppendQuoted($"{name}={value}");
             }
         }
         args.Append(image).Append("dotnet").Append("run/build.dll").Append("--target=Package")

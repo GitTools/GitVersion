@@ -6,15 +6,17 @@ public class SetMatrix : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
+        const string linuxRunner = "ubuntu-26.04";
+        const string macosRunner = "macos-26";
         var packageBuildMatrix = new
         {
             include = new[]
             {
                 new { name = "windows-2025-vs2026", os = "windows-2025-vs2026", rid = "windows", artifact = "Windows", container = "" },
-                new { name = "macos-26", os = "macos-26", rid = "osx-arm64", artifact = "macOS", container = "" },
-                new { name = "ubuntu-26.04", os = "ubuntu-26.04", rid = "linux-x64", artifact = "linux-x64", container = "glibc" },
+                new { name = macosRunner, os = macosRunner, rid = "osx-arm64", artifact = "macOS", container = "" },
+                new { name = linuxRunner, os = linuxRunner, rid = "linux-x64", artifact = "linux-x64", container = "glibc" },
                 new { name = "linux-arm64", os = "ubuntu-26.04-arm", rid = "linux-arm64", artifact = "linux-arm64", container = "glibc" },
-                new { name = "linux-musl-x64", os = "ubuntu-26.04", rid = "linux-musl-x64", artifact = "linux-musl-x64", container = "musl" },
+                new { name = "linux-musl-x64", os = linuxRunner, rid = "linux-musl-x64", artifact = "linux-musl-x64", container = "musl" },
                 new { name = "linux-musl-arm64", os = "ubuntu-26.04-arm", rid = "linux-musl-arm64", artifact = "linux-musl-arm64", container = "musl" }
             }
         };
