@@ -64,4 +64,47 @@ public class VersionFormatTests
             property.PropertyType.ShouldBe(typeof(string), $"Update the formatter member graph for {modelType.Name}.{property.Name}");
         }
     }
+    [Test]
+    public void ObjectFormattingSelectsDerivedField()
+    {
+        "{Value}".FormatWith((object)new BaseField(), this.environment).ShouldBe("base");
+        "{Value}".FormatWith((object)new DerivedField(), this.environment).ShouldBe("derived");
+    }
+
+    [Test]
+    public void ObjectFormattingSelectsDerivedProperty()
+        => "{Value}".FormatWith((object)new DerivedProperty(), this.environment).ShouldBe("derived");
+
+    [Test]
+    public void ObjectFormattingPrefersPropertiesOverFields()
+        => "{Value}".FormatWith((object)new PropertyWithDerivedField(), this.environment).ShouldBe("base-property");
+
+    [Test]
+    public void ObjectFormattingFindsDerivedFieldRecursively()
+        => "{Value}".FormatWith((object)new { Child = new DerivedField() }, this.environment).ShouldBe("derived");
+
+    private class BaseField
+    {
+        public readonly string Value = "base";
+    }
+
+    private sealed class DerivedField : BaseField
+    {
+        public new readonly string Value = "derived";
+    }
+
+    private class BaseProperty
+    {
+        public string Value => "base-property";
+    }
+
+    private sealed class DerivedProperty : BaseProperty
+    {
+        public new string Value => "derived";
+    }
+
+    private sealed class PropertyWithDerivedField : BaseProperty
+    {
+        public new readonly string Value = "derived-field";
+    }
 }
