@@ -51,24 +51,29 @@ internal static class PackageContentsValidation
         }
         foreach (var file in files)
         {
-            var path = file.Replace('\\', '/');
-            if (nativeTool && path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
-                || path.Contains("libgit2", StringComparison.OrdinalIgnoreCase)
-                || path.Contains("runtimes/", StringComparison.OrdinalIgnoreCase) && path.Contains("/native/", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new CakeException($"Unsupported payload '{path}' in {packagePath}.");
-            }
+            ValidatePayload(package, file, nativeTool, packagePath);
+        }
+    }
 
-            if (!path.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase)
-                && !path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-            using var reader = new StreamReader(package.GetStream(file));
-            if (reader.ReadToEnd().Contains("LibGit2Sharp", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new CakeException($"LibGit2Sharp dependency remains in '{path}' in {packagePath}.");
-            }
+    private static void ValidatePayload(PackageArchiveReader package, string file, bool nativeTool, string packagePath)
+    {
+        var path = file.Replace('\\', '/');
+        if (nativeTool && path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+            || path.Contains("libgit2", StringComparison.OrdinalIgnoreCase)
+            || path.Contains("runtimes/", StringComparison.OrdinalIgnoreCase) && path.Contains("/native/", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new CakeException($"Unsupported payload '{path}' in {packagePath}.");
+        }
+
+        if (!path.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase)
+            && !path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+        using var reader = new StreamReader(package.GetStream(file));
+        if (reader.ReadToEnd().Contains("LibGit2Sharp", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new CakeException($"LibGit2Sharp dependency remains in '{path}' in {packagePath}.");
         }
     }
 }

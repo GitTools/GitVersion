@@ -6,6 +6,8 @@ public class SetMatrix : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
+        const string linuxRunner = "ubuntu-26.04";
+        const string macosRunner = "macos-26";
         const string coreProject = "GitVersion.Core.Tests";
         var projects = context.GetFiles("./src/**/*.Tests.csproj")
             .Select(project => project.GetFilenameWithoutExtension().FullPath).Order(StringComparer.Ordinal).ToArray();
@@ -15,14 +17,14 @@ public class SetMatrix : FrostingTask<BuildContext>
         }
         var otherProjects = string.Join(',', projects.Where(project => project != coreProject));
         var rows = new List<object>();
-        foreach (var os in new[] { "windows-2025-vs2026", "ubuntu-26.04", "macos-26" })
+        foreach (var os in new[] { "windows-2025-vs2026", linuxRunner, macosRunner })
         {
             foreach (var framework in Constants.DotnetVersions)
             {
                 var name = $"{os} - net{framework}";
                 // Git CLI fixture setup is expensive on macOS/net10. Keep every test
                 // and the existing per-job budget by partitioning the covered target.
-                if (os == "macos-26" && framework == Constants.DotnetLtsLatest)
+                if (os == macosRunner && framework == Constants.DotnetLtsLatest)
                 {
                     var groups = new[]
                     {
@@ -51,10 +53,10 @@ public class SetMatrix : FrostingTask<BuildContext>
             include = new[]
             {
                 new { name = "windows-2025-vs2026", os = "windows-2025-vs2026", rid = "windows", artifact = "Windows", container = "" },
-                new { name = "macos-26", os = "macos-26", rid = "osx-arm64", artifact = "macOS", container = "" },
-                new { name = "ubuntu-26.04", os = "ubuntu-26.04", rid = "linux-x64", artifact = "linux-x64", container = "glibc" },
+                new { name = macosRunner, os = macosRunner, rid = "osx-arm64", artifact = "macOS", container = "" },
+                new { name = linuxRunner, os = linuxRunner, rid = "linux-x64", artifact = "linux-x64", container = "glibc" },
                 new { name = "linux-arm64", os = "ubuntu-26.04-arm", rid = "linux-arm64", artifact = "linux-arm64", container = "glibc" },
-                new { name = "linux-musl-x64", os = "ubuntu-26.04", rid = "linux-musl-x64", artifact = "linux-musl-x64", container = "musl" },
+                new { name = "linux-musl-x64", os = linuxRunner, rid = "linux-musl-x64", artifact = "linux-musl-x64", container = "musl" },
                 new { name = "linux-musl-arm64", os = "ubuntu-26.04-arm", rid = "linux-musl-arm64", artifact = "linux-musl-arm64", container = "musl" }
             }
         };
