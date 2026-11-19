@@ -74,8 +74,24 @@ internal partial class MemberResolver : IMemberResolver
     }
 
     private static MemberInfo? FindDirectMember(MemberInfo[] members, string memberName)
-        => members.OfType<PropertyInfo>().SingleOrDefault(member => member.Name == memberName)
-           ?? (MemberInfo?)members.OfType<FieldInfo>().SingleOrDefault(member => member.Name == memberName);
+    {
+        var matches = members.Where(member => member.Name == memberName);
+        return FindMostDerived(matches.OfType<PropertyInfo>())
+            ?? (MemberInfo?)FindMostDerived(matches.OfType<FieldInfo>());
+    }
+
+    private static T? FindMostDerived<T>(IEnumerable<T> members) where T : MemberInfo
+    {
+        T? result = null;
+        foreach (var member in members)
+        {
+            if (result is null || result.DeclaringType?.IsAssignableFrom(member.DeclaringType) == true)
+            {
+                result = member;
+            }
+        }
+        return result;
+    }
 
     [RequiresUnreferencedCode("Arbitrary object formatting recursively discovers public properties and fields.")]
     private static MemberInfo[] GetMembers(Type type) => [.. type.GetProperties(), .. type.GetFields()];
