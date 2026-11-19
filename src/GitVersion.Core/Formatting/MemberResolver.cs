@@ -85,7 +85,7 @@ internal partial class MemberResolver : IMemberResolver
         T? result = null;
         foreach (var member in members)
         {
-            if (result is null || result.DeclaringType?.IsAssignableFrom(member.DeclaringType) == true)
+            if (result is null || result.DeclaringType is { } declaringType && declaringType.IsAssignableFrom(member.DeclaringType))
             {
                 result = member;
             }

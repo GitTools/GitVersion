@@ -95,12 +95,12 @@ public class VersionFormatTests
 
     private class BaseProperty
     {
-        public string Value => "base-property";
+        public string Value { get; } = "base-property";
     }
 
     private sealed class DerivedProperty : BaseProperty
     {
-        public new string Value => "derived";
+        public new string Value { get; } = "derived";
     }
 
     private sealed class PropertyWithDerivedField : BaseProperty
