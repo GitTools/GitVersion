@@ -16,7 +16,7 @@ public class IgnoreConfigurationTests : TestBase
     public void Setup()
     {
         this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
     }
 
     [TearDown]
@@ -28,9 +28,10 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml =
             """
-            ignore:
-                commits-before: 2015-10-23T12:23:15
-                sha: [b6c0c9fda88830ebcd563e500a5a7da5a1658e98]
+            calculation:
+                ignore:
+                    commits-before: 2015-10-23T12:23:15
+                    sha: [b6c0c9fda88830ebcd563e500a5a7da5a1658e98]
             """;
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
@@ -47,10 +48,11 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml =
             """
-            ignore:
-                sha:
-                    - b6c0c9fda88830ebcd563e500a5a7da5a1658e98
-                    - 6c19c7c219ecf8dbc468042baefa73a1b213e8b1
+            calculation:
+                ignore:
+                    sha:
+                        - b6c0c9fda88830ebcd563e500a5a7da5a1658e98
+                        - 6c19c7c219ecf8dbc468042baefa73a1b213e8b1
             """;
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
@@ -64,7 +66,7 @@ public class IgnoreConfigurationTests : TestBase
     [Test]
     public void CanDeserializeCompactBranchesSequence()
     {
-        const string yaml = "ignore:\n  branches: ['^legacy/', '^release/old$']";
+        const string yaml = "calculation:\n  ignore:\n    branches: ['^legacy/', '^release/old$']";
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
 
@@ -75,7 +77,7 @@ public class IgnoreConfigurationTests : TestBase
     [Test]
     public void CanDeserializeCompactTagsSequence()
     {
-        const string yaml = "ignore:\n  tags: ['^preview-', '^v0\\.']";
+        const string yaml = "calculation:\n  ignore:\n    tags: ['^preview-', '^v0\\.']";
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
 
@@ -88,12 +90,13 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml =
             """
-            ignore:
-                branches:
-                    - ^legacy/
-                    - ^release/old$
-                tags:
-                    - ^preview-
+            calculation:
+                ignore:
+                    branches:
+                        - ^legacy/
+                        - ^release/old$
+                    tags:
+                        - ^preview-
             """;
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
@@ -108,10 +111,11 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml =
             """
-            ignore:
-                tags:
-                    - ^preview-
-                    - ^v0\.
+            calculation:
+                ignore:
+                    tags:
+                        - ^preview-
+                        - ^v0\.
             """;
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
@@ -123,7 +127,7 @@ public class IgnoreConfigurationTests : TestBase
     [Test]
     public void WhenNotInConfigShouldHaveDefaults()
     {
-        const string yaml = "next-version: 1.0";
+        const string yaml = "calculation:\n  next-version: 1.0";
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
 
@@ -221,8 +225,9 @@ public class IgnoreConfigurationTests : TestBase
     {
         const string yaml =
             """
-            ignore:
-                commits-before: bad format date
+            calculation:
+                ignore:
+                    commits-before: bad format date
             """;
 
         Should.Throw<YamlException>(() => ConfigurationSerializer.ReadConfiguration(yaml));
@@ -231,7 +236,7 @@ public class IgnoreConfigurationTests : TestBase
     [Test]
     public void ShouldSupportScalarVersionStrategiesOverrideFormat()
     {
-        const string yaml = "strategies: ConfiguredNextVersion, TaggedCommit";
+        const string yaml = "calculation:\n  strategies: ConfiguredNextVersion, TaggedCommit";
 
         var configuration = ConfigurationSerializer.ReadConfiguration(yaml);
 

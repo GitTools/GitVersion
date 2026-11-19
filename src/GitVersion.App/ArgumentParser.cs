@@ -237,10 +237,7 @@ internal class ArgumentParser(
     /// <summary>Maps a v7 configuration property query while accepting the global telemetry opt-out.</summary>
     private Arguments MapQueryValues(ParseResult parseResult, CommandOptions options, RootCommand rootCommand)
     {
-        if (ConfigurationVersionSelector.Resolve() != ConfigurationVersion.V7)
-        {
-            throw new WarningException("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
-        }
+        _ = ConfigurationVersionSelector.Resolve();
 
         var unsupportedOption = rootCommand.Options.Except(options.Get.Options).Where(option => option != options.TelemetryOptOut)
             .FirstOrDefault(option => parseResult.GetResult(option) is { Implicit: false });

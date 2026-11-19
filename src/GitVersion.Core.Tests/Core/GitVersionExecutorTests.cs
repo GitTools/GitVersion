@@ -5,8 +5,8 @@ using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
 using GitVersion.Testing.Extensions;
+using GitVersion.Testing.Git;
 using GitVersion.VersionCalculation.Caching;
-using LibGit2Sharp;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace GitVersion.Tests;
@@ -58,29 +58,12 @@ public class GitVersionExecutorTests : TestBase
     public void SetupConfigurationVersion()
     {
         this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
     }
 
     [TearDown]
     public void RestoreConfigurationVersion() =>
         System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalConfigurationVersion);
-
-    [Test]
-    public void ConfigurationVersionChangeInvalidatesCache()
-    {
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
-        var options = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
-        _ = GetGitVersionCalculator(options);
-        var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
-
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
-        var v6Key = cacheKeyFactory.Create(null);
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
-        var v7Key = cacheKeyFactory.Create(null);
-
-        v7Key.ShouldNotBe(v6Key);
-    }
 
     [Test]
     public void ResolvedConfiguration_IsCreatedOncePerExecution()
@@ -166,7 +149,7 @@ public class GitVersionExecutorTests : TestBase
         {
             // create a branch and a new worktree for it
             var repo = new Repository(fixture.RepositoryPath);
-            repo.Worktrees.Add("worktree", worktreePath, false);
+            repo.Worktrees.AddNewBranch("worktree", worktreePath);
 
             const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
@@ -333,7 +316,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
         var configPath = FileSystemHelper.Path.Combine(fixture.RepositoryPath, configFileName);
-        this.fileSystem.File.WriteAllText(configPath, "next-version: 5.0.0");
+        this.fileSystem.File.WriteAllText(configPath, "calculation:\n  next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);
 
@@ -407,7 +390,7 @@ public class GitVersionExecutorTests : TestBase
         {
             // create a branch and a new worktree for it
             var repo = new Repository(fixture.RepositoryPath);
-            repo.Worktrees.Add("worktree", worktreePath, false);
+            repo.Worktrees.AddNewBranch("worktree", worktreePath);
 
             const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
@@ -463,7 +446,7 @@ public class GitVersionExecutorTests : TestBase
         {
             // create a branch and a new worktree for it
             var repo = new Repository(fixture.RepositoryPath);
-            repo.Worktrees.Add("worktree", worktreePath, false);
+            repo.Worktrees.AddNewBranch("worktree", worktreePath);
 
             var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreePath };
 
@@ -493,7 +476,7 @@ public class GitVersionExecutorTests : TestBase
 
         fixture.Repository.MakeATaggedCommit("v2.0.0");
 
-        fixture.Repository.Worktrees.Add(branchV1.CanonicalName, "1.0", worktreePath, false);
+        fixture.Repository.Worktrees.Add(branchV1.CanonicalName, worktreePath);
         using var worktreeFixture = new LocalRepositoryFixture(new(worktreePath));
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
@@ -736,7 +719,7 @@ public class GitVersionExecutorTests : TestBase
             services.AddSingleton<IGitRepositoryInfo>(sp =>
             {
                 var fs = sp.GetRequiredService<IFileSystem>();
-                return new GitRepositoryInfo(fs, options);
+                return new GitVersion.Git.ManagedGitRepositoryInfo(fs, options);
             });
         });
 

@@ -17,7 +17,6 @@ internal class ConfigurationProvider(
     private readonly ILogger<ConfigurationProvider> logger = logger.NotNull();
     private readonly IConfigurationSerializer configurationSerializer = configurationSerializer.NotNull();
     private readonly IOptions<GitVersionOptions> options = options.NotNull();
-    private bool legacyConfigurationWarningLogged;
 
     public IGitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
@@ -43,11 +42,9 @@ internal class ConfigurationProvider(
     private IGitVersionConfiguration ProvideConfiguration(string? configFile,
                                                           IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
-        var configurationVersion = ConfigurationVersionSelector.Resolve();
-        this.logger.LogInformation("Configuration version: {ConfigurationVersion}", configurationVersion == ConfigurationVersion.V6 ? "v6" : "v7");
+        this.logger.LogInformation("Configuration version: {ConfigurationVersion}", ConfigurationVersionSelector.ResolveName());
         var configurationFromFile = ReadOverrideConfiguration(configFile);
         var configuration = resolver.Resolve(configurationFromFile is null ? null : ConfigurationSerializer.SerializeLegacy(configurationFromFile), overrideConfiguration);
-        WarnAboutExplicitLegacyConfiguration(configFile, configurationFromFile);
         return configuration;
     }
 
@@ -68,21 +65,6 @@ internal class ConfigurationProvider(
         this.logger.LogInformation("Using configuration file '{ConfigFilePath}'", configFilePath);
         var content = this.fileSystem.File.ReadAllText(configFilePath);
         return this.configurationSerializer.Deserialize<Dictionary<object, object?>>(content);
-    }
-
-    private void WarnAboutExplicitLegacyConfiguration(string? configFilePath, Dictionary<object, object?>? configuration)
-    {
-        if (configuration is null || this.legacyConfigurationWarningLogged || !ConfigurationVersionSelector.IsExplicitV6())
-        {
-            return;
-        }
-
-        this.legacyConfigurationWarningLogged = true;
-        this.logger.LogWarning(
-            "Configuration file '{ConfigurationFile}' uses the temporary v6 compatibility mode. Legacy configuration loading is removed in GitVersion 7.1. " +
-            "Run 'gitversion config migrate' and validate with {ConfigurationVersion}=v7.",
-            configFilePath,
-            ConfigurationVersionSelector.EnvironmentVariableName);
     }
 
 }

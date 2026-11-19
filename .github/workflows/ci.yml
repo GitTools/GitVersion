@@ -86,7 +86,7 @@ jobs:
       id-token: write
     uses: $/.github/workflows/_unit_tests.yml # NOSONAR -- $/ resolves to the running commit.
     with:
-      dotnet_versions: ${{ needs.prepare.outputs.dotnet_versions }}
+      test_matrix: ${{ needs.prepare.outputs.test_matrix }}
       publish_coverage: ${{ fromJson(needs.publish_flags.outputs.can_publish) }}
 
   artifacts_windows_test:

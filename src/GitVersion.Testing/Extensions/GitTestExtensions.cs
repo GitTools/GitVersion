@@ -1,6 +1,6 @@
 using GitVersion.Helpers;
+using GitVersion.Testing.Git;
 using GitVersion.Testing.Internal;
-using LibGit2Sharp;
 
 namespace GitVersion.Testing.Extensions;
 

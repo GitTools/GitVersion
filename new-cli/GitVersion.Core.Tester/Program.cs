@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 var modules = new IGitVersionModule[]
 {
     new CoreModule(),
-    new LibGit2SharpCoreModule(),
+    new ManagedCoreModule(),
 };
 
 var cts = new CancellationTokenSource();
@@ -17,16 +17,25 @@ Console.CancelKeyPress += (_, _) =>
     cts.Dispose();
 };
 
-await using var serviceProvider = RegisterModules(modules);
-var app = serviceProvider.GetRequiredService<ICliApp>();
-
-var result = await app.RunAsync(args, cts.Token).ConfigureAwait(false);
-if (!Console.IsInputRedirected)
+try
 {
-    Console.ReadKey();
-}
+    await using var serviceProvider = RegisterModules(modules);
+    var app = serviceProvider.GetRequiredService<ICliApp>();
 
-return result;
+    var result = await app.RunAsync(args, cts.Token).ConfigureAwait(false);
+    if (!Console.IsInputRedirected)
+    {
+        Console.ReadKey();
+    }
+
+    return result;
+}
+catch (WarningException exception)
+{
+    await Console.Error.WriteLineAsync("An error occurred:").ConfigureAwait(false);
+    await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
+    return 1;
+}
 
 static ServiceProvider RegisterModules(IEnumerable<IGitVersionModule> gitVersionModules)
 {

@@ -1,5 +1,19 @@
 ## Unreleased
 
+### GitVersion 7.1 removes the v6 parser and configuration runtime
+
+Only POSIX CLI arguments and nested `calculation` / `output` configuration are
+supported. `GITVERSION_ARGUMENT_PARSER_VERSION=v6` and
+`GITVERSION_CONFIGURATION_VERSION=v6` now fail with migration guidance. Unset
+these variables or set them to `v7`, which remains an accepted no-op throughout
+v7.x. The retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable must remain unset.
+
+`gitversion config migrate` still converts flat v6 configuration, including
+outside a Git repository. Migrate the file before using it for calculation or
+validation. Diagnostic logs remain on stderr; machine-readable stdout is unchanged.
+The Git backend selector and LibGit2Sharp removal are tracked separately in #5040;
+selector-variable removal belongs to v8 (#5136).
+
 ### Docker images run as non-root
 
 Docker images now default to UID/GID `10001:10001`. On Linux, bind-mounted
@@ -123,7 +137,7 @@ writes YAML to stdout by default, supports `--config`, `--output`,
 `--in-place`, and `--force`, and warns that comments cannot be preserved when
 replacing a file.
 
-Flat v6 runtime support is scheduled for removal in v7.1. Explicit `v7` remains
+Flat v6 runtime support is removed in v7.1. Explicit `v7` remains
 accepted throughout v7.x, and the configuration selector is removed in v8.
 `gitversion config migrate` remains available after runtime removal.
 

@@ -1,0 +1,6 @@
+<RunSettings>
+  <NUnit>
+    <!-- Keep large selections filtered; the default 2000-case limit runs the whole assembly. -->
+    <AssemblySelectLimit>2147483647</AssemblySelectLimit>
+  </NUnit>
+</RunSettings>

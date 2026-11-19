@@ -8,7 +8,8 @@ Description: The supported arguments of the GitVersion Command Line Interface
 **Note:** GitVersion uses POSIX-style `--long-name` arguments from version 7 and up. Long-form
 arguments are recommended for readability in scripts and documentation. Short aliases
 (e.g. `-l`, `-o`, `-b`) are also supported. The legacy `/switch` and `-switch`
-syntax is available during v7.0 when `GITVERSION_ARGUMENT_PARSER_VERSION=v6` is set.
+syntax was available only as a temporary v7.0 fallback. Starting in v7.1,
+`GITVERSION_ARGUMENT_PARSER_VERSION=v6` fails with POSIX migration guidance.
 The default is `v7`. Unset the retired `GITVERSION_USE_V6_ARGUMENT_PARSER`
 variable; it now produces a replacement diagnostic. The legacy parser is
 removed in v7.1 and the selector in v8.
@@ -192,15 +193,14 @@ Codes are stable within schema version 1; human messages may change:
 | `GVCONFIG_REGEX` | Invalid regular expression |
 | `GVCONFIG_BRANCH` | Missing branch regex or unresolved branch reference |
 | `GVCONFIG_VALUE` | Invalid semantic value or invocation path |
-| `GVCONFIG_V6_COMPATIBILITY` | Non-failing temporary v6 compatibility warning |
 
 Parser failures before command execution (unknown options, missing option arguments,
 extra positional arguments) retain ordinary stderr/exit 1 behavior without JSON.
 Feature-selector errors also occur before command execution.
 
-Configuration layout selection remains separate from parser selection. Explicit
-`GITVERSION_CONFIGURATION_VERSION=v6` accepts flat files during v7.0 and emits the
-existing warning; legacy loading is removed in v7.1. Invalid v7 documents never
+Configuration layout selection remains separate from parser selection. Starting in v7.1,
+`GITVERSION_CONFIGURATION_VERSION=v6` is rejected before command execution.
+Unset the variable or set it to `v7`; flat files must be migrated before validation. Invalid v7 documents never
 fall back to v6. Use `config migrate` to convert a legacy file. This command is
 unavailable with the legacy parser and published v6 tools.
 
@@ -266,12 +266,10 @@ Supported options are `--config`/`-c`, repeated `--override-config key=value`,
 must precede `config get`. Version-output, calculation and file-update options
 cannot be combined with this command. Use `gitversion config get --help` for help.
 
-The command requires the default modern argument parser and default or explicit
-`GITVERSION_CONFIGURATION_VERSION=v7`. Selecting v6 configuration produces a
-v7-required error before configuration loading, even when the modern parser is
-selected; GitVersion does not switch versions implicitly. Existing v6 full
-configuration display retains its behavior. With v7 configuration,
-`--show-config` now includes runtime overrides, matching the query result.
+The command uses the v7 parser and configuration runtime. In v7.1, selecting
+`GITVERSION_CONFIGURATION_VERSION=v6` fails with migration guidance before
+configuration loading. `--show-config` includes runtime overrides, matching
+the query result.
 
 ## CLI schema
 
@@ -293,9 +291,9 @@ It discovers a supported configuration filename when `--config` is omitted and
 writes YAML to stdout unless `--output` or `--in-place` is selected. `--output`
 will not replace an existing file without `--force`; it cannot be combined with
 `--in-place`. Replacing a file warns that comments are not preserved. The
-command does not require a Git repository and is unavailable when
-`GITVERSION_ARGUMENT_PARSER_VERSION=v6` selects the legacy parser. Migration
-remains available after v6 runtime support is removed in v7.1.
+command does not require a Git repository. Starting in v7.1, unset the parser
+and configuration selectors or set them to `v7` before migration; `v6` selector
+values are retired, while flat v6 input remains supported by this command.
 
 ## Override config
 
@@ -305,12 +303,8 @@ With the v7 default configuration layout, use a version-aware nested key. For
 example, `calculation.tag-prefix=custom`,
 `calculation.branches.main.increment=Patch`, and
 `output.branches.main.pre-release-weight=55000`. Flat v6 keys are rejected in
-v7 mode with their nested replacement. Set
-`GITVERSION_CONFIGURATION_VERSION=v6` only while validating a legacy file in
-v7.0.
-
-When that temporary v6 fallback is selected, use the legacy branch override
-path, for example `--override-config branches.main.increment=Patch`.
+v7 mode with their nested replacement. Starting in v7.1, no flat runtime
+override path is supported; migrate old files with `gitversion config migrate`.
 
 To specify multiple options add multiple `--override-config key=value` entries:
 `--override-config key1=value1 --override-config key2=value2`.
@@ -319,9 +313,8 @@ To have **space characters** as a part of `value`, `value` has to be enclosed wi
 
 Double quote character inside of the double quoted `value` has to be escaped with a backslash '\\' - `key="My \"escaped-quotes\""`.
 
-The following override paths are supported in v7. For the temporary v6
-fallback, omit the `calculation.` or `output.` prefix. The shared `workflow`
-key stays at the root in both versions:
+The following override paths are supported in v7. The shared `workflow`
+key stays at the root:
 
 1. `output.assembly-file-versioning-format`
 2. `output.assembly-file-versioning-scheme`

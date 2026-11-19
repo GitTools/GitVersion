@@ -25,18 +25,14 @@ internal sealed class ConfigurationQueryExecutor(
             return false;
         }
 
-        var version = ConfigurationVersionSelector.Resolve();
-        if (configurationInfo.PropertyPath is not null && version != ConfigurationVersion.V7)
-        {
-            throw new ConfigurationException("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
-        }
+        _ = ConfigurationVersionSelector.Resolve();
 
         if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
         {
             this.configurationFileLocator.Verify(gitVersionOptions.WorkingDirectory, this.repositoryInfo.ProjectRootDirectory);
         }
 
-        var configurationValue = this.configurationProvider.Provide(version == ConfigurationVersion.V7 ? configurationInfo.OverrideConfiguration : null);
+        var configurationValue = this.configurationProvider.Provide(configurationInfo.OverrideConfiguration);
         var serializedConfiguration = configurationInfo.PropertyPath is { } path
             ? this.configurationSerializer.SerializeProperty(configurationValue, path)
             : this.configurationSerializer.Serialize(configurationValue);

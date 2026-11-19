@@ -1,6 +1,6 @@
 using GitVersion.Configuration;
+using GitVersion.Testing.Git;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
 
 namespace GitVersion.Tests.IntegrationTests;
 
@@ -287,7 +287,7 @@ public class TrackReleaseBranchesScenarios : TestBase
         fixture.MakeATaggedCommit("1.2.1");
         var mainCommit = fixture.Repository.Head.Tip;
         var unrelatedCommit = fixture.Repository.ObjectDatabase.CreateCommit(
-            mainCommit.Author, mainCommit.Committer, "Unrelated release root", mainCommit.Tree, [], false);
+            mainCommit.Author, mainCommit.Committer, "Unrelated release root", mainCommit.Tree, []);
         fixture.Repository.CreateBranch(releaseBranch, unrelatedCommit);
         fixture.Repository.Tags.Add("9.0.0-beta.1", unrelatedCommit);
         fixture.BranchTo("develop");

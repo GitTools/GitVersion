@@ -26,9 +26,10 @@ matching-version schema and loader checks.
 resolution, without waiting for calculation. With `Strict`, use a complete version
 such as `2.0.0`. Select `Loose` explicitly when using partial values such as `2.1`.
 
-Explicit `GITVERSION_CONFIGURATION_VERSION=v6` retains its existing v7.0 warning
-and v7.1 removal schedule. It selects the flat layout independently of the parser;
-invalid v7 documents never trigger automatic v6 fallback. See
+In v7.0, explicit `GITVERSION_CONFIGURATION_VERSION=v6` selected the flat layout
+with a compatibility warning. Starting in v7.1 this selector value is rejected:
+unset it or set it to `v7`, then run `gitversion config migrate` on the old file.
+Invalid v7 documents never trigger automatic v6 fallback. See
 [configuration validation][configuration-validation] for output and error contracts.
 
 ## Docker images run as non-root
@@ -177,7 +178,7 @@ GitVersion now uses POSIX-style command-line arguments powered by System.Command
 :::{.alert .alert-warning}
 **Breaking change:** Legacy Windows-style (`/switch`) and legacy single-dash long-form (`-switch`) arguments are no longer accepted by default.
 
-As a temporary v7.0 migration aid, set `GITVERSION_ARGUMENT_PARSER_VERSION=v6` to restore legacy argument handling. The legacy parser is removed in v7.1. Unset the retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable: its presence is an error, even when set to `false`; it is not an alias for the new selector.
+GitVersion v7.0 offered `GITVERSION_ARGUMENT_PARSER_VERSION=v6` as a temporary migration aid. In v7.1 that value is an error: use POSIX arguments and unset the selector or set it to `v7`. Unset the retired `GITVERSION_USE_V6_ARGUMENT_PARSER` variable: its presence is an error, even when set to `false`; it is not an alias for the new selector.
 :::
 
 ### What you need to change
@@ -262,7 +263,9 @@ with `--in-place`. In-place migration warns because comments cannot be
 preserved. The command does not need a Git repository and migrating its v7
 output again is idempotent. In v7.0, you can temporarily validate a flat file
 with `GITVERSION_CONFIGURATION_VERSION=v6`; GitVersion warns once for that
-fallback.
+fallback. Starting in v7.1, both parser and configuration selectors reject `v6`;
+unset them or set them to `v7` before running the retained migration command.
+Flat-file runtime loading and serialization are no longer available.
 
 GitVersion 7 publishes a nested-only schema at
 `https://gitversion.net/schemas/7.0/GitVersion.configuration.json`. If you
@@ -278,7 +281,7 @@ migrate` to retain schema validation.
 GitVersion v7.0 uses the managed Git backend by default. The `GITVERSION_GIT_BACKEND` environment variable accepts `managed` or the temporary `libgit2` fallback.
 
 :::{.alert .alert-info}
-In v7.0, use `GITVERSION_GIT_BACKEND=libgit2` only if you need the temporary native backend fallback. LibGit2Sharp and its native binaries are scheduled for removal in v7.1. Explicit `managed` remains accepted throughout v7.x; the selector is removed in v8.
+In v7.0, use `GITVERSION_GIT_BACKEND=libgit2` only if you need the temporary native backend fallback. From v7.1, LibGit2Sharp and its native binaries are removed. Selecting `libgit2` fails with guidance to unset the variable or select `managed`. Explicit `managed` remains accepted throughout v7.x; the selector is removed in v8.
 :::
 
 - `libgit2` — the temporary native backend fallback in v7.0.
@@ -294,18 +297,18 @@ The environment variables relevant to migrating from v6 to v7:
 
 | Variable                            | Purpose                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `GITVERSION_CONFIGURATION_VERSION`   | Selects the configuration layout: `v7` (default) or temporary flat `v6` fallback.                                   |
-| `GITVERSION_GIT_BACKEND`             | Selects the Git backend: `managed` (default) or temporary `libgit2` fallback. See [Git backend][git-backend]. |
-| `GITVERSION_ARGUMENT_PARSER_VERSION` | Selects the argument parser: `v7` (default, POSIX syntax) or temporary `v6` fallback (`/switch` and `-switch`). |
+| `GITVERSION_CONFIGURATION_VERSION`   | In v7.1, accepts `v7` as a no-op; `v6` is rejected with configuration migration guidance.                                   |
+| `GITVERSION_GIT_BACKEND`             | Compatibility setting: `managed` is accepted; `libgit2` was available only in v7.0 and fails from v7.1. See [Git backend][git-backend]. |
+| `GITVERSION_ARGUMENT_PARSER_VERSION` | In v7.1, accepts `v7` as a no-op; `v6` is rejected with POSIX migration guidance. |
 | `GITVERSION_REMOTE_USERNAME`        | Alternative to `--username` for dynamic-repository credentials.                                                     |
 | `GITVERSION_REMOTE_PASSWORD`        | Alternative to `--password` for dynamic-repository credentials.                                                     |
 
-The three selectors are independent: selecting the v6 parser does not select
-flat configuration or libgit2. Values are trimmed and case-insensitive;
+The selectors remain independent compatibility validators: `v7` parser and
+configuration values do not change the selected Git backend. Values are trimmed and case-insensitive;
 unset, empty, and whitespace-only values use the defaults. Unknown values
 fail before execution and list the accepted values. Replace
 `GITVERSION_USE_V6_ARGUMENT_PARSER=true` with
-`GITVERSION_ARGUMENT_PARSER_VERSION=v6` and unset the old variable.
+`GITVERSION_ARGUMENT_PARSER_VERSION=v7` (or unset the selector) and use POSIX syntax.
 
 Effective selections are logged at information level. Use `--log-file <path>`
 to capture them or `--log-file console` to see them on stderr. Console logs
@@ -314,9 +317,9 @@ with JSON or other machine-readable output. Build-server integration commands
 retain their normal output channel. For migration, place logging options before the command:
 `gitversion --log-file console config migrate --config GitVersion.yml`.
 
-In v7.1, legacy parser and flat configuration runtime support are scheduled
-for removal alongside libgit2. Retired `v6`/`libgit2` selections will report
-actionable errors; explicit `v7`/`managed` selections remain accepted during
+In v7.1, legacy parser and flat configuration runtime support are removed.
+Retired `v6` and `libgit2` selections report actionable errors; LibGit2Sharp
+removal is implemented in #5040. Explicit `v7`/`managed` selections remain accepted during
 v7.x. All three selectors are removed in v8. `gitversion config migrate`
 remains available to convert flat files after runtime support is removed.
 

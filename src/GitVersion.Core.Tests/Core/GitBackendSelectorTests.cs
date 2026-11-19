@@ -6,20 +6,17 @@ namespace GitVersion.Tests;
 [NonParallelizable]
 public class GitBackendSelectorTests : TestBase
 {
-    [TestCase(null, true)]
-    [TestCase("", true)]
-    [TestCase(" \t ", true)]
-    [TestCase("libgit2", false)]
-    [TestCase("LIBGIT2", false)]
-    [TestCase(" LIBGIT2 ", false)]
-    [TestCase("managed", true)]
-    [TestCase("Managed", true)]
-    [TestCase(" managed ", true)]
-    public void ResolvesKnownValues(string? value, bool isManaged)
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" \t ")]
+    [TestCase("managed")]
+    [TestCase("Managed")]
+    [TestCase(" managed ")]
+    public void ResolvesKnownValues(string? value)
     {
         using var scope = new EnvironmentVariableScope(value);
 
-        GitBackendSelector.Resolve().ShouldBe(isManaged ? GitBackend.Managed : GitBackend.LibGit2);
+        GitBackendSelector.Resolve().ShouldBe(GitBackend.Managed);
     }
 
     [TestCase("manged")]
@@ -32,7 +29,19 @@ public class GitBackendSelectorTests : TestBase
         var exception = Should.Throw<WarningException>(() => GitBackendSelector.Resolve());
         exception.Message.ShouldContain(value);
         exception.Message.ShouldContain(GitBackendSelector.EnvironmentVariableName);
-        exception.Message.ShouldContain("'libgit2' and 'managed'");
+        exception.Message.ShouldContain("'managed'");
+    }
+
+    [TestCase("libgit2")]
+    [TestCase("LIBGIT2")]
+    [TestCase(" libgit2 ")]
+    public void RemovedBackendHasActionableError(string value)
+    {
+        using var scope = new EnvironmentVariableScope(value);
+        var exception = Should.Throw<WarningException>(() => GitBackendSelector.Resolve());
+        exception.Message.ShouldContain("removed in v7.1");
+        exception.Message.ShouldContain("managed");
+        exception.Message.ShouldContain(GitBackendSelector.EnvironmentVariableName);
     }
 
     private sealed class EnvironmentVariableScope : IDisposable

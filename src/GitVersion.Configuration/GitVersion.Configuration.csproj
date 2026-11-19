@@ -16,7 +16,6 @@
         <InternalsVisibleTo Include="schema" />
         <InternalsVisibleTo Include="gitversion" />
         <InternalsVisibleTo Include="GitVersion.App" />
-        <InternalsVisibleTo Include="GitVersion.LibGit2Sharp" />
         <InternalsVisibleTo Include="GitVersion.MsBuild" />
         <InternalsVisibleTo Include="GitVersion.Output" />
 

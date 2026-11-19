@@ -6,31 +6,17 @@ namespace GitVersion.Tests;
 [NonParallelizable]
 public class ConfigurationVersionSelectorTests : TestBase
 {
-    [TestCase(null, false)]
-    [TestCase("", false)]
-    [TestCase(" \t ", false)]
-    [TestCase("v6", true)]
-    [TestCase("V6", true)]
-    [TestCase(" v6 ", true)]
-    [TestCase("v7", false)]
-    [TestCase("V7", false)]
-    [TestCase(" v7 ", false)]
-    public void ResolvesKnownValues(string? value, bool isV6)
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" \t ")]
+    [TestCase("v7")]
+    [TestCase("V7")]
+    [TestCase(" v7 ")]
+    public void ResolvesKnownValues(string? value)
     {
         using var scope = new EnvironmentVariableScope(value);
 
-        ConfigurationVersionSelector.Resolve().ShouldBe(isV6 ? ConfigurationVersion.V6 : ConfigurationVersion.V7);
-    }
-
-    [TestCase(null, false)]
-    [TestCase("v6", true)]
-    [TestCase(" V6 ", true)]
-    [TestCase("v7", false)]
-    public void IdentifiesExplicitV6Selection(string? value, bool expected)
-    {
-        using var scope = new EnvironmentVariableScope(value);
-
-        ConfigurationVersionSelector.IsExplicitV6().ShouldBe(expected);
+        ConfigurationVersionSelector.Resolve().ShouldBe(ConfigurationVersion.V7);
     }
 
     [TestCase("6")]
@@ -43,8 +29,18 @@ public class ConfigurationVersionSelectorTests : TestBase
 
         var exception = Should.Throw<WarningException>(() => ConfigurationVersionSelector.Resolve());
         exception.Message.ShouldContain(value);
-        exception.Message.ShouldContain("v6");
         exception.Message.ShouldContain("v7");
+    }
+
+    [TestCase("v6")]
+    [TestCase(" V6 ")]
+    public void RejectsRetiredConfigurationWithMigrationGuidance(string value)
+    {
+        using var scope = new EnvironmentVariableScope(value);
+        var error = Should.Throw<WarningException>(() => ConfigurationVersionSelector.Resolve());
+        error.Message.ShouldContain("removed in GitVersion 7.1");
+        error.Message.ShouldContain("gitversion config migrate");
+        error.Message.ShouldContain("v7");
     }
 
     private sealed class EnvironmentVariableScope : IDisposable

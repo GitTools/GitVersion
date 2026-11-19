@@ -34,7 +34,7 @@ public class ConfigurationQueryIntegrationTests
     [Test]
     [Combinatorial]
     public void QueryAndDisplayHonorFileThenRuntimeOverrides(
-        [Values("managed", "libgit2")] string backend,
+        [Values("managed")] string backend,
         [Values(false, true)] bool logToFile)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -79,7 +79,7 @@ public class ConfigurationQueryIntegrationTests
         result.StandardOutput.ShouldBe(expected + SysEnv.NewLine);
     }
 
-    [TestCase("v6", "require v7 configuration")]
+    [TestCase("v6", "removed in GitVersion 7.1")]
     [TestCase("invalid", "Unrecognized GITVERSION_CONFIGURATION_VERSION")]
     public void QueryRejectsUnsupportedConfigurationBeforeReadingFile(string version, string diagnostic)
     {
@@ -223,7 +223,6 @@ public class ConfigurationQueryIntegrationTests
         result.StandardOutput.ShouldBeEmpty();
     }
 
-    [TestCase("v6", "tag-prefix", "[vV]?")]
     [TestCase("v7", "calculation.tag-prefix", "overridden-")]
     public void ShowConfigOverrideCorrectionIsLimitedToV7(string version, string path, string expected)
     {

@@ -2,7 +2,6 @@ namespace GitVersion.Configuration;
 
 internal enum ConfigurationVersion
 {
-    V6,
     V7
 }
 
@@ -10,13 +9,21 @@ internal static class ConfigurationVersionSelector
 {
     public const string EnvironmentVariableName = "GITVERSION_CONFIGURATION_VERSION";
 
-    public static ConfigurationVersion Resolve() =>
-        FeatureSelector.Resolve(EnvironmentVariableName, "v7", "v6", "v7") == "v6"
-            ? ConfigurationVersion.V6
-            : ConfigurationVersion.V7;
+    public static ConfigurationVersion Resolve()
+    {
+        var value = SysEnv.GetEnvironmentVariable(EnvironmentVariableName)?.Trim().ToLowerInvariant();
+        if (value == "v6")
+        {
+            throw new WarningException($"{EnvironmentVariableName}=v6 was removed in GitVersion 7.1. Unset this variable or set it to v7, then run 'gitversion config migrate' to convert a v6 configuration.");
+        }
 
-    public static string ResolveName() => Resolve() == ConfigurationVersion.V6 ? "v6" : "v7";
+        _ = FeatureSelector.Resolve(EnvironmentVariableName, "v7", "v7");
+        return ConfigurationVersion.V7;
+    }
 
-    public static bool IsExplicitV6() =>
-        SysEnv.GetEnvironmentVariable(EnvironmentVariableName)?.Trim().Equals("v6", StringComparison.OrdinalIgnoreCase) ?? false;
+    public static string ResolveName()
+    {
+        _ = Resolve();
+        return "v7";
+    }
 }

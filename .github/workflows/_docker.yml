@@ -62,30 +62,14 @@ jobs:
       - name: Set up Docker
         uses: $/.github/actions/docker-setup # NOSONAR -- $/ resolves to the running commit.
 
-      # Run both backends concurrently in the same job (GitHub Actions parallel steps).
-      # Each uses an ephemeral --rm container, so the two runs don't interfere.
-      - name: Docker Test (libgit2)
+      - name: Docker Test
         if: success() && inputs.publish_images == false
-        background: true
         uses: $/.github/actions/docker-test # NOSONAR -- $/ resolves to the running commit.
         with:
           arch: ${{ inputs.arch }}
           docker_distro: ${{ matrix.docker_distro }}
           dotnet_version: ${{ matrix.dotnet_version }}
-          git_backend: libgit2
 
-      - name: Docker Test (managed)
-        if: success() && inputs.publish_images == false
-        background: true
-        uses: $/.github/actions/docker-test # NOSONAR -- $/ resolves to the running commit.
-        with:
-          arch: ${{ inputs.arch }}
-          docker_distro: ${{ matrix.docker_distro }}
-          dotnet_version: ${{ matrix.dotnet_version }}
-          git_backend: managed
-
-      - name: Wait for docker backend tests
-        wait-all:
 
   publish:
     name: ${{ matrix.docker_distro }} - net${{ matrix.dotnet_version }}

@@ -119,9 +119,6 @@ public class CliSchemaTests
         CliSchemaExporterTests.ValidateSchema(result.Output!);
     }
 
-    [TestCase("v6", "libgit2")]
-    [TestCase("v7", "libgit2")]
-    [TestCase("v6", "managed")]
     [TestCase("v7", "managed")]
     public void ProcessExportsSameDocumentWithoutRepositoryOrFiles(string configuration, string backend)
     {
@@ -186,7 +183,7 @@ public class CliSchemaTests
 
             result.ExitCode.ShouldNotBe(0);
             result.StandardOutput.ShouldBeEmpty();
-            result.StandardError!.ShouldContain("Could not parse command line parameter");
+            result.StandardError!.ShouldContain(parser == "v6" ? "removed in GitVersion 7.1" : "Could not parse command line parameter");
         }
         finally
         {
