@@ -20,12 +20,12 @@ public class ArtifactsNativeTest : FrostingTask<BuildContext>
 
     public override void Run(BuildContext context)
     {
-        if (context.Version?.SemVersion == null)
+        if (context.Version?.NugetVersion == null)
         {
             return;
         }
 
-        var version = context.Version.SemVersion.ToLower();
+        var version = context.Version.NugetVersion.ToLowerInvariant();
         var rootPrefix = string.Empty;
 
         foreach (var dockerImage in context.Images)
