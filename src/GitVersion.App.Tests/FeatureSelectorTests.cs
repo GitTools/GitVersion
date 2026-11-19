@@ -71,7 +71,7 @@ public class FeatureSelectorTests
             selections = FeatureSelections.Resolve();
         }
 
-        using var scope = new SelectorScope("v7", "v7", "managed");
+        using var scope = new SelectorScope("v6", "v6", "libgit2");
         var messages = new List<string>();
         selections.Log(new TestLogger<FeatureSelections>(messages.Add));
 
