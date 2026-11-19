@@ -59,7 +59,8 @@
                                '$(MSBuildProjectName)' == 'GitVersion.Configuration' or
                                '$(MSBuildProjectName)' == 'GitVersion.Output' or
                                '$(MSBuildProjectName)' == 'GitVersion.BuildAgents' or
-                               '$(MSBuildProjectName)' == 'GitVersion.Git.Managed')">
+                               '$(MSBuildProjectName)' == 'GitVersion.Git.Managed' or
+                               '$(MSBuildProjectName)' == 'GitVersion.Telemetry')">
         <IsAotCompatible>true</IsAotCompatible>
     </PropertyGroup>
 

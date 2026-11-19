@@ -106,7 +106,7 @@ internal sealed class TelemetryReporter(
             timeout.CancelAfter(automated ? SendTimeout : DirectSendTimeout);
             using var request = new HttpRequestMessage(HttpMethod.Post, campaign.Endpoint)
             {
-                Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonSerializer.Serialize(payload, TelemetryJsonContext.Default.TelemetryPayload), Encoding.UTF8, "application/json")
             };
             // Await one send before shutdown; don't read a response body, retry or queue to disk.
             await transport.SendAsync(request, timeout.Token)
@@ -130,13 +130,12 @@ internal sealed class TelemetryReporter(
 
     /// <summary>Constructs an allowlisted event with a fresh identity, bounded dimensions, and option-presence flags.</summary>
     /// <remarks>Raw arguments and option values are never copied into the payload.</remarks>
-    internal static object CreatePayload(TelemetryInvocation invocation, string projectKey, double probability, string ci, bool msbuild,
-        TelemetryRuntimeContext? context = null, bool actions = false) => new
-        {
-            api_key = projectKey,
-            @event = "gitversion_cli_invocation",
-            distinct_id = Guid.NewGuid().ToString("D"),
-            properties = new Dictionary<string, object>
+    internal static TelemetryPayload CreatePayload(TelemetryInvocation invocation, string projectKey, double probability, string ci, bool msbuild,
+        TelemetryRuntimeContext? context = null, bool actions = false) => new(
+            projectKey,
+            "gitversion_cli_invocation",
+            Guid.NewGuid().ToString("D"),
+            new Dictionary<string, object>
             {
                 ["$process_person_profile"] = false,
                 ["$geoip_disable"] = true,
@@ -164,8 +163,7 @@ internal sealed class TelemetryReporter(
                     _ => OtherLabel
                 },
                 ["options"] = invocation.Options()
-            }
-        };
+            });
 
     /// <summary>Returns a fixed OS family label without including host or distribution details.</summary>
     internal static string ClassifyOperatingSystem()
