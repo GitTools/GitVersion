@@ -11,4 +11,6 @@ public static class Arguments
     public const string TestFilter = "test_filter";
     public const string DockerRegistry = "docker_registry";
     public const string DockerDistro = "docker_distro";
+    public const string NativeContainer = "native_container";
+    public const string PackageDirectory = "package_directory";
 }

@@ -41,6 +41,8 @@ public class ConfigurationPropertyQueryTests
     [TestCase("output.pre-release-weight", "0")]
     [TestCase("output.tag-pre-release-weight", "60000")]
     [TestCase("output.assembly-versioning-scheme", "\"MajorMinor\"")]
+    [TestCase("calculation.mode", "\"ContinuousDeployment\"")]
+    [TestCase("calculation.increment", "\"Minor\"")]
     [TestCase("calculation.prevent-increment.of-merged-branch", "true")]
     [TestCase("calculation.ignore.commits-before", "\"2026-01-02T03:04:05Z\"")]
     [SetCulture("fr-FR")]
@@ -52,6 +54,8 @@ public class ConfigurationPropertyQueryTests
             PreReleaseWeight = 0,
             TagPreReleaseWeight = 60000,
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor,
+            DeploymentMode = VersionCalculation.DeploymentMode.ContinuousDeployment,
+            Increment = IncrementStrategy.Minor,
             PreventIncrement = new() { OfMergedBranch = true },
             Ignore = new() { BeforeString = "2026-01-02T03:04:05Z" }
         };

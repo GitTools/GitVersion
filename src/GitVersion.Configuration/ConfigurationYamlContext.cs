@@ -10,4 +10,5 @@ namespace GitVersion.Configuration;
 [YamlSerializable(typeof(BranchConfiguration))]
 [YamlSerializable(typeof(PreventIncrementConfiguration))]
 [YamlSerializable(typeof(IgnoreConfiguration))]
+[YamlSerializable(typeof(GitVersion.VersionCalculation.VersionStrategies[]))]
 internal partial class ConfigurationYamlContext : YamlSerializerContext;

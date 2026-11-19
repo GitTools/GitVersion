@@ -13,7 +13,7 @@ public class PackageArchive : FrostingTask<BuildContext>
         context.EnsureDirectoryExists(Paths.Native);
 
         var platform = context.Platform;
-        var runtimes = context.NativeRuntimes[platform];
+        var runtimes = context.PackageRuntimes;
 
         foreach (var runtime in runtimes)
         {
@@ -40,7 +40,7 @@ public class PackageArchive : FrostingTask<BuildContext>
     private static FilePath GetArchiveOutputPath(BuildContextBase context, string runtime, PlatformFamily platform, DirectoryPath targetDir)
     {
         var ext = platform == PlatformFamily.Windows ? "zip" : "tar.gz";
-        var fileName = $"gitversion-{runtime}-{context.Version?.SemVersion}.{ext}".ToLower();
+        var fileName = $"gitversion-{runtime}-{context.Version?.NugetVersion}.{ext}".ToLower();
         return targetDir.CombineWithFilePath(fileName);
     }
 }

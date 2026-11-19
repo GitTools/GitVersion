@@ -190,3 +190,9 @@ resharper_unused_method_return_value_global_highlighting = none
 # intentionally inline for readability, so don't flag duplicate literals there.
 [**/*.Tests/**.cs]
 dotnet_diagnostic.S1192.severity = none
+
+# NativeAOT compatibility is required for the shipped CLI dependency graph.
+[src/GitVersion.{App,Core,Configuration,Output,BuildAgents,Git.Managed}/**.cs]
+dotnet_analyzer_diagnostic.category-AOT.severity = error
+dotnet_analyzer_diagnostic.category-Trimming.severity = error
+dotnet_analyzer_diagnostic.category-SingleFile.severity = error

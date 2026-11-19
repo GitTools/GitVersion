@@ -24,9 +24,9 @@ public class PackagePrepare : FrostingTask<BuildContext>
 
     private static void PackPrepareNative(BuildContext context)
     {
-        // publish single file for all native runtimes (self contained)
+        // NativeAOT executables are already self-contained single native files.
         var platform = context.Platform;
-        var runtimes = context.NativeRuntimes[platform];
+        var runtimes = context.PackageRuntimes;
 
         foreach (var runtime in runtimes)
         {
@@ -60,12 +60,15 @@ public class PackagePrepare : FrostingTask<BuildContext>
             Configuration = context.MsBuildConfiguration,
             OutputDirectory = outputPath,
             MSBuildSettings = context.MsBuildSettings,
-            IncludeNativeLibrariesForSelfExtract = true,
-            PublishSingleFile = true,
             SelfContained = true
         };
 
         context.DotNetPublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
+
+        if (context.GetFiles($"{outputPath}/**/*").Any(file => string.Equals(file.GetExtension(), ".dll", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new CakeException($"Managed assemblies remain in the native CLI output: {outputPath}.");
+        }
 
         return outputPath;
     }
