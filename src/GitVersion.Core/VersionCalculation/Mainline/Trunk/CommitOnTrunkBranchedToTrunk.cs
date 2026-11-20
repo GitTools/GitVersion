@@ -14,6 +14,6 @@ internal sealed class CommitOnTrunkBranchedToTrunk : CommitOnTrunkBranchedBase
     // A  58 minutes ago <<--
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context)
-           && iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch;
+        => !context.IsMainlineMerge && base.MatchPrecondition(iteration, commit, context)
+           && context.IterationConfiguration.IsMainBranch;
 }
