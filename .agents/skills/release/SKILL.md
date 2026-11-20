@@ -1,6 +1,6 @@
 ---
 name: release
-description: Guided GitVersion release workflow — analyzes unreleased changes, checks release readiness (milestone, labels), creates the GitHub release, verifies published artifacts, and monitors downstream PRs (Homebrew, winget, GitTools Actions).
+description: Guided GitVersion release workflow — analyzes unreleased changes, checks release readiness (milestone, labels), creates the GitHub release, verifies published artifacts, and records downstream PR links (Homebrew, winget, and triggered SchemaStore/GitTools Actions updates).
 allowed-tools:
   - Bash(command -v gh)
   - Bash(gh --version)
@@ -555,9 +555,13 @@ CI deliberately suppresses the `publish-release` dispatch for prerelease tags.
 
 Tell the user: the CI pipeline triggered by the release takes 20–40 minutes to complete, after which it fires a `publish-release` dispatch to Homebrew, winget, and GitTools Actions. You will monitor all three automatically using `/loop`.
 
+Track SchemaStore as well when this release's successful stable documentation
+publication invokes the publisher in `.github/workflows/docs.yml`. Confirm that
+the job was triggered; do not trigger an updater just to obtain a PR link.
+
 **"Not yet created" is an ambiguous status — checking PR existence alone does not disambiguate it.** It could mean the publish CI is still running, *or* that the publish workflow already ran and failed. A loop that only searches for PRs will report "not yet created" for the full 40-minute window even when the underlying job failed minutes in. Always cross-check the actual workflow run conclusion alongside the PR search; do not rely on elapsed time alone to infer failure.
 
-> **Note on GitTools Actions:** all three downstream targets — Homebrew, winget, and GitTools Actions — open a PR that must be verified. If you find a *recent direct commit to `main`* on `GitTools/actions` for this version but no PR, treat that as unexpected and flag it — don't record it as a normal terminal state.
+> **Note on GitTools Actions:** verify its actual outcome rather than assuming every release creates a PR. If you find a *recent direct commit to `main`* on `GitTools/actions` for this version but no PR, treat that as unexpected and flag it — don't record it as a normal terminal state.
 
 > **GitTools Actions legitimately produces no PR for patch releases — this is expected, not pending.** `GitTools/actions`'s `update-gitversion-version` workflow only rewrites `Major.Minor`-scoped version references in its docs/workflows (e.g. `6.8`, `6.9` — never the patch digit). For a release that doesn't change `Major.Minor` (a patch bump, e.g. `6.8.0` → `6.8.1`), the computed old/new tag are identical, so `peter-evans/create-pull-request` correctly finds "no changes" and opens nothing. Don't leave this target polling indefinitely waiting for a PR that will never come. To confirm this is the legitimate no-op case (rather than a silent failure) check the `GitTools/actions` run triggered by the dispatch:
 > ```bash
@@ -610,6 +614,33 @@ The loop self-paces as follows:
 > this is GitHub rejecting the PR head because the `gittools-bot` fork (`GitTools/homebrew-core-1`) has diverged from `Homebrew/homebrew-core` (its recorded fork parent relationship or default branch is stale). This is a one-way external action against a third-party repo — do not auto-retry. Report the exact error to the user and let them sync/re-fork before manually re-running the `Publish to Homebrew` workflow.
 
 ---
+
+### Record downstream links on the release page
+
+As part of the authorized release, add a **Distribution updates** section to the
+GitHub release body with the verified Homebrew and winget PR URLs. Include
+SchemaStore and GitTools Actions when their updater actually ran for this release:
+
+- Link a PR created or explicitly reused by that run. Confirm its package version,
+  schema version or workflow output; a search result mentioning the version is
+  not enough. For an unchanged schema, an existing PR for the same schema version
+  may be linked as context, clearly labelled as existing rather than newly created.
+- When a triggered updater reports no changes, record **no PR needed**, its reason
+  and a link to the workflow run. A patch covered by Actions' existing `Major.Minor.x`
+  range is an expected example. Do not invent a PR or leave a confirmed no-op pending.
+- Omit conditional updaters that were not triggered. Report a failed updater with
+  its run link instead of claiming a PR exists. Do not wait for downstream merges.
+
+Write this section after CI's final GitReleaseManager notes update, so regeneration
+does not remove the links. Read the latest release body, preserve its generated
+notes and contributors, and append or update one section without duplicating it on
+retries. Use a structured body argument or a notes file; do not interpolate release
+text into a shell command. Do not rerun GitReleaseManager solely to insert links.
+
+Re-fetch the release and verify the expected PR/run URLs and the original release
+entries are all present. If GitReleaseManager regenerates the notes afterward,
+reapply the section to that fresh body. The chat summary alone does not satisfy
+this step: the links must appear on the release page itself.
 
 ## Phase 6 — Verify the release artifacts
 
@@ -804,11 +835,14 @@ Once Phase 6 verification is done (or has handed off to a loop), close out with 
 gh pr list --repo Homebrew/homebrew-core --search "gitversion <VERSION>" --state all --json number,title,state,url --jq '.[]'
 gh pr list --repo microsoft/winget-pkgs --search "GitTools.GitVersion version <VERSION>" --state all --json number,title,state,url --jq '.[]'
 gh pr list --repo GitTools/actions --search "gitversion <VERSION>" --state all --limit 5 --json number,title,state,url --jq '.[]'
+# Only when this release triggered the SchemaStore publisher; correlate the
+# result with the job output and schema version before recording a link.
+gh pr list --repo SchemaStore/schemastore --author gittools-bot --search "gitversion" --state all --limit 5 --json number,title,state,url --jq '.[]'
 ```
 
 **Once a downstream PR is confirmed created, report only its link — its merge state is out of scope.** PR creation marks the end of this skill's tracking for that target; merge timing depends on third-party review and is not tracked or reported.
 
-Present a table covering every PR/issue touched during the run — not just downstream ones. Include rows for: the milestone created/reused, any items relabeled or moved into it, and the three downstream publish PRs (Homebrew, winget, and GitTools Actions all open PRs). Mark anything that never got a PR (e.g. a publish job failed, or GitTools Actions pushed directly to main) so it's visually distinct from "still pending."
+Present a table covering every PR/issue touched during the run — not just downstream ones. Include rows for the milestone created/reused, any items relabeled or moved into it, Homebrew and winget PRs, and any triggered SchemaStore/GitTools Actions updates. Distinguish created/reused PRs, confirmed no-ops, failures and unexpected direct pushes from targets still pending. Verify that the release page's Distribution updates section contains the same confirmed links.
 
 ```
 Release Summary: <VERSION>
@@ -820,6 +854,7 @@ Milestone:   https://github.com/GitTools/GitVersion/milestone/<MILESTONE_NUMBER>
 Downstream PRs:
 📦 Homebrew          <url> / not yet created (<reason>)
 📦 winget            <url> / not yet created (CI still running)
+📄 SchemaStore       <url> / existing schema PR / no PR needed (confirmed no-op) / FAILED: <run url> (omit if not triggered)
 ⚙️  GitTools Actions  <url> / no PR needed (confirmed no-op) / not yet created (CI still running) / ⚠️ pushed directly to main (unexpected): <commit url>
 
 Other issues/PRs touched:
