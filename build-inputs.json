@@ -8,38 +8,38 @@
       "framework": "net11.0",
       "aliases": null
     },
-    "release": "7.0.0",
-    "sourceCommit": "8fd9e294be12083242079edf2bf4dae4c0956164",
+    "release": "7.0.1",
+    "sourceCommit": "d6f04421b2782b15d8512f70b5dddd15b2e24956",
     "packages": [
       {
         "id": "gitversion.tool",
-        "version": "7.0.0",
-        "sha512": "XRb8zA\u002B/xAmIjn8bLSYTXxvDwGN0o4sJ60ppll3Yyu1CelsBQWwBSONel/Kt6WAZah/ZBqSF5qzvKtXcIP33wQ=="
+        "version": "7.0.1",
+        "sha512": "8SotM\u002BPLczNrcwEuj\u002Bp6uooGaxt1BB9bRip7fI6G9/8mVeN0hBiziUc1InbIWZ1Ulx2egRN0xTm7x1Zt2CTsXQ=="
       },
       {
         "id": "gitversion.tool.linux-x64",
-        "version": "7.0.0",
-        "sha512": "Tl/9KeBF7XSg07ReUFKHBeWeiwETonw9at0rJvMqnRXAoQqQ9rBx0K26moAlg4FgcQ7YXXrai1DA\u002B\u002BY387KcZA=="
+        "version": "7.0.1",
+        "sha512": "n6Gt8Hb0jRdzQndebI90sKCU/o2mQlPuJxkq3xEYHca7LrRl72RGVttYv3FNqQ9MY/DvVbAWlt7QwQXeP9\u002BfHQ=="
       },
       {
         "id": "gitversion.core",
-        "version": "7.0.0",
-        "sha512": "NQdtrcfLdULRh1MiTbG/STT2Un4ULAPmj6VK7F/b4\u002BGou/Hjjd3WKCp8FLFN3Hk/u5jTckdYF5z3HBukxAtShA=="
+        "version": "7.0.1",
+        "sha512": "WR5Q39dlzfC6OEtIT82z9/yB1IWWd0vHWTMv2t9Zod4FRRKPrfWAHT66mDssbxHUFFnzwdV7T2kbbBZQ0i108g=="
       },
       {
         "id": "gitversion.msbuild",
-        "version": "7.0.0",
-        "sha512": "zdcy2ScK9JJj3M8w5MI81rCu1Pk\u002BfSYM3iIXydDoQQJguYc2vl0J/QvTo/i6JaommiygcHZoVu\u002B0IQQuMzdmew=="
+        "version": "7.0.1",
+        "sha512": "\u002B/VY9LTbOSNSiMo4q8I8DYG\u002BwgbkcSlQIDx2C2s0c\u002BJEEVIeESe9MpSezxAYgnb2BqxHx5c5TjGVj23ZTVz4Fg=="
       }
     ],
     "dependencies": [
-      "GitVersion.BuildAgents/7.0.0",
-      "GitVersion.Configuration/7.0.0",
-      "GitVersion.Core/7.0.0",
-      "GitVersion.Git.Managed/7.0.0",
-      "GitVersion.LibGit2Sharp/7.0.0",
-      "GitVersion.Output/7.0.0",
-      "GitVersion.Telemetry/7.0.0",
+      "GitVersion.BuildAgents/7.0.1",
+      "GitVersion.Configuration/7.0.1",
+      "GitVersion.Core/7.0.1",
+      "GitVersion.Git.Managed/7.0.1",
+      "GitVersion.LibGit2Sharp/7.0.1",
+      "GitVersion.Output/7.0.1",
+      "GitVersion.Telemetry/7.0.1",
       "LibGit2Sharp.NativeBinaries/2.0.324",
       "LibGit2Sharp/0.32.0",
       "Microsoft.Extensions.Configuration.Binder/11.0.0",
@@ -72,11 +72,11 @@
       "SharpYaml/3.17.0",
       "System.CommandLine/3.0.0",
       "System.Diagnostics.EventLog/11.0.0",
-      "System.IO.Abstractions/23.0.0",
-      "TestableIO.System.IO.Abstractions.Wrappers/23.0.0",
-      "TestableIO.System.IO.Abstractions/23.0.0",
+      "System.IO.Abstractions/23.0.1",
+      "TestableIO.System.IO.Abstractions.Wrappers/23.0.1",
+      "TestableIO.System.IO.Abstractions/23.0.1",
       "Testably.Abstractions.FileSystem.Interface/11.0.0",
-      "gitversion/7.0.0"
+      "gitversion/7.0.1"
     ]
   },
   {
