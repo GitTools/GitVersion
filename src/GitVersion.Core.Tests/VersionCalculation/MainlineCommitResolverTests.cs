@@ -8,39 +8,6 @@ namespace GitVersion.Tests.VersionCalculation;
 public class MainlineCommitResolverTests
 {
     [Test]
-    public void TraverseFollowsPredecessorsThenTheReceivingMerge()
-    {
-        var root = Iteration("root", "main");
-        var merge = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
-        var branchPoint = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
-        var child = Iteration("child", "feature/fix", root, branchPoint.Value, merge.Value);
-        var tip = child.CreateCommit(Commit(), child.BranchName, child.Configuration);
-        var first = child.CreateCommit(Commit(), child.BranchName, child.Configuration);
-        merge.AddChildIteration(child);
-        var resolver = new MainlineCommitResolver(root);
-
-        resolver.Traverse(tip).ShouldBe([tip, first, merge, branchPoint]);
-        resolver.Traverse(child).ShouldBe([first, merge, branchPoint]);
-        first.Predecessor.ShouldBeNull();
-        first.Iteration.ShouldBeSameAs(child);
-        child.Commits.ShouldBe([first, tip]);
-    }
-
-    [Test]
-    public void TraverseEmptyIterationStartsAtItsRecordedBranchPoint()
-    {
-        var root = Iteration("root", "main");
-        var merge = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
-        var branchPoint = root.CreateCommit(Commit(), root.BranchName, root.Configuration);
-        var child = Iteration("child", "feature/fix", root, branchPoint.Value, merge.Value);
-        var resolver = new MainlineCommitResolver(root);
-
-        resolver.Traverse(child).ShouldBe([branchPoint]);
-        child.Commits.ShouldBeEmpty();
-        resolver.Traverse(Iteration("empty", "main")).ShouldBeEmpty();
-    }
-
-    [Test]
     public void ConstructorRejectsNullIteration()
     {
         var exception = Should.Throw<ArgumentNullException>(() => new MainlineCommitResolver(null!));

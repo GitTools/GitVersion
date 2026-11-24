@@ -16,56 +16,70 @@ internal sealed class MainlineConfigurationResolver(
         = new(ReferenceEqualityComparer.Instance);
 
     public EffectiveConfiguration GetEffectiveConfiguration(MainlineIteration iteration)
-        => GetEffectiveConfiguration(iteration.Configuration, this.commitResolver.Traverse(iteration));
-
-    public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
-        => GetEffectiveConfiguration(commit.Configuration, this.commitResolver.Traverse(commit));
-
-    private EffectiveConfiguration GetEffectiveConfiguration(
-        IBranchConfiguration branchConfiguration, IEnumerable<MainlineCommit> commits)
     {
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit)
+        if (iteration.Configuration.Increment != IncrementStrategy.Inherit)
         {
-            return GetOrCreateConfiguration(branchConfiguration);
+            return GetOrCreateConfiguration(iteration.Configuration);
         }
-        using var iterator = commits.GetEnumerator();
-        if (!iterator.MoveNext())
+
+        var commit = iteration.Commits.FirstOrDefault();
+        if (commit is null && iteration.HasParentIteration)
         {
-            return GetOrCreateConfiguration(branchConfiguration);
+            commit = this.commitResolver.Resolve(iteration, iteration.BranchedFrom);
         }
-        var firstConfiguration = iterator.Current.Configuration;
-        var inheritedConfiguration = ResolveConfiguration(iterator);
-        return ReferenceEquals(branchConfiguration, firstConfiguration)
-            ? inheritedConfiguration
-            : GetInheritedConfiguration(branchConfiguration, inheritedConfiguration);
+        if (commit is null)
+        {
+            return GetOrCreateConfiguration(iteration.Configuration);
+        }
+
+        var inherited = GetEffectiveConfiguration(commit);
+        return ReferenceEquals(iteration.Configuration, commit.Configuration)
+            ? inherited
+            : GetInheritedConfiguration(iteration.Configuration, inherited);
     }
 
-    private EffectiveConfiguration ResolveConfiguration(IEnumerator<MainlineCommit> commits)
+    public EffectiveConfiguration GetEffectiveConfiguration(MainlineCommit commit)
     {
+        if (commit.Configuration.Increment != IncrementStrategy.Inherit)
+        {
+            return GetOrCreateConfiguration(commit.Configuration);
+        }
+        if (this.commitConfigurations.TryGetValue(commit, out var result))
+        {
+            return result;
+        }
+
         Stack<MainlineCommit> pending = [];
-        EffectiveConfiguration? result;
-        IBranchConfiguration previousConfiguration;
+        var current = commit;
+        // Walk A -> B -> C, where A and B inherit and C supplies the increment.
+        // A was not cached, so visit it before checking whether its predecessor was resolved.
         do
         {
-            var current = commits.Current;
-            previousConfiguration = current.Configuration;
-            if (this.commitConfigurations.TryGetValue(current, out result))
-            {
-                break;
-            }
             if (current.Configuration.Increment != IncrementStrategy.Inherit)
             {
                 result = GetOrCreateConfiguration(current.Configuration);
                 this.commitConfigurations.Add(current, result);
                 break;
             }
-            pending.Push(current);
-        }
-        while (commits.MoveNext());
 
-        result ??= GetOrCreateConfiguration(previousConfiguration);
-        // Resolve oldest first so each nearer override inherits fully resolved settings.
-        while (pending.TryPop(out var current))
+            pending.Push(current);
+            // A merged branch inherits from its receiving merge, not its original branch point.
+            var predecessor = current.Predecessor ?? (current.Iteration.HasParentIteration
+                ? this.commitResolver.Resolve(current.Iteration, current.Iteration.BranchedTo)
+                : null);
+            if (predecessor is null)
+            {
+                result = GetOrCreateConfiguration(current.Configuration);
+                break;
+            }
+            current = predecessor;
+        }
+        while (!this.commitConfigurations.TryGetValue(current, out result));
+
+        var previousConfiguration = current.Configuration;
+        // Resolve C -> B -> A: B inherits C, then A inherits B while keeping A's overrides.
+        // For labels A="nearest", B="older", C="base", cache B="older" and A="nearest".
+        while (pending.TryPop(out current))
         {
             if (!ReferenceEquals(current.Configuration, previousConfiguration))
             {

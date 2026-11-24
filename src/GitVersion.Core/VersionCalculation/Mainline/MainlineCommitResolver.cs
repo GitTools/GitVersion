@@ -72,44 +72,4 @@ internal sealed class MainlineCommitResolver : IMainlineCommitResolver
         }
         return null;
     }
-
-    // Follow local predecessors, then the receiving merge: a merged feature inherits
-    // the receiver's settings, even when its original branch point belongs to another branch.
-    public IEnumerable<MainlineCommit> Traverse(MainlineCommit commit)
-    {
-        MainlineCommit? current = commit.NotNull();
-        do
-        {
-            yield return current;
-
-            if (current.HasPredecessor)
-            {
-                current = current.Predecessor;
-            }
-            else if (current.Iteration.HasParentIteration)
-            {
-                current = Resolve(
-                    iteration: current.Iteration,
-                    commit: current.Iteration.BranchedTo
-                );
-            }
-            else
-            {
-                current = null;
-            }
-        }
-        while (current is not null);
-    }
-
-    public IEnumerable<MainlineCommit> Traverse(MainlineIteration iteration)
-    {
-        iteration.NotNull();
-
-        MainlineCommit? commit = iteration.Commits.FirstOrDefault();
-        if (commit is null && iteration.HasParentIteration)
-        {
-            commit = Resolve(iteration, iteration.BranchedFrom);
-        }
-        return commit is not null ? Traverse(commit) : [];
-    }
 }

@@ -148,6 +148,30 @@ public class MainlineConfigurationResolverTests
     }
 
     [Test]
+    public void EmptyIterationInheritsItsRecordedBranchPointRatherThanTheReceivingMerge()
+    {
+        var receiverBranch = Branch(IncrementStrategy.Patch, "stable");
+        var root = Iteration("root", receiverBranch);
+        var merge = root.CreateCommit(Commit(), root.BranchName, receiverBranch);
+        var branchPoint = root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Major, "alpha"));
+        var inherited = new BranchConfiguration { Increment = IncrementStrategy.Inherit };
+        var child = Iteration("child", inherited, root, branchPoint.Value, merge.Value);
+        merge.AddChildIteration(child);
+        var resolver = Resolver(root);
+
+        var effective = resolver.GetEffectiveConfiguration(child);
+
+        effective.Increment.ShouldBe(IncrementStrategy.Major);
+        effective.Label.ShouldBe("alpha");
+        resolver.GetEffectiveConfiguration(child).ShouldBeSameAs(effective);
+        resolver.GetEffectiveConfiguration(merge).Increment.ShouldBe(IncrementStrategy.Patch);
+        child.Commits.ShouldBeEmpty();
+        child.Configuration.ShouldBeSameAs(inherited);
+        inherited.Increment.ShouldBe(IncrementStrategy.Inherit);
+        branchPoint.Iteration.ShouldBeSameAs(root);
+    }
+
+    [Test]
     public void RootConfigurationAndMergeWithoutAChildNeedNoBranchPoint()
     {
         var branch = Branch(IncrementStrategy.Major, "alpha");
