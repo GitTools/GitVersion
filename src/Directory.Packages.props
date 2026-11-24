@@ -51,7 +51,7 @@
     <PackageVersion Include="SharpYaml" Version="3.17.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.CommandLine" Version="3.0.0" />
-    <PackageVersion Include="System.IO.Abstractions" Version="23.0.1" />
+    <PackageVersion Include="System.IO.Abstractions" Version="23.1.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(MicrosoftBuildVersion)' != '' ">
     <PackageVersion Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" />
