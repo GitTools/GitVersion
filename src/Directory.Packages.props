@@ -35,7 +35,7 @@
     <PackageVersion Include="Buildalyzer" Version="9.0.0" />
     <PackageVersion Include="JsonSchema.Net.Generation" Version="7.5.0" />
     <PackageVersion Include="JunitXml.TestLogger" Version="8.1.0" />
-    <PackageVersion Include="MSBuild.ProjectCreation" Version="20.0.0" />
+    <PackageVersion Include="MSBuild.ProjectCreation" Version="20.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.CommandLine" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="11.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="11.0.0" />
