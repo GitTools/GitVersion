@@ -7,18 +7,16 @@ namespace GitVersion.App.Tests;
 [NonParallelizable]
 public class FeatureSelectorTests
 {
-    [TestCase(null, false)]
-    [TestCase("", false)]
-    [TestCase(" \t ", false)]
-    [TestCase("v6", true)]
-    [TestCase(" V6 ", true)]
-    [TestCase("v7", false)]
-    [TestCase(" V7 ", false)]
-    public void ParserResolvesKnownValues(string? value, bool legacy)
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase(" \t ")]
+    [TestCase("v7")]
+    [TestCase(" V7 ")]
+    public void ParserResolvesKnownValues(string? value)
     {
         using var scope = new SelectorScope(parser: value);
 
-        ArgumentParserVersionSelector.Resolve().ShouldBe(legacy ? ArgumentParserVersion.V6 : ArgumentParserVersion.V7);
+        ArgumentParserVersionSelector.Resolve().ShouldBe(ArgumentParserVersion.V7);
     }
 
     [TestCase("true")]
@@ -31,7 +29,7 @@ public class FeatureSelectorTests
         var exception = Should.Throw<WarningException>(() => ArgumentParserVersionSelector.Resolve());
         exception.Message.ShouldContain(ArgumentParserVersionSelector.EnvironmentVariableName);
         exception.Message.ShouldContain(value);
-        exception.Message.ShouldContain("'v6' and 'v7'");
+        exception.Message.ShouldContain("'v7'");
     }
 
     [TestCase("true")]
@@ -43,14 +41,14 @@ public class FeatureSelectorTests
 
         var exception = Should.Throw<WarningException>(() => ArgumentParserVersionSelector.Resolve());
         exception.Message.ShouldContain(ArgumentParserVersionSelector.RetiredEnvironmentVariableName);
-        exception.Message.ShouldContain("GITVERSION_ARGUMENT_PARSER_VERSION=v6");
+        exception.Message.ShouldContain("GITVERSION_ARGUMENT_PARSER_VERSION=v7");
     }
 
     [Test]
     [Combinatorial]
     public void CompositionRegistersSelectedImplementations(
-        [Values("v6", "v7")] string parser,
-        [Values("v6", "v7")] string configuration,
+        [Values("v7")] string parser,
+        [Values("v7")] string configuration,
         [Values("libgit2", "managed")] string backend)
     {
         using var scope = new SelectorScope(parser, configuration, backend);
@@ -59,7 +57,7 @@ public class FeatureSelectorTests
         using var host = builder.Build();
 
         host.Services.GetRequiredService<IArgumentParser>().GetType()
-            .ShouldBe(parser == "v6" ? typeof(LegacyArgumentParser) : typeof(ArgumentParser));
+            .ShouldBe(typeof(ArgumentParser));
         host.Services.GetRequiredService<IGitRepository>().GetType().Assembly
             .ShouldBe(backend == "libgit2" ? typeof(GitVersionLibGit2SharpModule).Assembly : typeof(GitVersionManagedGitModule).Assembly);
     }
@@ -68,7 +66,7 @@ public class FeatureSelectorTests
     public void SelectionLogUsesCapturedValues()
     {
         FeatureSelections selections;
-        using (new SelectorScope("v6", "v6", "libgit2"))
+        using (new SelectorScope("v7", "v7", "libgit2"))
         {
             selections = FeatureSelections.Resolve();
         }
@@ -77,7 +75,18 @@ public class FeatureSelectorTests
         var messages = new List<string>();
         selections.Log(new TestLogger<FeatureSelections>(messages.Add));
 
-        messages.ShouldBe(new[] { "Argument parser version: v6; Configuration version: v6; Git backend: libgit2" });
+        messages.ShouldBe(new[] { "Argument parser version: v7; Configuration version: v7; Git backend: libgit2" });
+    }
+
+    [TestCase("v6")]
+    [TestCase(" V6 ")]
+    public void ParserRejectsRetiredVersion(string value)
+    {
+        using var scope = new SelectorScope(parser: value);
+        var error = Should.Throw<WarningException>(() => ArgumentParserVersionSelector.Resolve());
+        error.Message.ShouldContain("removed in GitVersion 7.1");
+        error.Message.ShouldContain("POSIX");
+        error.Message.ShouldContain("v7");
     }
 
     private sealed class SelectorScope : IDisposable

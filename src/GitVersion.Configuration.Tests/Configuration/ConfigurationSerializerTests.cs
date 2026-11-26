@@ -35,16 +35,14 @@ public class ConfigurationSerializerTests
     }
 
     [Test]
-    public void SerializesFlatConfigurationWhenV6IsSelected()
+    public void RejectsRemovedV6RuntimeSerialization()
     {
         using var scope = new EnvironmentVariableScope("v6");
         var configuration = new GitVersionConfiguration { TagPrefixPattern = "custom-" };
 
-        var yaml = this.serializer.Serialize(configuration);
-
-        yaml.ShouldContain("tag-prefix: custom-");
-        yaml.ShouldNotContain("calculation:");
-        yaml.ShouldNotContain("output:");
+        var error = Should.Throw<WarningException>(() => this.serializer.Serialize(configuration));
+        error.Message.ShouldContain("removed in GitVersion 7.1");
+        error.Message.ShouldContain("gitversion config migrate");
     }
 
     [Test]

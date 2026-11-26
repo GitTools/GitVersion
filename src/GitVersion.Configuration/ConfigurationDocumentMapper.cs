@@ -76,7 +76,6 @@ internal static class ConfigurationDocumentMapper
 
     public static Dictionary<object, object?> Normalize(
         IReadOnlyDictionary<object, object?> document,
-        ConfigurationVersion selectedVersion,
         string source)
     {
         var kind = Detect(document);
@@ -88,18 +87,11 @@ internal static class ConfigurationDocumentMapper
                 "for a v6 configuration, run 'gitversion config migrate'.");
         }
 
-        if (kind == ConfigurationDocumentKind.V6 && selectedVersion == ConfigurationVersion.V7)
+        if (kind == ConfigurationDocumentKind.V6)
         {
             throw new ConfigurationException(
-                $"The {source} uses the legacy v6 configuration structure, but {ConfigurationVersionSelector.EnvironmentVariableName}=v7 is selected. " +
-                $"Run 'gitversion config migrate' or set {ConfigurationVersionSelector.EnvironmentVariableName}=v6 temporarily.");
-        }
-
-        if (kind == ConfigurationDocumentKind.V7 && selectedVersion == ConfigurationVersion.V6)
-        {
-            throw new ConfigurationException(
-                $"The {source} uses the v7 configuration structure, but {ConfigurationVersionSelector.EnvironmentVariableName}=v6 is selected. " +
-                $"Remove the override or set {ConfigurationVersionSelector.EnvironmentVariableName}=v7.");
+                $"The {source} uses the legacy v6 configuration structure. " +
+                "Flat configuration runtime loading was removed in GitVersion 7.1. Run 'gitversion config migrate'.");
         }
 
         return kind == ConfigurationDocumentKind.V7 ? Flatten(document) : CloneDictionary(document);

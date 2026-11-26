@@ -231,7 +231,7 @@ Delete `src/GitVersion.LibGit2Sharp` and `new-cli/GitVersion.Core.Libgit2Sharp`;
 **only** for dynamic-repo/CI-normalization scenarios — pure version calculation on a prepared checkout needs no
 git binary at all (a strict improvement for MSBuild-task users).
 
-Parser and flat configuration runtime removal in v7.1 is tracked separately
+Parser and flat configuration runtime removal in v7.1 is implemented separately
 by #5188. Keep `gitversion config migrate` and actionable retired selector
 value diagnostics throughout v7.x. #5136 removes all three selectors in v8;
 explicit `v7` and `managed` remain accepted until then.
@@ -303,3 +303,11 @@ Commit-graph reader (generation numbers for topo sort and merge-base), benchmark
 [gitreader]: https://github.com/kekyo/GitReader
 
 [managedgitlib]: https://github.com/GlebChili/ManagedGitLib
+
+### v7.1 parser/configuration compatibility boundary
+
+The CLI registers only the POSIX parser and nested v7 configuration runtime.
+Parser/configuration selectors retain their v7.x compatibility validators: explicit
+`v7` is a no-op and `v6` fails with migration guidance. `config migrate` continues
+to read flat v6 input independently of runtime loading. Git backend selection is
+unchanged by #5188 and remains governed by #5040; v8 selector removal is #5136.
