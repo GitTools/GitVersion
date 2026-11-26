@@ -40,10 +40,10 @@ internal static class MainlineTestCalculation
 
     internal static MainlineContext Context(
         MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
-        => Create(iteration, configuration, environment, currentCommit).Context;
+        => Create(iteration, configuration, environment, currentCommit).CalculationContext;
 
-    internal sealed record Components(MainlineVersionCalculator Calculator, MainlineConfigurationResolver ConfigurationResolver,
-        MainlineHistory History, MergedMainlineVersionPolicy SourceVersions, MainlineContext Context);
+    internal sealed record Components(MainlineVersionCalculator VersionCalculator, MainlineConfigurationResolver ConfigurationResolver,
+        MainlineHistory CommitHistory, MergedMainlineVersionPolicy SourceVersions, MainlineContext CalculationContext);
 
     internal static MainlineCommit[] SelectHistory(MainlineIteration root, MainlineIteration iteration)
         => History(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(),

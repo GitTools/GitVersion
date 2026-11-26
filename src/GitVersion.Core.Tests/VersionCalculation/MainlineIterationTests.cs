@@ -108,7 +108,7 @@ public class MainlineIterationTests
         var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, receiver, shared.Value, merge.Value);
         merge.AddChildIteration(source);
         var calculation = MainlineTestCalculation.Create(receiver, configuration, new TestEnvironment(), mergeValue);
-        var context = calculation.Context;
+        var context = calculation.CalculationContext;
 
         var version = calculation.SourceVersions.GetSourceVersion(source, context);
 
@@ -170,7 +170,7 @@ public class MainlineIterationTests
         merge.AddChildIteration(source);
 
         var calculation = MainlineTestCalculation.Create(root, configuration, new TestEnvironment(), mergeValue);
-        var context = calculation.Context;
+        var context = calculation.CalculationContext;
         var effective = calculation.ConfigurationResolver.GetEffectiveConfiguration(source);
 
         effective.Increment.ShouldBe(IncrementStrategy.Minor);
@@ -244,7 +244,7 @@ public class MainlineIterationTests
         var second = new MainlineIteration("second", first.BranchName, branch, receiver, receiverTip, merge.Value);
         second.CreateCommit(tip, second.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
         var calculation = MainlineTestCalculation.Create(receiver, configuration, new TestEnvironment(), tip);
-        var context = calculation.Context;
+        var context = calculation.CalculationContext;
 
         var firstVersion = calculation.SourceVersions.GetSourceVersion(first, context);
         var secondVersion = calculation.SourceVersions.GetSourceVersion(second, context);

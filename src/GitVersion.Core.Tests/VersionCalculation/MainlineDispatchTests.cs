@@ -106,7 +106,7 @@ public class MainlineDispatchTests
     {
         var fixture = Fixture(boundary: true, enclosingMainline: enclosingMainline, preventSource: preventSource);
 
-        var result = fixture.Calculation.Calculator.DetermineBaseVersion(fixture.Root, null);
+        var result = fixture.Calculation.VersionCalculator.DetermineBaseVersion(fixture.Root, null);
 
         result.GetIncrementedVersion().ToString().ShouldBe(expected);
         result.BaseVersionSource.ShouldBeSameAs(fixture.Merge.Value);
@@ -199,7 +199,7 @@ public class MainlineDispatchTests
     {
         var fixture = Fixture(boundary: true, enclosingMainline: enclosingMainline, releaseFloor: true);
 
-        var result = fixture.Calculation.Calculator.DetermineBaseVersion(fixture.Root, null);
+        var result = fixture.Calculation.VersionCalculator.DetermineBaseVersion(fixture.Root, null);
 
         result.GetIncrementedVersion().ToString().ShouldBe("4.0.0-beta.1");
         result.BaseVersionSource.ShouldBeSameAs(fixture.Merge.Value);
@@ -264,7 +264,7 @@ public class MainlineDispatchTests
         }
         var calculation = MainlineTestCalculation.Create(root, GitFlowConfigurationBuilder.New.Build(),
             new TestEnvironment(), mergeValue);
-        var context = calculation.Context;
+        var context = calculation.CalculationContext;
         context.Predecessor = initial;
         context.HasSuccessor = false;
         context.BaseVersionSource = initialValue;
@@ -283,6 +283,6 @@ public class MainlineDispatchTests
     private sealed record DispatchFixture(MainlineIteration Root, MainlineCommit Merge, MainlineCommit Initial,
         MainlineTestCalculation.Components Calculation, ICommit SourceValue)
     {
-        public MainlineContext Context => Calculation.Context;
+        public MainlineContext Context => Calculation.CalculationContext;
     }
 }

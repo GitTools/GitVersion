@@ -246,7 +246,7 @@ public class MainlineMergeIncrementerTests
         }
         var calculation = MainlineTestCalculation.Create(root, GitFlowConfigurationBuilder.New.Build(),
             new TestEnvironment(), mergeValue);
-        var context = calculation.Context with { TargetLabel = "receiver" };
+        var context = calculation.CalculationContext with { TargetLabel = "receiver" };
         new EnrichMergeState().Enrich(root, merge, context);
         return new(root, merge, source, context, sourceValue, calculation);
     }
