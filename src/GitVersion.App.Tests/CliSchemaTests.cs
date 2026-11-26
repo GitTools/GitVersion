@@ -120,10 +120,10 @@ public class CliSchemaTests
     }
 
     [TestCase("v7", "libgit2")]
-    [TestCase("v7", "libgit2")]
+    [TestCase(null, "libgit2")]
     [TestCase("v7", "managed")]
-    [TestCase("v7", "managed")]
-    public void ProcessExportsSameDocumentWithoutRepositoryOrFiles(string configuration, string backend)
+    [TestCase(null, "managed")]
+    public void ProcessExportsSameDocumentWithoutRepositoryOrFiles(string? configuration, string backend)
     {
         var directory = Directory.CreateTempSubdirectory("gitversion-schema-");
         try
@@ -257,10 +257,10 @@ public class CliSchemaTests
         }
     }
 
-    private static ExecutionResults RunProcess(string directory, string arguments, string parser, string configuration, string backend)
+    private static ExecutionResults RunProcess(string directory, string arguments, string parser, string? configuration, string backend)
         => RunProcess(directory, arguments, parser, configuration, backend, []);
 
-    private static ExecutionResults RunProcess(string directory, string arguments, string parser, string configuration, string backend,
+    private static ExecutionResults RunProcess(string directory, string arguments, string parser, string? configuration, string backend,
         KeyValuePair<string, string?>[] additionalEnvironment)
     {
         var stdout = new StringBuilder();

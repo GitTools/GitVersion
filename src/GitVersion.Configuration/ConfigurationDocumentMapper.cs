@@ -90,7 +90,7 @@ internal static class ConfigurationDocumentMapper
         if (kind == ConfigurationDocumentKind.V6)
         {
             throw new ConfigurationException(
-                $"The {source} uses the legacy v6 configuration structure, but {ConfigurationVersionSelector.EnvironmentVariableName}=v7 is selected. " +
+                $"The {source} uses the legacy v6 configuration structure. " +
                 "Flat configuration runtime loading was removed in GitVersion 7.1. Run 'gitversion config migrate'.");
         }
 
