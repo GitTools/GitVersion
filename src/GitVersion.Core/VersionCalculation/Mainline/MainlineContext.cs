@@ -4,7 +4,7 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.Mainline;
 
 // CurrentCommit stays fixed while traversing ancestors and merged branches.
-internal record MainlineContext(ICommit CurrentCommit)
+internal record MainlineContext(ICommit CurrentCommit, Dictionary<MainlineIteration, BaseVersion> MainlineVersions)
 {
     public string? TargetLabel { get; init; }
 
@@ -16,16 +16,6 @@ internal record MainlineContext(ICommit CurrentCommit)
 
     // Independent source calculations also need side histories stored in other iterations.
     public bool IncludeSharedHistory { get; init; }
-
-    public MainlineContext CreateChildContext()
-        => new(CurrentCommit)
-        {
-            TargetLabel = TargetLabel,
-            IncludeSharedHistory = IncludeSharedHistory,
-            MainlineVersions = MainlineVersions
-        };
-
-    public Dictionary<MainlineIteration, BaseVersion> MainlineVersions { get; init; } = [];
 
     internal MainlineIncrementState Increments { get; } = new();
 

@@ -23,7 +23,8 @@ internal abstract class MergeCommitOnNonTrunkBase(
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
             var baseVersion = calculator.CalculateBaseVersion(
-                commit.ChildIteration, context.CreateChildContext());
+                commit.ChildIteration, context.TargetLabel, context.MainlineVersions,
+                includeSharedHistory: context.IncludeSharedHistory);
 
             context.Label ??= baseVersion.Operator?.Label;
             context.Increment = ConsolidateIncrement(context, baseVersion);

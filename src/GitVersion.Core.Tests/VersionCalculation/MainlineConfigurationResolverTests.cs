@@ -185,45 +185,6 @@ public class MainlineConfigurationResolverTests
         resolver.GetEffectiveConfiguration(commit).Increment.ToVersionField().ShouldBe(VersionField.Major);
     }
 
-    [Test]
-    public void ChildContextKeepsInputsButResetsCalculationState()
-    {
-        var branch = Branch(IncrementStrategy.Minor, "beta");
-        var root = Iteration("root", branch);
-        var commit = root.CreateCommit(Commit(), root.BranchName, branch);
-        var configuration = GitFlowConfigurationBuilder.New.Build();
-        var context = MainlineTestCalculation.Context(root, configuration, new TestEnvironment(), commit.Value) with
-        {
-            TargetLabel = "target",
-            IncludeSharedHistory = true,
-            Label = "calculated",
-            Increment = VersionField.Major,
-            CommitIncrement = VersionField.Minor,
-            SemanticVersion = new SemanticVersion(3, 0, 0),
-            SemVerSource = new SemanticVersionSource("parent", new SemanticVersion(3, 0, 0), commit.Value, VersionField.Major),
-            BaseVersionSource = commit.Value,
-            HasSuccessor = true
-        };
-        context.AddAlternativeSemanticVersion(new SemanticVersion(3, 1, 0), context.SemVerSource);
-        var child = context.CreateChildContext();
-
-        child.MainlineVersions.ShouldBeSameAs(context.MainlineVersions);
-        child.TargetLabel.ShouldBe("target");
-        child.IncludeSharedHistory.ShouldBeTrue();
-        child.Label.ShouldBeNull();
-        child.SemanticVersion.ShouldBeNull();
-        child.SemVerSource.ShouldBeNull();
-        child.BaseVersionSource.ShouldBeNull();
-        child.HasSuccessor.ShouldBeNull();
-        child.Increment.ShouldBe(VersionField.None);
-        child.CommitIncrement.ShouldBe(VersionField.None);
-        child.AlternativeSemanticVersions.ShouldBeEmpty();
-        child.AlternativeSemanticVersions.Add(new SemanticVersion(4, 0, 0));
-        context.AlternativeSemanticVersions.ShouldBe([new SemanticVersion(3, 1, 0)]);
-        context.Label.ShouldBe("calculated");
-        context.Increment.ShouldBe(VersionField.Major);
-    }
-
     [TestCase(false)]
     [TestCase(true)]
     public void CommitsWithUnchangedSettingsReuseEffectiveConfiguration(bool inherit)
@@ -374,10 +335,6 @@ public class MainlineConfigurationResolverTests
         context.EffectiveConfiguration.Increment.ShouldBe(IncrementStrategy.Minor);
         context.IterationConfiguration.Increment.ShouldBe(IncrementStrategy.Minor);
         context.ChildConfiguration.ShouldNotBeNull().Increment.ShouldBe(IncrementStrategy.Patch);
-        var nested = context.CreateChildContext();
-        nested.EffectiveConfiguration.ShouldBeNull();
-        nested.IterationConfiguration.ShouldBeNull();
-        nested.ChildConfiguration.ShouldBeNull();
 
         enricher.Enrich(root, ordinary, context);
 

@@ -69,7 +69,7 @@ public class MainlineHistoryTests
 
     [TestCase(false)]
     [TestCase(true)]
-    public void CalculatorSharesIgnoredAncestryCacheAcrossChildCalculations(bool retainAncestor)
+    public void CalculatorReusesIgnoredAncestrySelection(bool retainAncestor)
     {
         var cutoff = new DateTimeOffset(2026, 1, 2, 0, 0, 0, TimeSpan.Zero);
         var initialValue = Commit();
@@ -88,7 +88,6 @@ public class MainlineHistoryTests
             commitResolver, configurationResolver);
         var calculator = new MainlineVersionCalculator(Substitute.For<IIncrementStrategyFinder>(),
             configurationResolver, history);
-        var context = calculator.CreateContext();
 
         var first = history.Select(iteration, "", false);
         first.Commits.ShouldBe(retainAncestor ? [initial] : []);
@@ -96,14 +95,13 @@ public class MainlineHistoryTests
         first.MissingCommit.ShouldBeNull();
         ignoredTipValue.ClearReceivedCalls();
 
-        var child = context.CreateChildContext();
         if (retainAncestor)
         {
-            calculator.CalculateBaseVersion(iteration, child).SemanticVersion.ShouldBe(new SemanticVersion(1, 0, 0));
+            calculator.DetermineBaseVersion(iteration, "").SemanticVersion.ShouldBe(new SemanticVersion(1, 0, 0));
         }
         else
         {
-            Should.Throw<InvalidOperationException>(() => calculator.CalculateBaseVersion(iteration, child));
+            Should.Throw<InvalidOperationException>(() => calculator.DetermineBaseVersion(iteration, ""));
         }
 
         _ = ignoredTipValue.DidNotReceive().Parents;
@@ -112,46 +110,29 @@ public class MainlineHistoryTests
     }
 
     [Test]
-    public void CalculatorCreatesIndependentRootContexts()
+    public void RepeatedCalculationsUseTheirOwnTargetLabel()
     {
         var branch = Branch(true);
+        var alphaValue = Commit();
+        var betaValue = Commit(alphaValue);
         var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
-        var commit = iteration.CreateCommit(Commit(), iteration.BranchName, branch);
-        var configuration = GitFlowConfigurationBuilder.New.Build();
-        var environment = new TestEnvironment();
-        var finder = Substitute.For<IIncrementStrategyFinder>();
-        var commitResolver = new MainlineCommitResolver(iteration);
-        var configurationResolver = new MainlineConfigurationResolver(configuration, commitResolver);
-        var history = new MainlineHistory(
-            configuration, environment, commit.Value, commitResolver, configurationResolver);
-        var calculator = new MainlineVersionCalculator(finder, configurationResolver, history);
-        var first = calculator.CreateContext("alpha");
-        first.Increment = VersionField.Major;
-        first.Label = "calculated";
-        first.BaseVersionSource = commit.Value;
-        first.MainlineVersions.Add(iteration, new BaseVersion("first", new SemanticVersion(3, 0, 0)));
-        first.Increments.Add(new BaseVersionOperand("first", new SemanticVersion(3, 0, 0)));
-        first.IsMainlineMerge = true;
+        var beta = iteration.CreateCommit(betaValue, iteration.BranchName, branch);
+        var alpha = iteration.CreateCommit(alphaValue, iteration.BranchName, branch);
+        alpha.AddSemanticVersions(SemanticVersion.Parse("1.0.0-alpha.1", null));
+        beta.AddSemanticVersions(SemanticVersion.Parse("2.0.0-beta.1", null));
+        var calculator = MainlineTestCalculation.Calculator(iteration, GitFlowConfigurationBuilder.New.Build(),
+            new TestEnvironment(), betaValue);
 
-        var second = calculator.CreateContext("beta");
+        var first = calculator.DetermineBaseVersion(iteration, "beta");
+        var second = calculator.DetermineBaseVersion(iteration, "alpha");
+        var repeated = calculator.DetermineBaseVersion(iteration, "beta");
 
-        second.ShouldNotBeSameAs(first);
-        second.CurrentCommit.ShouldBeSameAs(commit.Value);
-        second.TargetLabel.ShouldBe("beta");
-        second.Increment.ShouldBe(VersionField.None);
-        second.Label.ShouldBeNull();
-        second.BaseVersionSource.ShouldBeNull();
-        second.MainlineVersions.ShouldNotBeSameAs(first.MainlineVersions);
-        second.MainlineVersions.ShouldBeEmpty();
-        second.Increments.ShouldNotBeSameAs(first.Increments);
-        second.Increments.Version.ShouldBeNull();
-        second.Increments.ReleaseBaseline.ShouldBeNull();
-        second.IsMainlineMerge.ShouldBeFalse();
-        first.MainlineVersions.Count.ShouldBe(1);
-        first.Increment.ShouldBe(VersionField.Major);
-        first.TargetLabel.ShouldBe("alpha");
-        first.Increments.Version.ShouldNotBeNull().SemanticVersion.Major.ShouldBe(3);
-        first.IsMainlineMerge.ShouldBeTrue();
+        first.SemanticVersion.ToString().ShouldBe("2.0.0-beta.1");
+        first.BaseVersionSource.ShouldBeSameAs(betaValue);
+        second.SemanticVersion.ToString().ShouldBe("1.0.0-alpha.1");
+        second.BaseVersionSource.ShouldBeSameAs(alphaValue);
+        repeated.SemanticVersion.ShouldBe(first.SemanticVersion);
+        repeated.BaseVersionSource.ShouldBeSameAs(betaValue);
     }
 
     [Test]
@@ -585,66 +566,6 @@ public class MainlineHistoryTests
         root.Commits.ShouldBe([initial, shared, receiver, merge]);
         source.Commits.ShouldBe([sourceCommit]);
         receiver.Predecessor.ShouldBeSameAs(shared);
-    }
-
-    [Test]
-    public void ChildContextKeepsCacheButResetsCalculationState()
-    {
-        var commit = Commit();
-        var branch = Branch(true);
-        var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
-        var predecessor = iteration.CreateCommit(commit, iteration.BranchName, branch);
-        var version = new SemanticVersion(3, 0, 0);
-        var parent = MainlineTestCalculation.Context(iteration,
-            GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), commit) with
-        {
-            TargetLabel = "beta",
-            IncludeSharedHistory = true,
-            SemanticVersion = version,
-            SemVerSource = new SemanticVersionSource("tag", version, commit, VersionField.None),
-            Increment = VersionField.Major,
-            CommitIncrement = VersionField.Minor,
-            BaseVersionSource = commit,
-            Predecessor = predecessor,
-            HasSuccessor = true,
-            Label = "previous",
-            ForceIncrement = true,
-            SuppressBranchIncrement = true
-        };
-        var cached = new BaseVersion("cached", version);
-        parent.MainlineVersions.Add(iteration, cached);
-        parent.AddAlternativeSemanticVersion(version, new SemanticVersionSource("tag", version, commit, VersionField.None));
-        parent.Increments.Add(new BaseVersionOperand("tag", version, commit));
-        parent.IsMainlineMerge = true;
-
-        var child = parent.CreateChildContext();
-
-        child.ShouldNotBeSameAs(parent);
-        child.TargetLabel.ShouldBe("beta");
-        child.IncludeSharedHistory.ShouldBeTrue();
-        child.CurrentCommit.ShouldBeSameAs(commit);
-        child.MainlineVersions.ShouldBeSameAs(parent.MainlineVersions);
-        child.MainlineVersions[iteration].ShouldBeSameAs(cached);
-        child.Increments.ShouldNotBeSameAs(parent.Increments);
-        child.Increments.Version.ShouldBeNull();
-        child.Increments.ReleaseBaseline.ShouldBeNull();
-        child.IsMainlineMerge.ShouldBeFalse();
-        child.Increment.ShouldBe(VersionField.None);
-        child.CommitIncrement.ShouldBe(VersionField.None);
-        child.SemanticVersion.ShouldBeNull();
-        child.SemVerSource.ShouldBeNull();
-        child.BaseVersionSource.ShouldBeNull();
-        child.Predecessor.ShouldBeNull();
-        child.HasSuccessor.ShouldBeNull();
-        child.Label.ShouldBeNull();
-        child.ForceIncrement.ShouldBeFalse();
-        child.SuppressBranchIncrement.ShouldBeFalse();
-        child.AlternativeSemanticVersions.ShouldBeEmpty();
-        parent.Increment.ShouldBe(VersionField.Major);
-        parent.AlternativeSemanticVersions.ShouldBe([version]);
-        parent.Increments.ReleaseBaseline.ShouldBeSameAs(version);
-        parent.Increments.Version.ShouldNotBeNull().SemanticVersion.ShouldBeSameAs(version);
-        parent.IsMainlineMerge.ShouldBeTrue();
     }
 
     [Test]

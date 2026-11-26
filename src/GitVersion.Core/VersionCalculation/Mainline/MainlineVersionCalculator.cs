@@ -71,16 +71,18 @@ internal sealed class MainlineVersionCalculator
         ];
     }
 
-    internal MainlineContext CreateContext(string? targetLabel = null)
-        => new(this.history.CurrentCommit) { TargetLabel = targetLabel };
-
     internal BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel)
-        => CalculateBaseVersion(iteration, CreateContext(targetLabel));
+        => CalculateBaseVersion(iteration, targetLabel, [], includeSharedHistory: false);
 
-    internal BaseVersion CalculateBaseVersion(MainlineIteration iteration, MainlineContext context,
-        bool includeAncestry = false)
+    internal BaseVersion CalculateBaseVersion(MainlineIteration iteration, string? targetLabel,
+        Dictionary<MainlineIteration, BaseVersion> mainlineVersions, bool includeSharedHistory, bool includeAncestry = false)
     {
         iteration.NotNull();
+        var context = new MainlineContext(this.history.CurrentCommit, mainlineVersions)
+        {
+            TargetLabel = targetLabel,
+            IncludeSharedHistory = includeSharedHistory
+        };
         var incrementSteps = GetIncrements(iteration, context, includeAncestry).ToArray();
         return ApplyIncrements(incrementSteps);
     }

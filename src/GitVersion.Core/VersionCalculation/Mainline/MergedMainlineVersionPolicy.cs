@@ -38,12 +38,8 @@ internal sealed class MergedMainlineVersionPolicy(
             && iteration.ParentIteration is { } parent && iteration.BranchName == parent.BranchName ? 0 : 1];
         var configuration = configurationResolver.GetEffectiveConfiguration(iteration);
         var label = configuration.GetBranchSpecificLabel(iteration.BranchName, null, environment, tip);
-        var sourceContext = context.CreateChildContext() with
-        {
-            TargetLabel = label,
-            IncludeSharedHistory = true
-        };
-        var version = calculator.CalculateBaseVersion(iteration, sourceContext, includeAncestry: true);
+        var version = calculator.CalculateBaseVersion(iteration, label, context.MainlineVersions,
+            includeSharedHistory: true, includeAncestry: true);
         // A released source tip contributes its tag, not its next pending increment.
         if (version.Operand.BaseVersionSource?.Equals(tip) == true
             && configuration.PreventIncrementWhenCurrentCommitTagged

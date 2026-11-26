@@ -30,7 +30,7 @@ internal static class MainlineTestCalculation
     {
         var (calculator, commitResolver, configurationResolver, history) =
             CreateCalculator(iteration, configuration, environment, currentCommit);
-        var context = calculator.CreateContext();
+        var context = new MainlineContext(currentCommit, []);
         if (commitResolver.Resolve(iteration, currentCommit) is { } commit)
         {
             new ConfigurationPreEnricher(configurationResolver).Enrich(iteration, commit, context);
