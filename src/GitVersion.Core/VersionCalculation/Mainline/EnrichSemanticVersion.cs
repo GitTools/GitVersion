@@ -2,15 +2,15 @@ using GitVersion.Configuration;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
-internal sealed class EnrichSemanticVersion : IContextPreEnricher
+internal sealed class EnrichSemanticVersion(IEnvironment environment) : IContextPreEnricher
 {
     public void Enrich(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
         var branchSpecificLabel = context.TargetLabel;
         branchSpecificLabel ??= context.IterationConfiguration
-            .GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+            .GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
         branchSpecificLabel ??= context.EffectiveConfiguration
-            .GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+            .GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
 
         var semanticVersions = commit.SemanticVersions.Where(
             element => element.IsMatchForBranchSpecificLabel(branchSpecificLabel)

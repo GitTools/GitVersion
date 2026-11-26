@@ -10,25 +10,40 @@ internal static class MainlineTestCalculation
     internal static MainlineVersionCalculator Calculator(
         MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
         IIncrementStrategyFinder? incrementStrategyFinder = null)
+        => CreateCalculator(iteration, configuration, environment, currentCommit, incrementStrategyFinder).Calculator;
+
+    private static (MainlineVersionCalculator Calculator, MainlineCommitResolver CommitResolver,
+        MainlineConfigurationResolver ConfigurationResolver, MainlineHistory History) CreateCalculator(
+        MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit,
+        IIncrementStrategyFinder? incrementStrategyFinder = null)
     {
         MainlineCommitResolver commitResolver = new(iteration);
         MainlineConfigurationResolver configurationResolver = new(configuration, commitResolver);
         MainlineHistory history = new(configuration, environment, currentCommit, commitResolver, configurationResolver);
-        return new(incrementStrategyFinder ?? Substitute.For<IIncrementStrategyFinder>(),
-            commitResolver, configurationResolver, history);
+        MainlineVersionCalculator calculator = new(incrementStrategyFinder ?? Substitute.For<IIncrementStrategyFinder>(),
+            configurationResolver, history);
+        return (calculator, commitResolver, configurationResolver, history);
+    }
+
+    internal static Components Create(
+        MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
+    {
+        var (calculator, commitResolver, configurationResolver, history) =
+            CreateCalculator(iteration, configuration, environment, currentCommit);
+        var context = calculator.CreateContext();
+        if (commitResolver.Resolve(iteration, currentCommit) is { } commit)
+        {
+            new ConfigurationPreEnricher(configurationResolver).Enrich(iteration, commit, context);
+        }
+        return new(calculator, configurationResolver, history, new(configurationResolver, environment, calculator), context);
     }
 
     internal static MainlineContext Context(
         MainlineIteration iteration, IGitVersionConfiguration configuration, IEnvironment environment, ICommit currentCommit)
-    {
-        var calculator = Calculator(iteration, configuration, environment, currentCommit);
-        var context = calculator.CreateContext();
-        if (calculator.CommitResolver.Resolve(iteration, currentCommit) is { } commit)
-        {
-            new ConfigurationPreEnricher().Enrich(iteration, commit, context);
-        }
-        return context;
-    }
+        => Create(iteration, configuration, environment, currentCommit).Context;
+
+    internal sealed record Components(MainlineVersionCalculator Calculator, MainlineConfigurationResolver ConfigurationResolver,
+        MainlineHistory History, MergedMainlineVersionPolicy SourceVersions, MainlineContext Context);
 
     internal static MainlineCommit[] SelectHistory(MainlineIteration root, MainlineIteration iteration)
         => History(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(),

@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTagBase
+internal sealed class LastCommitOnTrunkWithStableTag(
+    IEnvironment environment)
+    : CommitOnTrunkWithStableTagBase(environment)
 {
     // B  58 minutes ago  (HEAD -> main) (tag 0.2.0) <<--
     // A  59 minutes ago

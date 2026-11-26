@@ -23,14 +23,15 @@ public class MainlineDispatchTests
             "prerelease-tag" => SemanticVersion.Parse("4.0.0-beta.5", null),
             _ => null
         };
-        new ConfigurationPreEnricher().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         new EnrichMergeState().Enrich(fixture.Root, fixture.Merge, fixture.Context);
+        var (calculator, _, history, sourceVersions, _) = fixture.Calculation;
+        var environment = history.Environment;
         IIncrementer[] components =
         [
-            new CommitOnTrunk(), new MergedMainlineIncrementer(),
-            new MergeCommitOnTrunk(), new LastMergeCommitOnTrunk(),
-            new CommitOnTrunkWithStableTag(), new LastCommitOnTrunkWithStableTag(),
-            new CommitOnTrunkWithPreReleaseTag(), new LastCommitOnTrunkWithPreReleaseTag()
+            new CommitOnTrunk(history, environment), new MergedMainlineIncrementer(history, environment, sourceVersions),
+            new MergeCommitOnTrunk(history, calculator), new LastMergeCommitOnTrunk(history, calculator),
+            new CommitOnTrunkWithStableTag(environment), new LastCommitOnTrunkWithStableTag(environment),
+            new CommitOnTrunkWithPreReleaseTag(), new LastCommitOnTrunkWithPreReleaseTag(environment)
         ];
 
         var matches = components
@@ -55,7 +56,9 @@ public class MainlineDispatchTests
             Increment = VersionField.Patch,
             BaseVersionSource = fixture.Initial.Value
         });
-        using var primary = new MergedMainlineIncrementer()
+        var (_, _, history, sourceVersions, _) = fixture.Calculation;
+        var environment = history.Environment;
+        using var primary = new MergedMainlineIncrementer(history, environment, sourceVersions)
             .GetIncrements(fixture.Root, fixture.Merge, context).GetEnumerator();
 
         primary.MoveNext().ShouldBeTrue();
@@ -67,8 +70,8 @@ public class MainlineDispatchTests
         context.BaseVersionSource.ShouldBeSameAs(fixture.Merge.Value);
         IIncrementer[] transitions =
         [
-            new CommitOnTrunkBranchedToTrunk(), new MergedMainlineBranchedToTrunk(),
-            new CommitOnTrunkBranchedToNonTrunk(), new MergedMainlineBranchedToNonTrunk()
+            new CommitOnTrunkBranchedToTrunk(environment), new MergedMainlineBranchedToTrunk(environment, sourceVersions),
+            new CommitOnTrunkBranchedToNonTrunk(environment), new MergedMainlineBranchedToNonTrunk(environment, sourceVersions)
         ];
         var transition = transitions.Single(c => c.MatchPrecondition(fixture.Root, fixture.Merge, context));
         transition.GetType().Name.ShouldBe(enclosingMainline
@@ -103,7 +106,7 @@ public class MainlineDispatchTests
     {
         var fixture = Fixture(boundary: true, enclosingMainline: enclosingMainline, preventSource: preventSource);
 
-        var result = fixture.Context.Calculator.DetermineBaseVersion(fixture.Root, null);
+        var result = fixture.Calculation.Calculator.DetermineBaseVersion(fixture.Root, null);
 
         result.GetIncrementedVersion().ToString().ShouldBe(expected);
         result.BaseVersionSource.ShouldBeSameAs(fixture.Merge.Value);
@@ -121,12 +124,13 @@ public class MainlineDispatchTests
     {
         var fixture = Fixture(boundary: true, enclosingMainline: enclosingMainline, attachChild: tag != "none");
         fixture.Context.SemanticVersion = tag == "none" ? null : SemanticVersion.Parse(tag, null);
-        new ConfigurationPreEnricher().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         new EnrichMergeState().Enrich(fixture.Root, fixture.Merge, fixture.Context);
+        var (_, _, history, sourceVersions, _) = fixture.Calculation;
+        var environment = history.Environment;
         IIncrementer[] transitions =
         [
-            new CommitOnTrunkBranchedToTrunk(), new MergedMainlineBranchedToTrunk(),
-            new CommitOnTrunkBranchedToNonTrunk(), new MergedMainlineBranchedToNonTrunk()
+            new CommitOnTrunkBranchedToTrunk(environment), new MergedMainlineBranchedToTrunk(environment, sourceVersions),
+            new CommitOnTrunkBranchedToNonTrunk(environment), new MergedMainlineBranchedToNonTrunk(environment, sourceVersions)
         ];
 
         var transition = transitions.Single(c => c.MatchPrecondition(fixture.Root, fixture.Merge, fixture.Context));
@@ -157,9 +161,11 @@ public class MainlineDispatchTests
             ? new MainlineIteration("empty", fixture.Root.BranchName, fixture.Root.Configuration, null, null, null)
             : fixture.Root;
 
-        new MergedMainlineBranchedToTrunk()
+        var (_, _, history, sourceVersions, _) = fixture.Calculation;
+        var environment = history.Environment;
+        new MergedMainlineBranchedToTrunk(environment, sourceVersions)
             .MatchPrecondition(iteration, fixture.Merge, fixture.Context).ShouldBeFalse();
-        new MergedMainlineBranchedToNonTrunk()
+        new MergedMainlineBranchedToNonTrunk(environment, sourceVersions)
             .MatchPrecondition(iteration, fixture.Merge, fixture.Context).ShouldBeFalse();
         fixture.Context.MainlineVersions.ShouldBeEmpty();
     }
@@ -172,10 +178,12 @@ public class MainlineDispatchTests
         fixture.Context.Increments.Add(
             new BaseVersionOperand("receiver", new SemanticVersion(1, 0, 0), fixture.Initial.Value));
         fixture.Context.Increments.Add(new BaseVersionOperator { Increment = VersionField.Patch });
-        var incrementer = new MergedMainlineIncrementer();
+        var (_, _, history, sourceVersions, _) = fixture.Calculation;
+        var environment = history.Environment;
+        var incrementer = new MergedMainlineIncrementer(history, environment, sourceVersions);
 
         incrementer.MatchPrecondition(fixture.Root, fixture.Merge, fixture.Context).ShouldBeTrue();
-        new CommitOnTrunk().MatchPrecondition(fixture.Root, fixture.Merge, fixture.Context).ShouldBeFalse();
+        new CommitOnTrunk(history, environment).MatchPrecondition(fixture.Root, fixture.Merge, fixture.Context).ShouldBeFalse();
         var items = incrementer.GetIncrements(fixture.Root, fixture.Merge, fixture.Context).ToArray();
 
         items.Length.ShouldBe(1);
@@ -191,7 +199,7 @@ public class MainlineDispatchTests
     {
         var fixture = Fixture(boundary: true, enclosingMainline: enclosingMainline, releaseFloor: true);
 
-        var result = fixture.Context.Calculator.DetermineBaseVersion(fixture.Root, null);
+        var result = fixture.Calculation.Calculator.DetermineBaseVersion(fixture.Root, null);
 
         result.GetIncrementedVersion().ToString().ShouldBe("4.0.0-beta.1");
         result.BaseVersionSource.ShouldBeSameAs(fixture.Merge.Value);
@@ -254,15 +262,15 @@ public class MainlineDispatchTests
         {
             merge.AddChildIteration(source);
         }
-        var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(),
+        var calculation = MainlineTestCalculation.Create(root, GitFlowConfigurationBuilder.New.Build(),
             new TestEnvironment(), mergeValue);
+        var context = calculation.Context;
         context.Predecessor = initial;
         context.HasSuccessor = false;
         context.BaseVersionSource = initialValue;
         context.Increment = VersionField.Patch;
-        new ConfigurationPreEnricher().Enrich(root, merge, context);
         new EnrichMergeState().Enrich(root, merge, context);
-        return new(root, merge, initial, context, sourceValue);
+        return new(root, merge, initial, calculation, sourceValue);
     }
 
     private static ICommit Commit()
@@ -273,5 +281,8 @@ public class MainlineDispatchTests
     }
 
     private sealed record DispatchFixture(MainlineIteration Root, MainlineCommit Merge, MainlineCommit Initial,
-        MainlineContext Context, ICommit SourceValue);
+        MainlineTestCalculation.Components Calculation, ICommit SourceValue)
+    {
+        public MainlineContext Context => Calculation.Context;
+    }
 }

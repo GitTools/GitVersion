@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class LastCommitOnNonTrunkWithStableTag : CommitOnNonTrunkWithStableTagBase
+internal sealed class LastCommitOnNonTrunkWithStableTag(
+    IEnvironment environment)
+    : CommitOnNonTrunkWithStableTagBase(environment)
 {
     // B 57 minutes ago  (HEAD -> feature/foo) (tag 1.2.3) <<--
     // A 58 minutes ago

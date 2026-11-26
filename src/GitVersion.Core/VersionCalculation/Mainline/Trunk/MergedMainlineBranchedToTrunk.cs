@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class MergedMainlineBranchedToTrunk : CommitOnTrunkBranchedBase
+internal sealed class MergedMainlineBranchedToTrunk(
+    IEnvironment environment, MergedMainlineVersionPolicy sourceVersions)
+    : CommitOnTrunkBranchedBase(environment)
 {
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => context.IsMainlineMerge && base.MatchPrecondition(iteration, commit, context)
@@ -8,5 +10,5 @@ internal sealed class MergedMainlineBranchedToTrunk : CommitOnTrunkBranchedBase
 
     protected override IBaseVersionIncrement CreateIncrement(
         BaseVersionOperator operation, MainlineCommit commit, MainlineContext context)
-        => MergedMainlineVersionPolicy.CreateIncrement(operation, commit, context);
+        => sourceVersions.CreateIncrement(operation, commit, context);
 }

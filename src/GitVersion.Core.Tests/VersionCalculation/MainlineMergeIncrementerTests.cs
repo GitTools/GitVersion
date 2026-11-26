@@ -96,8 +96,8 @@ public class MainlineMergeIncrementerTests
         var parentVersion = new BaseVersion("parent", new SemanticVersion(9, 0, 0));
         fixture.Context.Increments.Add(parentVersion);
 
-        var first = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
-        var second = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
+        var first = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
+        var second = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
 
         first.SemanticVersion.ToString().ShouldBe("2.0.0");
         second.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
@@ -122,7 +122,7 @@ public class MainlineMergeIncrementerTests
     {
         var fixture = Fixture(preventTaggedIncrement: preventTaggedIncrement);
 
-        var result = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
 
         result.GetIncrementedVersion().ToString().ShouldBe(expected);
         result.Operator.ShouldNotBeNull().Increment.ShouldBe(increment);
@@ -137,7 +137,7 @@ public class MainlineMergeIncrementerTests
         var fixture = Fixture(label: "beta");
         fixture.Context.Increments.Add(new BaseVersion("receiver", new SemanticVersion(9, 0, 0)));
 
-        var result = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
 
         result.SemanticVersion.ToString().ShouldBe("2.0.0-beta.4");
         result.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.5");
@@ -159,7 +159,7 @@ public class MainlineMergeIncrementerTests
             SemanticVersion.Parse($"2.0.0-{otherLabel}.4", null));
         fixture.Context.IsMainlineMerge.ShouldBeTrue();
 
-        var result = MergedMainlineVersionPolicy.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
 
         result.Operand.SemanticVersion.PreReleaseTag.Name.ShouldBe(sourceLabel);
         result.Operand.BaseVersionSource.ShouldBeSameAs(fixture.SourceValue);
@@ -171,12 +171,11 @@ public class MainlineMergeIncrementerTests
     {
         var fixture = Fixture();
         var enricher = new EnrichMergeState();
-        new ConfigurationPreEnricher().Enrich(fixture.Root, fixture.Merge, fixture.Context);
         enricher.Enrich(fixture.Root, fixture.Merge, fixture.Context);
         fixture.Context.IsMainlineMerge.ShouldBeTrue();
         var ordinary = fixture.Root.CreateCommit(Commit(), fixture.Root.BranchName, fixture.Root.Configuration);
 
-        new ConfigurationPreEnricher().Enrich(fixture.Root, ordinary, fixture.Context);
+        new ConfigurationPreEnricher(fixture.Calculation.ConfigurationResolver).Enrich(fixture.Root, ordinary, fixture.Context);
         enricher.Enrich(fixture.Root, ordinary, fixture.Context);
 
         fixture.Context.IsMainlineMerge.ShouldBeFalse();
@@ -245,16 +244,15 @@ public class MainlineMergeIncrementerTests
         {
             merge.AddChildIteration(source);
         }
-        var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(),
-            new TestEnvironment(), mergeValue) with
-        { TargetLabel = "receiver" };
-        new ConfigurationPreEnricher().Enrich(root, merge, context);
+        var calculation = MainlineTestCalculation.Create(root, GitFlowConfigurationBuilder.New.Build(),
+            new TestEnvironment(), mergeValue);
+        var context = calculation.Context with { TargetLabel = "receiver" };
         new EnrichMergeState().Enrich(root, merge, context);
-        return new(root, merge, source, context, sourceValue);
+        return new(root, merge, source, context, sourceValue, calculation);
     }
 
     private sealed record MergeFixture(MainlineIteration Root, MainlineCommit Merge, MainlineIteration Source,
-        MainlineContext Context, ICommit SourceValue);
+        MainlineContext Context, ICommit SourceValue, MainlineTestCalculation.Components Calculation);
 
     private static ICommit Commit()
     {

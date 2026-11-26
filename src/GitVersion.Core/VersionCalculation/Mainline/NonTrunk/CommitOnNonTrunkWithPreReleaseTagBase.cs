@@ -3,7 +3,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal abstract class CommitOnNonTrunkWithPreReleaseTagBase : IIncrementer
+internal abstract class CommitOnNonTrunkWithPreReleaseTagBase(IEnvironment environment) : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => !context.EffectiveConfiguration.IsMainBranch
@@ -24,7 +24,7 @@ internal abstract class CommitOnNonTrunkWithPreReleaseTagBase : IIncrementer
 
         context.Increment = context.EffectiveConfiguration.Increment.ToVersionField();
         var effectiveConfiguration = context.EffectiveConfiguration;
-        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
         context.ForceIncrement = false;
     }
 }

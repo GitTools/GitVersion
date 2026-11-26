@@ -1,6 +1,6 @@
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class CommitOnTrunkBranchedToTrunk : CommitOnTrunkBranchedBase
+internal sealed class CommitOnTrunkBranchedToTrunk(IEnvironment environment) : CommitOnTrunkBranchedBase(environment)
 {
     // B  51 minutes ago  (HEAD -> release/1.0.x, main) <<--
     // A  59 minutes ago

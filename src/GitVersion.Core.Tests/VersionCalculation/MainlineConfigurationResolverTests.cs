@@ -121,7 +121,6 @@ public class MainlineConfigurationResolverTests
         merge.AddChildIteration(child);
 
         var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), merge.Value);
-        new ConfigurationPreEnricher().Enrich(root, merge, context);
         new EnrichMergeState().Enrich(root, merge, context);
         context.IsMainlineMerge.ShouldBe(expected);
     }
@@ -141,7 +140,6 @@ public class MainlineConfigurationResolverTests
         child.Configuration.IsMainBranch.ShouldBeNull();
         resolver.GetEffectiveConfiguration(child).IsMainBranch.ShouldBeTrue();
         var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), merge.Value);
-        new ConfigurationPreEnricher().Enrich(root, merge, context);
         new EnrichMergeState().Enrich(root, merge, context);
         context.IsMainlineMerge.ShouldBeTrue();
         child.Commits.ShouldBeEmpty();
@@ -182,14 +180,13 @@ public class MainlineConfigurationResolverTests
         resolver.GetEffectiveConfiguration(root).Label.ShouldBe("alpha");
 
         var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), commit.Value);
-        new ConfigurationPreEnricher().Enrich(root, commit, context);
         new EnrichMergeState().Enrich(root, commit, context);
         context.IsMainlineMerge.ShouldBeFalse();
         resolver.GetEffectiveConfiguration(commit).Increment.ToVersionField().ShouldBe(VersionField.Major);
     }
 
     [Test]
-    public void ChildContextsShareConfigurationResolutionButKeepCalculationStateIndependent()
+    public void ChildContextKeepsInputsButResetsCalculationState()
     {
         var branch = Branch(IncrementStrategy.Minor, "beta");
         var root = Iteration("root", branch);
@@ -208,14 +205,8 @@ public class MainlineConfigurationResolverTests
             HasSuccessor = true
         };
         context.AddAlternativeSemanticVersion(new SemanticVersion(3, 1, 0), context.SemVerSource);
-        var resolver = context.ConfigurationResolver;
-        var effective = context.GetEffectiveConfiguration(commit);
-
         var child = context.CreateChildContext();
 
-        child.ConfigurationResolver.ShouldBeSameAs(resolver);
-        child.CommitResolver.ShouldBeSameAs(context.CommitResolver);
-        child.GetEffectiveConfiguration(commit).ShouldBeSameAs(effective);
         child.MainlineVersions.ShouldBeSameAs(context.MainlineVersions);
         child.TargetLabel.ShouldBe("target");
         child.IncludeSharedHistory.ShouldBeTrue();
@@ -376,7 +367,7 @@ public class MainlineConfigurationResolverTests
         merge.AddChildIteration(child);
         var ordinary = root.CreateCommit(Commit(), root.BranchName, Branch(IncrementStrategy.Major, "alpha"));
         var context = MainlineTestCalculation.Context(root, GitFlowConfigurationBuilder.New.Build(), new TestEnvironment(), merge.Value);
-        var enricher = new ConfigurationPreEnricher();
+        var enricher = new ConfigurationPreEnricher(Resolver(root));
 
         enricher.Enrich(root, merge, context);
 

@@ -22,6 +22,17 @@ internal sealed class MainlineHistory(
 
     internal sealed record Selection(MainlineCommit[] Commits, bool HasBoundary, ICommit? MissingCommit = null);
 
+    internal bool HasChildHistory(MainlineCommit commit, string? targetLabel, bool includeSharedHistory)
+    {
+        if (commit.HasChildIteration && Configuration.Ignore.IsEmpty)
+        {
+            return true;
+        }
+        return commit.ChildIteration is { } child
+            && (commit.HasChildIteration || includeSharedHistory && child.BranchedFrom is not null)
+            && Select(child, targetLabel, false, includeSharedHistory: includeSharedHistory).Commits.Length > 0;
+    }
+
     internal Selection Select(MainlineIteration iteration, string? targetLabel, bool includeAncestry,
         MainlineCommit? tip = null, bool includeSharedHistory = false)
     {

@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class CommitOnNonTrunkBranchedToNonTrunk : CommitOnNonTrunkBranchedBase
+internal sealed class CommitOnNonTrunkBranchedToNonTrunk(
+    IEnvironment environment)
+    : CommitOnNonTrunkBranchedBase(environment)
 {
     // B  51 minutes ago  (HEAD -> feature/foo, main) <<--
     // A  59 minutes ago

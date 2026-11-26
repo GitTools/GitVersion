@@ -7,76 +7,72 @@ namespace GitVersion.VersionCalculation.Mainline;
 internal sealed class MainlineVersionCalculator
 {
     private readonly MainlineHistory history;
+    private readonly IReadOnlyCollection<IContextPreEnricher> preEnrichers;
+    private readonly IReadOnlyCollection<IIncrementer> incrementers;
 
-    internal MainlineVersionCalculator(
-        IIncrementStrategyFinder incrementStrategyFinder, IMainlineCommitResolver commitResolver,
-        MainlineConfigurationResolver configurationResolver, MainlineHistory history)
-    {
-        IncrementStrategyFinder = incrementStrategyFinder.NotNull();
-        CommitResolver = commitResolver.NotNull();
-        ConfigurationResolver = configurationResolver.NotNull();
-        this.history = history.NotNull();
-    }
-
-    internal IIncrementStrategyFinder IncrementStrategyFinder { get; }
-
-    internal IMainlineCommitResolver CommitResolver { get; }
-
-    internal MainlineConfigurationResolver ConfigurationResolver { get; }
-
-    internal MainlineHistory History => this.history;
-
-    internal MainlineContext CreateContext(string? targetLabel = null)
-        => new(this) { TargetLabel = targetLabel };
-
-    private static readonly IReadOnlyCollection<IContextPreEnricher> TrunkContextPreEnricherCollection =
-    [
-        new ConfigurationPreEnricher(),
-        new EnrichSemanticVersion(),
-        new EnrichIncrement(),
-        new EnrichMergeState()
-    ];
-    private static readonly IReadOnlyCollection<IContextPostEnricher> TrunkContextPostEnricherCollection =
+    private static readonly IReadOnlyCollection<IContextPostEnricher> PostEnrichers =
     [
         new RemoveSemanticVersion(),
         new RemoveIncrement()
     ];
-    private static readonly IReadOnlyCollection<IIncrementer> TrunkIncrementerCollection =
-    [
-        // Trunk
-        new CommitOnTrunk(),
-        new MergedMainlineIncrementer(),
 
-        new CommitOnTrunkWithPreReleaseTag(),
-        new LastCommitOnTrunkWithPreReleaseTag(),
+    internal MainlineVersionCalculator(
+        IIncrementStrategyFinder incrementStrategyFinder,
+        MainlineConfigurationResolver configurationResolver, MainlineHistory history)
+    {
+        incrementStrategyFinder.NotNull();
+        configurationResolver.NotNull();
+        this.history = history.NotNull();
+        var environment = history.Environment;
+        var sourceVersions = new MergedMainlineVersionPolicy(configurationResolver, environment, this);
 
-        new CommitOnTrunkWithStableTag(),
-        new LastCommitOnTrunkWithStableTag(),
+        this.preEnrichers =
+        [
+            new ConfigurationPreEnricher(configurationResolver),
+            new EnrichSemanticVersion(environment),
+            new EnrichIncrement(incrementStrategyFinder, history.Configuration, configurationResolver, environment),
+            new EnrichMergeState()
+        ];
+        this.incrementers =
+        [
+            // Trunk
+            new CommitOnTrunk(history, environment),
+            new MergedMainlineIncrementer(history, environment, sourceVersions),
 
-        new MergeCommitOnTrunk(),
-        new LastMergeCommitOnTrunk(),
+            new CommitOnTrunkWithPreReleaseTag(),
+            new LastCommitOnTrunkWithPreReleaseTag(environment),
 
-        new CommitOnTrunkBranchedToTrunk(),
-        new MergedMainlineBranchedToTrunk(),
-        new CommitOnTrunkBranchedToNonTrunk(),
-        new MergedMainlineBranchedToNonTrunk(),
+            new CommitOnTrunkWithStableTag(environment),
+            new LastCommitOnTrunkWithStableTag(environment),
 
-        // NonTrunk
-        new FirstCommitOnRelease(),
+            new MergeCommitOnTrunk(history, this),
+            new LastMergeCommitOnTrunk(history, this),
 
-        new CommitOnNonTrunk(),
-        new CommitOnNonTrunkWithPreReleaseTag(),
-        new LastCommitOnNonTrunkWithPreReleaseTag(),
+            new CommitOnTrunkBranchedToTrunk(environment),
+            new MergedMainlineBranchedToTrunk(environment, sourceVersions),
+            new CommitOnTrunkBranchedToNonTrunk(environment),
+            new MergedMainlineBranchedToNonTrunk(environment, sourceVersions),
 
-        new CommitOnNonTrunkWithStableTag(),
-        new LastCommitOnNonTrunkWithStableTag(),
+            // NonTrunk
+            new FirstCommitOnRelease(history),
 
-        new MergeCommitOnNonTrunk(),
-        new LastMergeCommitOnNonTrunk(),
+            new CommitOnNonTrunk(history, environment),
+            new CommitOnNonTrunkWithPreReleaseTag(environment),
+            new LastCommitOnNonTrunkWithPreReleaseTag(environment),
 
-        new CommitOnNonTrunkBranchedToTrunk(),
-        new CommitOnNonTrunkBranchedToNonTrunk()
-    ];
+            new CommitOnNonTrunkWithStableTag(environment),
+            new LastCommitOnNonTrunkWithStableTag(environment),
+
+            new MergeCommitOnNonTrunk(history, this),
+            new LastMergeCommitOnNonTrunk(history, this),
+
+            new CommitOnNonTrunkBranchedToTrunk(environment),
+            new CommitOnNonTrunkBranchedToNonTrunk(environment)
+        ];
+    }
+
+    internal MainlineContext CreateContext(string? targetLabel = null)
+        => new(this.history.CurrentCommit) { TargetLabel = targetLabel };
 
     internal BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel)
         => CalculateBaseVersion(iteration, CreateContext(targetLabel));
@@ -108,12 +104,12 @@ internal sealed class MainlineVersionCalculator
             var commit = commits[index];
             context.Predecessor = index > 0 ? commits[index - 1] : null;
             context.HasSuccessor = index < commits.Length - 1;
-            foreach (var item in TrunkContextPreEnricherCollection)
+            foreach (var item in this.preEnrichers)
             {
                 item.Enrich(iteration, commit, context);
             }
 
-            foreach (var incrementer in TrunkIncrementerCollection
+            foreach (var incrementer in this.incrementers
                 .Where(element => element.MatchPrecondition(iteration, commit, context)))
             {
                 foreach (var item in incrementer.GetIncrements(iteration, commit, context))
@@ -123,7 +119,7 @@ internal sealed class MainlineVersionCalculator
                 }
             }
 
-            foreach (var item in TrunkContextPostEnricherCollection)
+            foreach (var item in PostEnrichers)
             {
                 item.Enrich(commit, context);
             }

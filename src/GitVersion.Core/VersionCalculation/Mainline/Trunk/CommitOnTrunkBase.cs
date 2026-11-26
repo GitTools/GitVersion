@@ -2,7 +2,7 @@ using GitVersion.Configuration;
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal abstract class CommitOnTrunkBase : IIncrementer
+internal abstract class CommitOnTrunkBase(MainlineHistory history, IEnvironment environment) : IIncrementer
 {
     // B  57 minutes ago (HEAD -> main) <<--
     // A  58 minutes ago
@@ -11,7 +11,7 @@ internal abstract class CommitOnTrunkBase : IIncrementer
     // A  58 minutes ago <<--
 
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => context.SemanticVersion is null && (!context.HasChildHistory(commit) || context.IsMainlineMerge)
+        => context.SemanticVersion is null && (!history.HasChildHistory(commit, context.TargetLabel, context.IncludeSharedHistory) || context.IsMainlineMerge)
             && context.EffectiveConfiguration.IsMainBranch;
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
@@ -24,7 +24,7 @@ internal abstract class CommitOnTrunkBase : IIncrementer
 
         var effectiveConfiguration = context.EffectiveConfiguration;
         context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(
-            commit.BranchName, null, context.Environment, context.CurrentCommit);
+            commit.BranchName, null, environment, context.CurrentCommit);
         context.ForceIncrement = true;
 
         yield return CreateIncrement(new BaseVersionOperator

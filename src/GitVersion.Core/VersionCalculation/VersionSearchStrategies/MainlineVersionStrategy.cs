@@ -36,7 +36,7 @@ internal sealed class MainlineVersionStrategy(
             context.Configuration, environment, context.CurrentCommit, commitResolver, configurationResolver
         );
         MainlineVersionCalculator versionCalculator = new(
-            incrementStrategyFinder, commitResolver, configurationResolver, history
+            incrementStrategyFinder, configurationResolver, history
         );
         yield return versionCalculator.DetermineBaseVersion(iteration, targetLabel);
     }

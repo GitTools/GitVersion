@@ -5,7 +5,10 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
-internal sealed class EnrichIncrement : IContextPreEnricher
+internal sealed class EnrichIncrement(
+    IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration,
+    MainlineConfigurationResolver configurationResolver, IEnvironment environment)
+    : IContextPreEnricher
 {
     public void Enrich(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
@@ -17,10 +20,10 @@ internal sealed class EnrichIncrement : IContextPreEnricher
             && effectiveConfiguration.IsMainBranch
             && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged
             && iteration.GetBranchedTo() is { } receivingMerge
-            && context.GetEffectiveConfiguration(receivingMerge).IsMainBranch;
+            && configurationResolver.GetEffectiveConfiguration(receivingMerge).IsMainBranch;
         var commitMessageIncrement = commit.IsDummy || isTaggedMergedMainline
             ? default
-            : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
+            : GetIncrementForcedByCommit(commit.Value, effectiveConfiguration);
         context.CommitIncrement = commitMessageIncrement.Increment;
         if (commitMessageIncrement.VersionBumpNeedsToBeReset)
         {
@@ -42,7 +45,7 @@ internal sealed class EnrichIncrement : IContextPreEnricher
             context.Label = null;
         }
 
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
 
         if (effectiveConfiguration.IsMainBranch)
         {
@@ -51,30 +54,30 @@ internal sealed class EnrichIncrement : IContextPreEnricher
 
         context.ForceIncrement |= effectiveConfiguration.IsMainBranch
             || context.GetPredecessor(commit) is { } previous
-                && context.GetEffectiveConfiguration(previous).IsMainBranch;
+                && configurationResolver.GetEffectiveConfiguration(previous).IsMainBranch;
     }
 
     private static VersionField? GetMergedBranchIncrement(MainlineContext context)
         => context.SemanticVersion is null && context.EffectiveConfiguration.IsMainBranch
             && context.ChildConfiguration?.IsMainBranch == true ? VersionField.None : null;
 
-    private static CommitMessageIncrement GetIncrementForcedByCommit(
-        MainlineContext context, ICommit commit, EffectiveConfiguration configuration)
+    private CommitMessageIncrement GetIncrementForcedByCommit(
+        ICommit commit, EffectiveConfiguration effectiveConfiguration)
     {
-        context.NotNull();
         commit.NotNull();
-        configuration.NotNull();
+        effectiveConfiguration.NotNull();
 
-        return configuration.CommitMessageIncrementing switch
+        return effectiveConfiguration.CommitMessageIncrementing switch
         {
             CommitMessageIncrementMode.Enabled
-                => context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration),
+                => incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration),
             CommitMessageIncrementMode.Disabled => default,
             CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit
-                ? context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration)
+                ? incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration)
                 : default,
             _ => throw new InvalidEnumArgumentException(
-                nameof(configuration.CommitMessageIncrementing), (int)configuration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
+                nameof(effectiveConfiguration.CommitMessageIncrementing),
+                (int)effectiveConfiguration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
             )
         };
     }

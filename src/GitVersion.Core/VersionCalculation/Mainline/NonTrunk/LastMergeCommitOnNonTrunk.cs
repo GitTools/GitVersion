@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class LastMergeCommitOnNonTrunk : MergeCommitOnNonTrunkBase
+internal sealed class LastMergeCommitOnNonTrunk(
+    MainlineHistory history, MainlineVersionCalculator calculator)
+    : MergeCommitOnNonTrunkBase(history, calculator)
 {
     // *  55 minutes ago  (HEAD -> develop) <<--
     // |\

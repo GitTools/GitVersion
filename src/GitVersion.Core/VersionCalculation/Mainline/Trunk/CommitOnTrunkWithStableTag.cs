@@ -1,6 +1,6 @@
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class CommitOnTrunkWithStableTag : CommitOnTrunkWithStableTagBase
+internal sealed class CommitOnTrunkWithStableTag(IEnvironment environment) : CommitOnTrunkWithStableTagBase(environment)
 {
     // B  58 minutes ago  (HEAD -> main)
     // A  59 minutes ago  (tag 0.2.0) <<--

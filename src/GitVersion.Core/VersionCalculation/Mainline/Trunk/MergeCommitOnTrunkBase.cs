@@ -2,10 +2,12 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal abstract class MergeCommitOnTrunkBase : IIncrementer
+internal abstract class MergeCommitOnTrunkBase(
+    MainlineHistory history, MainlineVersionCalculator calculator)
+    : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => context.SemanticVersion is null && context.HasChildHistory(commit) && !context.IsMainlineMerge
+        => context.SemanticVersion is null && history.HasChildHistory(commit, context.TargetLabel, context.IncludeSharedHistory) && !context.IsMainlineMerge
             && context.EffectiveConfiguration.IsMainBranch;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
@@ -20,7 +22,7 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            var baseVersion = context.Calculator.CalculateBaseVersion(
+            var baseVersion = calculator.CalculateBaseVersion(
                 commit.ChildIteration, context.CreateChildContext());
 
             context.Label ??= baseVersion.Operator?.Label;

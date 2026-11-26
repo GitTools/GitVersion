@@ -1,7 +1,9 @@
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class LastMergeCommitOnTrunk : MergeCommitOnTrunkBase
+internal sealed class LastMergeCommitOnTrunk(
+    MainlineHistory history, MainlineVersionCalculator calculator)
+    : MergeCommitOnTrunkBase(history, calculator)
 {
     // *  55 minutes ago  (HEAD -> main) <<--
     // |\

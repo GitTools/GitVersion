@@ -3,9 +3,10 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
-internal static class MergedMainlineVersionPolicy
+internal sealed class MergedMainlineVersionPolicy(
+    MainlineConfigurationResolver configurationResolver, IEnvironment environment, MainlineVersionCalculator calculator)
 {
-    internal static IBaseVersionIncrement CreateIncrement(
+    internal IBaseVersionIncrement CreateIncrement(
         BaseVersionOperator operation, MainlineCommit commit, MainlineContext context)
         => context.SemanticVersion is null && commit.ChildIteration is { } child
             && !context.ChildConfiguration.NotNull().PreventIncrementWhenBranchMerged
@@ -13,7 +14,7 @@ internal static class MergedMainlineVersionPolicy
                 GetSourceVersion(child, context), context.Increments.ReleaseBaseline)
             : operation;
 
-    internal static BaseVersion GetSourceVersion(MainlineIteration iteration, MainlineContext context)
+    internal BaseVersion GetSourceVersion(MainlineIteration iteration, MainlineContext context)
     {
         // Inherited configurations depend on their enclosing iteration.
         var canCache = iteration.Configuration.Increment != IncrementStrategy.Inherit;
@@ -29,20 +30,20 @@ internal static class MergedMainlineVersionPolicy
         return version;
     }
 
-    private static BaseVersion CalculateSourceVersion(MainlineIteration iteration, MainlineContext context)
+    private BaseVersion CalculateSourceVersion(MainlineIteration iteration, MainlineContext context)
     {
         // An ignored source tip must not be mistaken for its earlier released ancestor.
         var merge = iteration.BranchedTo.NotNull();
         var tip = merge.Parents[iteration.Configuration.IsMainBranch != true
             && iteration.ParentIteration is { } parent && iteration.BranchName == parent.BranchName ? 0 : 1];
-        var configuration = context.GetEffectiveConfiguration(iteration);
-        var label = configuration.GetBranchSpecificLabel(iteration.BranchName, null, context.Environment, tip);
+        var configuration = configurationResolver.GetEffectiveConfiguration(iteration);
+        var label = configuration.GetBranchSpecificLabel(iteration.BranchName, null, environment, tip);
         var sourceContext = context.CreateChildContext() with
         {
             TargetLabel = label,
             IncludeSharedHistory = true
         };
-        var version = context.Calculator.CalculateBaseVersion(iteration, sourceContext, includeAncestry: true);
+        var version = calculator.CalculateBaseVersion(iteration, sourceContext, includeAncestry: true);
         // A released source tip contributes its tag, not its next pending increment.
         if (version.Operand.BaseVersionSource?.Equals(tip) == true
             && configuration.PreventIncrementWhenCurrentCommitTagged

@@ -107,9 +107,10 @@ public class MainlineIterationTests
         shared.AddSemanticVersions(new SemanticVersion(2, 0, 0));
         var source = new MainlineIteration("source", new("refs/heads/support/1.x"), branch, receiver, shared.Value, merge.Value);
         merge.AddChildIteration(source);
-        var context = MainlineTestCalculation.Context(receiver, configuration, new TestEnvironment(), mergeValue);
+        var calculation = MainlineTestCalculation.Create(receiver, configuration, new TestEnvironment(), mergeValue);
+        var context = calculation.Context;
 
-        var version = MergedMainlineVersionPolicy.GetSourceVersion(source, context);
+        var version = calculation.SourceVersions.GetSourceVersion(source, context);
 
         source.Commits.ShouldBeEmpty();
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
@@ -168,12 +169,13 @@ public class MainlineIterationTests
         var source = new MainlineIteration("source", new("refs/heads/support/source"), sourceBranch, root, branchPointValue, mergeValue);
         merge.AddChildIteration(source);
 
-        var context = MainlineTestCalculation.Context(root, configuration, new TestEnvironment(), mergeValue);
-        var effective = context.GetEffectiveConfiguration(source);
+        var calculation = MainlineTestCalculation.Create(root, configuration, new TestEnvironment(), mergeValue);
+        var context = calculation.Context;
+        var effective = calculation.ConfigurationResolver.GetEffectiveConfiguration(source);
 
         effective.Increment.ShouldBe(IncrementStrategy.Minor);
         effective.Label.ShouldBe("beta");
-        var version = MergedMainlineVersionPolicy.GetSourceVersion(source, context);
+        var version = calculation.SourceVersions.GetSourceVersion(source, context);
         version.SemanticVersion.ShouldBe(taggedVersion);
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.2");
         version.BaseVersionSource.ShouldBeSameAs(branchPointValue);
@@ -198,7 +200,6 @@ public class MainlineIterationTests
             .DetermineBaseVersion(receiver, "");
 
         var context = MainlineTestCalculation.Context(merge.Iteration, configuration, new TestEnvironment(), merge.Value);
-        new ConfigurationPreEnricher().Enrich(merge.Iteration, merge, context);
         new EnrichMergeState().Enrich(merge.Iteration, merge, context);
         context.IsMainlineMerge.ShouldBeFalse();
         version.GetIncrementedVersion().Patch.ShouldBe(1);
@@ -242,15 +243,16 @@ public class MainlineIterationTests
         first.CreateCommit(tip, first.BranchName, branch).AddSemanticVersions(new SemanticVersion(2, 0, 0));
         var second = new MainlineIteration("second", first.BranchName, branch, receiver, receiverTip, merge.Value);
         second.CreateCommit(tip, second.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
-        var context = MainlineTestCalculation.Context(receiver, configuration, new TestEnvironment(), tip);
+        var calculation = MainlineTestCalculation.Create(receiver, configuration, new TestEnvironment(), tip);
+        var context = calculation.Context;
 
-        var firstVersion = MergedMainlineVersionPolicy.GetSourceVersion(first, context);
-        var secondVersion = MergedMainlineVersionPolicy.GetSourceVersion(second, context);
+        var firstVersion = calculation.SourceVersions.GetSourceVersion(first, context);
+        var secondVersion = calculation.SourceVersions.GetSourceVersion(second, context);
 
         firstVersion.GetIncrementedVersion().Major.ShouldBe(2);
         secondVersion.GetIncrementedVersion().Major.ShouldBe(3);
         context.MainlineVersions.Count.ShouldBe(2);
-        MergedMainlineVersionPolicy.GetSourceVersion(first, context).ShouldBeSameAs(firstVersion);
+        calculation.SourceVersions.GetSourceVersion(first, context).ShouldBeSameAs(firstVersion);
         context.MainlineVersions.Count.ShouldBe(2);
     }
     [Test]

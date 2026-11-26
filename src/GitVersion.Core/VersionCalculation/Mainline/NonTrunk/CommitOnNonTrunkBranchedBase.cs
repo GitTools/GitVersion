@@ -3,7 +3,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal abstract class CommitOnNonTrunkBranchedBase : IIncrementer
+internal abstract class CommitOnNonTrunkBranchedBase(IEnvironment environment) : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => !context.EffectiveConfiguration.IsMainBranch
@@ -21,7 +21,7 @@ internal abstract class CommitOnNonTrunkBranchedBase : IIncrementer
         context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
 
         var iterationEffectiveConfiguration = context.IterationConfiguration;
-        context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null, context.Environment, context.CurrentCommit) ?? context.Label;
+        context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null, environment, context.CurrentCommit) ?? context.Label;
         context.ForceIncrement = true;
 
         yield return new BaseVersionOperator

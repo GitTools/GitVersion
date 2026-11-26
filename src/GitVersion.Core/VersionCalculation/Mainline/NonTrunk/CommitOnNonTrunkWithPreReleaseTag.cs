@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class CommitOnNonTrunkWithPreReleaseTag : CommitOnNonTrunkWithPreReleaseTagBase
+internal sealed class CommitOnNonTrunkWithPreReleaseTag(
+    IEnvironment environment)
+    : CommitOnNonTrunkWithPreReleaseTagBase(environment)
 {
     // B 57 minutes ago  (HEAD -> feature/foo)
     // A 58 minutes ago  (tag 1.2.3-1) <<--

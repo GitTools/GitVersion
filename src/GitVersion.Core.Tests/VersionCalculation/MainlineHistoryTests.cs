@@ -87,9 +87,8 @@ public class MainlineHistoryTests
         var history = new MainlineHistory(configuration, new TestEnvironment(), ignoredTipValue,
             commitResolver, configurationResolver);
         var calculator = new MainlineVersionCalculator(Substitute.For<IIncrementStrategyFinder>(),
-            commitResolver, configurationResolver, history);
+            configurationResolver, history);
         var context = calculator.CreateContext();
-        calculator.History.ShouldBeSameAs(history);
 
         var first = history.Select(iteration, "", false);
         first.Commits.ShouldBe(retainAncestor ? [initial] : []);
@@ -98,23 +97,22 @@ public class MainlineHistoryTests
         ignoredTipValue.ClearReceivedCalls();
 
         var child = context.CreateChildContext();
-        var childCalculator = child.Calculator;
-        childCalculator.ShouldBeSameAs(calculator);
-        childCalculator.CommitResolver.ShouldBeSameAs(calculator.CommitResolver);
-        childCalculator.ConfigurationResolver.ShouldBeSameAs(calculator.ConfigurationResolver);
-        childCalculator.History.ShouldBeSameAs(history);
-        var repeated = childCalculator.History.Select(iteration, "", false);
+        if (retainAncestor)
+        {
+            calculator.CalculateBaseVersion(iteration, child).SemanticVersion.ShouldBe(new SemanticVersion(1, 0, 0));
+        }
+        else
+        {
+            Should.Throw<InvalidOperationException>(() => calculator.CalculateBaseVersion(iteration, child));
+        }
 
-        repeated.Commits.ShouldBe(retainAncestor ? [initial] : []);
-        repeated.HasBoundary.ShouldBe(retainAncestor);
-        repeated.MissingCommit.ShouldBeNull();
         _ = ignoredTipValue.DidNotReceive().Parents;
         _ = ignoredTipValue.DidNotReceive().When;
         iteration.Commits.ShouldBe([initial, ignoredTip]);
     }
 
     [Test]
-    public void CalculatorCreatesIndependentRootContextsWithTheInjectedServices()
+    public void CalculatorCreatesIndependentRootContexts()
     {
         var branch = Branch(true);
         var iteration = new MainlineIteration("root", new("refs/heads/main"), branch, null, null, null);
@@ -126,7 +124,7 @@ public class MainlineHistoryTests
         var configurationResolver = new MainlineConfigurationResolver(configuration, commitResolver);
         var history = new MainlineHistory(
             configuration, environment, commit.Value, commitResolver, configurationResolver);
-        var calculator = new MainlineVersionCalculator(finder, commitResolver, configurationResolver, history);
+        var calculator = new MainlineVersionCalculator(finder, configurationResolver, history);
         var first = calculator.CreateContext("alpha");
         first.Increment = VersionField.Major;
         first.Label = "calculated";
@@ -138,13 +136,6 @@ public class MainlineHistoryTests
         var second = calculator.CreateContext("beta");
 
         second.ShouldNotBeSameAs(first);
-        second.Calculator.ShouldBeSameAs(calculator);
-        second.CommitResolver.ShouldBeSameAs(commitResolver);
-        second.ConfigurationResolver.ShouldBeSameAs(configurationResolver);
-        second.Calculator.History.ShouldBeSameAs(history);
-        second.IncrementStrategyFinder.ShouldBeSameAs(finder);
-        second.Configuration.ShouldBeSameAs(configuration);
-        second.Environment.ShouldBeSameAs(environment);
         second.CurrentCommit.ShouldBeSameAs(commit.Value);
         second.TargetLabel.ShouldBe("beta");
         second.Increment.ShouldBe(VersionField.None);
@@ -414,12 +405,9 @@ public class MainlineHistoryTests
         merge.AddChildIteration(feature);
         var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(
             new IgnoreConfiguration { Shas = [sourceValue.Sha] }).Build();
-        var context = MainlineTestCalculation.Context(root, configuration, new TestEnvironment(), mergeValue) with
-        {
-            IncludeSharedHistory = includeSharedHistory
-        };
+        var history = MainlineTestCalculation.History(root, configuration, new TestEnvironment(), mergeValue);
 
-        context.HasChildHistory(merge).ShouldBeFalse();
+        history.HasChildHistory(merge, null, includeSharedHistory).ShouldBeFalse();
         feature.Commits.ShouldBe([source]);
         feature.BranchedFrom.ShouldBeSameAs(initialValue);
         feature.ParentIteration.ShouldBeSameAs(root);
@@ -558,12 +546,11 @@ public class MainlineHistoryTests
         var feature = new MainlineIteration("feature", new("refs/heads/feature/shared"), Branch(false), source, a, featureMerge);
         nestedMerge.AddChildIteration(feature);
         var configuration = GitFlowConfigurationBuilder.New.Build();
-        var context = MainlineTestCalculation.Context(root, configuration, new TestEnvironment(), mergeValue);
+        var history = MainlineTestCalculation.History(root, configuration, new TestEnvironment(), mergeValue);
 
-        context.HasChildHistory(nestedMerge).ShouldBeFalse();
-        (context with { IncludeSharedHistory = true }).HasChildHistory(nestedMerge).ShouldBeTrue();
-        var selected = context.Calculator.History
-            .Select(feature, "", false, includeSharedHistory: true);
+        history.HasChildHistory(nestedMerge, null, includeSharedHistory: false).ShouldBeFalse();
+        history.HasChildHistory(nestedMerge, null, includeSharedHistory: true).ShouldBeTrue();
+        var selected = history.Select(feature, "", false, includeSharedHistory: true);
         selected.Commits.ShouldBe([shared]);
         selected.Commits[0].ShouldBeSameAs(shared);
         feature.Commits.ShouldBeEmpty();
@@ -634,7 +621,6 @@ public class MainlineHistoryTests
 
         child.ShouldNotBeSameAs(parent);
         child.TargetLabel.ShouldBe("beta");
-        child.CommitResolver.ShouldBeSameAs(parent.CommitResolver);
         child.IncludeSharedHistory.ShouldBeTrue();
         child.CurrentCommit.ShouldBeSameAs(commit);
         child.MainlineVersions.ShouldBeSameAs(parent.MainlineVersions);
