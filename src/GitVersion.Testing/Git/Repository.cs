@@ -56,6 +56,11 @@ public sealed class Repository : IRepository
 
     internal string Run(bool checkExitCode, params string[] arguments)
     {
+        if (arguments.Length == 0)
+        {
+            throw new ArgumentException("A Git command is required.", nameof(arguments));
+        }
+
         var output = Execute(DirectoryPath, checkExitCode, null, null, arguments);
         var readOnly = arguments[0] is "rev-parse" or "cat-file" or "show" or "rev-list" or "for-each-ref" or "show-ref" or "ls-remote" or "diff"
             || arguments[0] == "symbolic-ref" && arguments.Length > 1 && arguments[1] == "-q";

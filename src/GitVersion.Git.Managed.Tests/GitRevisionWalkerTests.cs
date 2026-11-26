@@ -112,10 +112,9 @@ public class GitRevisionWalkerTests
         options.Include.Add(GitObjectId.Parse(second));
 
         using var store = repository.OpenObjectStore();
-        var actual = new GitRevisionWalker(store).Walk(options).Select(commit => commit.Sha.ToString()).ToList();
+        var actual = new GitRevisionWalker(store).Walk(options).Select(commit => commit.Message.TrimEnd());
 
-        var expected = repository.Run("rev-list", first, second).Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        actual.Order().ShouldBe(expected.Order());
+        actual.ShouldBe(["main 1", "feature 2", "feature 1", "main 0"]);
     }
 
     [Test]
