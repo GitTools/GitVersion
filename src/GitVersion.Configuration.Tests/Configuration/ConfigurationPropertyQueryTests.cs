@@ -119,8 +119,8 @@ public class ConfigurationPropertyQueryTests
     {
         SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
 
-        Should.Throw<ConfigurationException>(() => this.serializer.SerializeProperty(new GitVersionConfiguration(), "calculation.tag-prefix"))
-            .Message.ShouldContain("require v7 configuration");
+        Should.Throw<WarningException>(() => this.serializer.SerializeProperty(new GitVersionConfiguration(), "calculation.tag-prefix"))
+            .Message.ShouldContain("removed in GitVersion 7.1");
     }
 
     [Test]

@@ -1,3 +1,4 @@
+using Cake.Common.Tools.DotNet.Restore;
 using Cake.Common.Tools.DotNet.Test;
 using Common.Utilities;
 
@@ -7,7 +8,7 @@ namespace Build.Tasks;
 [TaskDescription("Run the unit tests")]
 [DotnetArgument]
 [TaskArgument(Arguments.TestResults)]
-[IsDependentOn(typeof(Build))]
+[IsDependentOn(typeof(Clean))]
 public class UnitTest : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context) => context.EnabledUnitTests;
@@ -20,6 +21,15 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             throw new CakeException("No test projects were found.");
         }
+
+        // Build each selected target below with real source paths. An upfront solution
+        // build compiles both frameworks with CI paths, then recompiles them for tests.
+        context.DotNetRestore("./src/GitVersion.slnx", new DotNetRestoreSettings
+        {
+            Verbosity = DotNetVerbosity.Minimal,
+            Sources = [Constants.NugetOrgUrl],
+            MSBuildSettings = context.MsBuildSettings
+        });
 
         var failures = new List<string>();
         foreach (var framework in frameworks)
@@ -69,7 +79,7 @@ public class UnitTest : FrostingTask<BuildContext>
         var settings = new DotNetBuildSettings
         {
             Framework = $"net{framework}",
-            // Build restores the solution. Rebuild with real source paths for snapshots and annotations.
+            // The solution is restored once; build with real paths for snapshots and annotations.
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
             MSBuildSettings = new()
@@ -90,10 +100,9 @@ public class UnitTest : FrostingTask<BuildContext>
             throw new CakeException($"Test assembly not found for {project} / net{framework}: {targetPath}");
         }
 
-        var backend = context.EnvironmentVariable("GITVERSION_GIT_BACKEND") ?? "default";
         var attempt = context.EnvironmentVariable("GITHUB_RUN_ATTEMPT") ?? "local";
         var root = new DirectoryPath(context.Argument(Arguments.TestResults,
-            Paths.TestOutput.Combine(backend).Combine($"attempt-{attempt}").FullPath));
+            Paths.TestOutput.Combine($"attempt-{attempt}").FullPath));
         var resultsDirectory = context.MakeAbsolute(root.Combine(project.GetFilenameWithoutExtension().FullPath).Combine($"net{framework}"));
         context.CleanDirectory(resultsDirectory);
         // CI publishes coverage from the LTS target; other targets validate runtime compatibility.

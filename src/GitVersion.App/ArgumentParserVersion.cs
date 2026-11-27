@@ -2,7 +2,6 @@ namespace GitVersion;
 
 internal enum ArgumentParserVersion
 {
-    V6,
     V7
 }
 
@@ -16,11 +15,16 @@ internal static class ArgumentParserVersionSelector
         if (SysEnv.GetEnvironmentVariable(RetiredEnvironmentVariableName) is not null)
         {
             throw new WarningException(
-                $"{RetiredEnvironmentVariableName} has been removed. Unset it and use {EnvironmentVariableName}=v6 for the temporary legacy parser, or {EnvironmentVariableName}=v7 (the default).");
+                $"{RetiredEnvironmentVariableName} has been removed. Unset it and use POSIX-style arguments with {EnvironmentVariableName}=v7 (the default).");
         }
 
-        return FeatureSelector.Resolve(EnvironmentVariableName, "v7", "v6", "v7") == "v6"
-            ? ArgumentParserVersion.V6
-            : ArgumentParserVersion.V7;
+        var value = SysEnv.GetEnvironmentVariable(EnvironmentVariableName)?.Trim().ToLowerInvariant();
+        if (value == "v6")
+        {
+            throw new WarningException($"{EnvironmentVariableName}=v6 was removed in GitVersion 7.1. Use POSIX-style arguments and unset this variable or set it to v7.");
+        }
+
+        _ = FeatureSelector.Resolve(EnvironmentVariableName, "v7", "v7");
+        return ArgumentParserVersion.V7;
     }
 }

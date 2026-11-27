@@ -81,7 +81,7 @@ dotnet add ./src/ProjectName/ProjectName.csproj package PackageName
 | `GitVersion.Output`        | Output formatters (JSON, BuildServer) |
 | `GitVersion.BuildAgents`   | CI/CD platform integrations           |
 | `GitVersion.MsBuild`       | MSBuild task integration              |
-| `GitVersion.LibGit2Sharp`  | Git repository abstraction            |
+| `GitVersion.Git.Managed`  | Managed Git reads and Git CLI writes  |
 
 ## Coding Conventions
 

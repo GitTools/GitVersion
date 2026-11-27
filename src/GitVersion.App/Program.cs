@@ -7,7 +7,7 @@ try
     using var host = builder.Build();
     var app = host.Services.GetRequiredService<GitVersionApp>();
 
-    await app.RunAsync(CancellationToken.None).ConfigureAwait(false);
+    SysEnv.ExitCode = await app.RunAsync(CancellationToken.None).ConfigureAwait(false);
 }
 catch (WarningException exception)
 {

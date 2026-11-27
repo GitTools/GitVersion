@@ -10,9 +10,7 @@ namespace GitVersion.Tests.IntegrationTests;
 public class ShaLabelScenarios : TestBase
 {
     [TestCase("managed", "ShortSha")]
-    [TestCase("libgit2", "ShortSha")]
     [TestCase("managed", "Sha")]
-    [TestCase("libgit2", "Sha")]
     public void FeatureLabelUsesCurrentCommitAndChangesOnNextCommit(string backend, string placeholder)
     {
         using var backendScope = new BackendScope(backend);
@@ -51,7 +49,6 @@ public class ShaLabelScenarios : TestBase
     }
 
     [TestCase("managed")]
-    [TestCase("libgit2")]
     public void MainlineMergedHistoryUsesCalculationCommitForLabel(string backend)
     {
         using var backendScope = new BackendScope(backend);
@@ -88,7 +85,6 @@ public class ShaLabelScenarios : TestBase
     }
 
     [TestCase("managed")]
-    [TestCase("libgit2")]
     public void TaggedCurrentCommitPreservesStableVersionWithShaLabel(string backend)
     {
         using var backendScope = new BackendScope(backend);

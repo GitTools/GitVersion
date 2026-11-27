@@ -21,7 +21,7 @@ public class ArgumentParserTests : TestBase
     public void SetUp()
     {
         this.originalConfigurationVersion = System.Environment.GetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName);
-        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
+        System.Environment.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v7");
         var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
         this.environment = sp.GetRequiredService<IEnvironment>();
         this.argumentParser = sp.GetRequiredService<IArgumentParser>();
@@ -56,7 +56,7 @@ public class ArgumentParserTests : TestBase
             "--override-config output.branches.main.pre-release-weight=42");
 
         var normalized = ConfigurationDocumentMapper.Normalize(
-            arguments.OverrideConfiguration!, ConfigurationVersion.V7, "test override");
+            arguments.OverrideConfiguration!, "test override");
         ConfigurationHelper configurationHelper = new(normalized);
         var configuration = configurationHelper.Configuration;
         configuration.Workflow.ShouldBe("GitHubFlow/v1");
@@ -124,13 +124,13 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void ConfigGetRejectsV6BeforeConfigFileValidation()
     {
+        SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
         var exception = Should.Throw<WarningException>(() =>
             this.argumentParser.ParseArguments("config get calculation.tag-prefix --config missing.yml"));
 
-        exception.Message.ShouldContain("require v7 configuration");
+        exception.Message.ShouldContain("removed in GitVersion 7.1");
     }
 
-    [TestCase("v6")]
     [TestCase("v7")]
     public void OverrideConfigAcceptsWorkflowOnlyInEitherVersion(string version)
     {
@@ -164,7 +164,7 @@ public class ArgumentParserTests : TestBase
             "--override-config Calculation.Branches.ReleaseCandidate.Increment=Major");
 
         var normalized = ConfigurationDocumentMapper.Normalize(
-            arguments.OverrideConfiguration!, ConfigurationVersion.V7, "test override");
+            arguments.OverrideConfiguration!, "test override");
         ConfigurationHelper configurationHelper = new(normalized);
         configurationHelper.Configuration.Branches["ReleaseCandidate"].Increment.ShouldBe(IncrementStrategy.Major);
     }
@@ -203,35 +203,6 @@ public class ArgumentParserTests : TestBase
             this.argumentParser.ParseArguments("--override-config calculation.update-build-number=false"));
 
         exception.Message.ShouldContain("output.update-build-number");
-    }
-
-    [Test]
-    public void OverrideConfigSupportsV6BranchPath()
-    {
-        var arguments = this.argumentParser.ParseArguments("--override-config branches.main.increment=Major");
-
-        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
-        configurationHelper.Configuration.Branches["main"].Increment.ShouldBe(IncrementStrategy.Major);
-    }
-
-    [Test]
-    public void OverrideConfigPreservesV6BranchNameCasing()
-    {
-        var arguments = this.argumentParser.ParseArguments(
-            "--override-config Branches.ReleaseCandidate.Increment=Major");
-
-        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
-        configurationHelper.Configuration.Branches["ReleaseCandidate"].Increment.ShouldBe(IncrementStrategy.Major);
-    }
-
-    [Test]
-    public void OverrideConfigRejectsV7PathInV6WithReplacement()
-    {
-        var exception = Should.Throw<WarningException>(() =>
-            this.argumentParser.ParseArguments("--override-config output.update-build-number=false"));
-
-        exception.Message.ShouldContain("update-build-number");
-        exception.Message.ShouldContain("config migrate");
     }
 
     [Test]
@@ -674,154 +645,154 @@ public class ArgumentParserTests : TestBase
     {
         var arguments = this.argumentParser.ParseArguments($"--override-config {options}");
 
-        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
+        ConfigurationHelper configurationHelper = new(ConfigurationDocumentMapper.Normalize(arguments.OverrideConfiguration!, "test override"));
         configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
     private static IEnumerable<TestCaseData<string, GitVersionConfiguration>> OverrideConfigWithSingleOptionTestData()
     {
         yield return TestCaseData.Create(
-            "assembly-versioning-scheme=MajorMinor",
+            "output.assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
             }
         );
         yield return TestCaseData.Create(
-            "assembly-file-versioning-scheme=\"MajorMinorPatch\"",
+            "output.assembly-file-versioning-scheme=\"MajorMinorPatch\"",
             new GitVersionConfiguration
             {
                 AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch
             }
         );
         yield return TestCaseData.Create(
-            "assembly-informational-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+            "output.assembly-informational-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 AssemblyInformationalFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
         yield return TestCaseData.Create(
-            "assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+            "output.assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
         yield return TestCaseData.Create(
-            "assembly-file-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+            "output.assembly-file-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
         yield return TestCaseData.Create(
-            "custom-version-format=\"{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}\"",
+            "output.custom-version-format=\"{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}\"",
             new GitVersionConfiguration
             {
                 CustomVersionFormat = "{Major}.{Minor}.{Patch}{PreReleaseLabelName:l}{PreReleaseNumber}"
             }
         );
         yield return TestCaseData.Create(
-            "mode=ContinuousDelivery",
+            "calculation.mode=ContinuousDelivery",
             new GitVersionConfiguration
             {
                 DeploymentMode = DeploymentMode.ContinuousDelivery
             }
         );
         yield return TestCaseData.Create(
-            "tag-prefix=sample",
+            "calculation.tag-prefix=sample",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample"
             }
         );
         yield return TestCaseData.Create(
-            "label=cd-label",
+            "calculation.label=cd-label",
             new GitVersionConfiguration
             {
                 Label = "cd-label"
             }
         );
         yield return TestCaseData.Create(
-            "next-version=1",
+            "calculation.next-version=1",
             new GitVersionConfiguration
             {
                 NextVersion = "1"
             }
         );
         yield return TestCaseData.Create(
-            "major-version-bump-message=\"This is major version bump message.\"",
+            "calculation.major-version-bump-message=\"This is major version bump message.\"",
             new GitVersionConfiguration
             {
                 MajorVersionBumpMessage = "This is major version bump message."
             }
         );
         yield return TestCaseData.Create(
-            "minor-version-bump-message=\"This is minor version bump message.\"",
+            "calculation.minor-version-bump-message=\"This is minor version bump message.\"",
             new GitVersionConfiguration
             {
                 MinorVersionBumpMessage = "This is minor version bump message."
             }
         );
         yield return TestCaseData.Create(
-            "patch-version-bump-message=\"This is patch version bump message.\"",
+            "calculation.patch-version-bump-message=\"This is patch version bump message.\"",
             new GitVersionConfiguration
             {
                 PatchVersionBumpMessage = "This is patch version bump message."
             }
         );
         yield return TestCaseData.Create(
-            "no-bump-message=\"This is no bump message.\"",
+            "calculation.no-bump-message=\"This is no bump message.\"",
             new GitVersionConfiguration
             {
                 NoBumpMessage = "This is no bump message."
             }
         );
         yield return TestCaseData.Create(
-            "version-bump-reset-message=\"baseline:\"",
+            "calculation.version-bump-reset-message=\"baseline:\"",
             new GitVersionConfiguration
             {
                 VersionBumpResetMessage = "baseline:"
             }
         );
         yield return TestCaseData.Create(
-            "tag-pre-release-weight=2",
+            "output.tag-pre-release-weight=2",
             new GitVersionConfiguration
             {
                 TagPreReleaseWeight = 2
             }
         );
         yield return TestCaseData.Create(
-            "commit-message-incrementing=MergeMessageOnly",
+            "calculation.commit-message-incrementing=MergeMessageOnly",
             new GitVersionConfiguration
             {
                 CommitMessageIncrementing = CommitMessageIncrementMode.MergeMessageOnly
             }
         );
         yield return TestCaseData.Create(
-            "increment=Minor",
+            "calculation.increment=Minor",
             new GitVersionConfiguration
             {
                 Increment = IncrementStrategy.Minor
             }
         );
         yield return TestCaseData.Create(
-            "commit-date-format=\"MM/dd/yyyy h:mm tt\"",
+            "output.commit-date-format=\"MM/dd/yyyy h:mm tt\"",
             new GitVersionConfiguration
             {
                 CommitDateFormat = "MM/dd/yyyy h:mm tt"
             }
         );
         yield return TestCaseData.Create(
-            "update-build-number=true",
+            "output.update-build-number=true",
             new GitVersionConfiguration
             {
                 UpdateBuildNumber = true
             }
         );
         yield return TestCaseData.Create(
-            "strategies=[\"None\",\"Mainline\"]",
+            "calculation.strategies=[\"None\",\"Mainline\"]",
             new GitVersionConfiguration
             {
                 VersionStrategies = [VersionStrategies.None, VersionStrategies.Mainline]
@@ -833,14 +804,14 @@ public class ArgumentParserTests : TestBase
     public void OverrideConfigWithMultipleOptions(string options, IGitVersionConfiguration expected)
     {
         var arguments = this.argumentParser.ParseArguments(options);
-        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
+        ConfigurationHelper configurationHelper = new(ConfigurationDocumentMapper.Normalize(arguments.OverrideConfiguration!, "test override"));
         configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
     private static IEnumerable<TestCaseData<string, GitVersionConfiguration>> OverrideConfigWithMultipleOptionsTestData()
     {
         yield return TestCaseData.Create(
-            "--override-config tag-prefix=sample --override-config assembly-versioning-scheme=MajorMinor",
+            "--override-config calculation.tag-prefix=sample --override-config output.assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -848,7 +819,7 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return TestCaseData.Create(
-            "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+            "--override-config calculation.tag-prefix=sample --override-config output.assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",
@@ -856,7 +827,7 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return TestCaseData.Create(
-            "--override-config tag-prefix=sample --override-config assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" --override-config update-build-number=true --override-config assembly-versioning-scheme=MajorMinorPatchTag --override-config mode=ContinuousDelivery --override-config tag-pre-release-weight=4",
+            "--override-config calculation.tag-prefix=sample --override-config output.assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" --override-config output.update-build-number=true --override-config output.assembly-versioning-scheme=MajorMinorPatchTag --override-config calculation.mode=ContinuousDelivery --override-config output.tag-pre-release-weight=4",
             new GitVersionConfiguration
             {
                 TagPrefixPattern = "sample",

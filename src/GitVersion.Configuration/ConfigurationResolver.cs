@@ -7,18 +7,18 @@ internal sealed class ConfigurationResolver(IConfigurationSerializer serializer)
 {
     public IGitVersionConfiguration Resolve(string? content, IReadOnlyDictionary<object, object?>? overrides = null)
     {
-        var version = ConfigurationVersionSelector.Resolve();
+        _ = ConfigurationVersionSelector.Resolve();
         var document = content is null ? null : serializer.Deserialize<Dictionary<object, object?>>(content);
-        var file = document is null ? null : ConfigurationDocumentMapper.Normalize(document, version, "configuration file");
+        var file = document is null ? null : ConfigurationDocumentMapper.Normalize(document, "configuration file");
         var runtime = overrides is null ? null : ConfigurationDocumentMapper.NormalizeInternal(overrides, "runtime override configuration");
         if (file is not null)
         {
-            ConfigurationInputValidator.Validate(file, version);
+            ConfigurationInputValidator.Validate(file);
         }
 
         if (runtime is not null)
         {
-            ConfigurationInputValidator.Validate(runtime, version);
+            ConfigurationInputValidator.Validate(runtime);
         }
 
         var workflow = GetWorkflow(file, runtime);

@@ -55,7 +55,7 @@ internal class OverrideConfigurationOptionParser
 
     private static bool TryNormalizeAndValidate(string key, out string normalizedKey, out string? error)
     {
-        var version = ConfigurationVersionSelector.Resolve();
+        _ = ConfigurationVersionSelector.Resolve();
         var segments = key.Split('.');
         NormalizeSegments(segments);
         normalizedKey = string.Join('.', segments);
@@ -67,13 +67,13 @@ internal class OverrideConfigurationOptionParser
             return false;
         }
 
-        if (IsValidPath(version, segments))
+        if (IsValidPath(segments))
         {
             error = null;
             return true;
         }
 
-        var replacement = GetReplacement(version, segments);
+        var replacement = GetReplacement(segments);
         error = replacement is null
             ? $"Unsupported key '{normalizedKey}'."
             : $"Key '{normalizedKey}' is not valid in the selected configuration structure. Use '{replacement}' instead. " +
@@ -135,22 +135,11 @@ internal class OverrideConfigurationOptionParser
         .OfType<string>()
         .ToHashSet(StringComparer.Ordinal);
 
-    private static bool IsValidPath(ConfigurationVersion version, IReadOnlyList<string> segments)
+    private static bool IsValidPath(IReadOnlyList<string> segments)
     {
         if (segments.Count == 1 && segments[0] == ConfigurationDocumentMapper.WorkflowPropertyName)
         {
             return true;
-        }
-
-        if (version == ConfigurationVersion.V6)
-        {
-            return segments.Count switch
-            {
-                1 => SupportedProperties.Contains(segments[0]),
-                3 when segments[0] == ConfigurationDocumentMapper.BranchesPropertyName
-                    => _lazySupportedBranchProperties.Value.Contains(segments[2]),
-                _ => false
-            };
         }
 
         if (segments.Count == 2 && IsSection(segments[0]))
@@ -167,10 +156,7 @@ internal class OverrideConfigurationOptionParser
                && IsCorrectSection(segments[0], segments[3], branchProperty: true);
     }
 
-    private static string? GetReplacement(ConfigurationVersion version, IReadOnlyList<string> segments) =>
-        version == ConfigurationVersion.V7
-            ? GetV7Replacement(segments)
-            : GetV6Replacement(segments);
+    private static string? GetReplacement(IReadOnlyList<string> segments) => GetV7Replacement(segments);
 
     private static string? GetV7Replacement(IReadOnlyList<string> segments)
     {
@@ -197,16 +183,6 @@ internal class OverrideConfigurationOptionParser
         return IsNestedBranchPath(segments)
             ? $"{GetSection(segments[3], branchProperty: true)}.{string.Join('.', segments.Skip(1))}"
             : null;
-    }
-
-    private static string? GetV6Replacement(IReadOnlyList<string> segments)
-    {
-        if (IsNestedRootPath(segments))
-        {
-            return segments[1];
-        }
-
-        return IsNestedBranchPath(segments) ? string.Join('.', segments.Skip(1)) : null;
     }
 
     private static bool IsFlatRootPath(IReadOnlyList<string> segments) =>

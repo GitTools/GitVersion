@@ -106,18 +106,16 @@ public class ConfigurationValidationIntegrationTests
     }
 
     [Test]
-    public void ExplicitV6CompatibilityWarnsWithoutFailing()
+    public void RetiredV6SelectionFailsWithMigrationGuidance()
     {
         Write("tag-prefix: '[vV]?'");
         var result = Execute("config validate --config candidate.yml --format json", version: "v6");
 
-        result.ExitCode.ShouldBe(0, result.Output);
-        using var json = JsonDocument.Parse(result.StandardOutput!);
-        json.RootElement.GetProperty("configurationVersion").GetString().ShouldBe("v6");
-        json.RootElement.GetProperty("valid").GetBoolean().ShouldBeTrue();
-        json.RootElement.GetProperty("diagnostics")[0].GetProperty("code").GetString().ShouldBe("GVCONFIG_V6_COMPATIBILITY");
+        result.ExitCode.ShouldBe(1);
+        result.StandardOutput.ShouldBeEmpty();
         result.StandardError.ShouldNotBeNull();
         result.StandardError.ShouldContain("removed in GitVersion 7.1");
+        result.StandardError.ShouldContain("gitversion config migrate");
     }
 
     [TestCase("config validate --config missing.yml --format json")]
@@ -252,9 +250,7 @@ public class ConfigurationValidationIntegrationTests
     }
 
     [TestCase("managed", "{}", true)]
-    [TestCase("libgit2", "{}", true)]
     [TestCase("managed", "calculation: [", false)]
-    [TestCase("libgit2", "calculation: [", false)]
     public async Task ExplicitValidationNeverConstructsGitOrCalculationServices(string backend, string content, bool valid)
     {
         Write(content);
@@ -310,11 +306,11 @@ public class ConfigurationValidationIntegrationTests
         Write("calculation:\n  tag-prefix: v");
         var result = Execute("config validate --config candidate.yml --format json", version: "v6");
 
-        result.ExitCode.ShouldBe(1, result.Output);
-        using var json = JsonDocument.Parse(result.StandardOutput!);
-        json.RootElement.GetProperty("configurationVersion").GetString().ShouldBe("v6");
-        json.RootElement.GetProperty("valid").GetBoolean().ShouldBeFalse();
-        json.RootElement.GetProperty("diagnostics")[0].GetProperty("code").GetString().ShouldBe("GVCONFIG_LAYOUT");
+        result.ExitCode.ShouldBe(1);
+        result.StandardOutput.ShouldBeEmpty();
+        result.StandardError.ShouldNotBeNull();
+        result.StandardError.ShouldContain("removed in GitVersion 7.1");
+        result.StandardError.ShouldContain("gitversion config migrate");
     }
 
     [Test]

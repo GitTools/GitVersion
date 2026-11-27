@@ -11,7 +11,7 @@ internal sealed record FeatureSelections(ArgumentParserVersion ArgumentParser, C
     public void Log(ILogger logger) =>
         logger.LogInformation(
             "Argument parser version: {ArgumentParserVersion}; Configuration version: {ConfigurationVersion}; Git backend: {GitBackend}",
-            ArgumentParser == ArgumentParserVersion.V6 ? "v6" : "v7",
-            Configuration == ConfigurationVersion.V6 ? "v6" : "v7",
-            GitBackend == GitBackend.Managed ? "managed" : "libgit2");
+            "v7",
+            "v7",
+            "managed");
 }

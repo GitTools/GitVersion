@@ -7,20 +7,19 @@ public class ExecFeatureSelectorTests
     [Test]
     [Combinatorial]
     public void SelectorCombinationsCalculateAndLogWithoutPollutingOutput(
-        [Values("v6", "v7")] string parser,
-        [Values("v6", "v7")] string configuration,
-        [Values("libgit2", "managed")] string backend,
+        [Values("v7")] string parser,
+        [Values("v7")] string configuration,
+        [Values("managed")] string backend,
         [Values("json", "variable", "config")] string output,
         [Values(false, true)] bool buildServer)
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("release-1.2.3");
         File.WriteAllText(Path.Combine(fixture.RepositoryPath, "GitVersion.yml"),
-            configuration == "v6" ? "tag-prefix: release-" : "calculation:\n  tag-prefix: release-");
-        var legacy = parser == "v6";
+            "calculation:\n  tag-prefix: release-");
         var logPath = Path.Combine(fixture.RepositoryPath, "selectors.log");
-        var outputArgument = OutputArguments(output, legacy, buildServer);
-        var arguments = $"\"{fixture.RepositoryPath}\" {(legacy ? "/l" : "--log-file")} \"{logPath}\" {outputArgument}";
+        var outputArgument = OutputArguments(output, buildServer);
+        var arguments = $"\"{fixture.RepositoryPath}\" --log-file \"{logPath}\" {outputArgument}";
 
         var result = GitVersionHelper.ExecuteIn(null, arguments, false, Selectors(parser, configuration, backend));
 
@@ -45,13 +44,13 @@ public class ExecFeatureSelectorTests
         else
         {
             stdout.ShouldContain("tag-prefix: release-");
-            stdout.Contains("calculation:", StringComparison.Ordinal).ShouldBe(configuration == "v7");
+            stdout.ShouldContain("calculation:");
         }
 
         stdout.ShouldNotContain("Argument parser version:");
         stdout.ShouldNotContain("Configuration version:");
         stdout.ShouldNotContain("Git backend:");
-        if (buildServer && (!legacy || output != "config"))
+        if (buildServer)
         {
             result.StandardError.ShouldNotBeNull();
             result.StandardError.ShouldContain($"Argument parser version: {parser}");
@@ -83,12 +82,16 @@ public class ExecFeatureSelectorTests
         result.StandardError.ShouldContain("Git backend: managed");
     }
 
-    [TestCase("GITVERSION_ARGUMENT_PARSER_VERSION", "true", "'v6' and 'v7'")]
-    [TestCase("GITVERSION_CONFIGURATION_VERSION", "v8", "'v6' and 'v7'")]
-    [TestCase("GITVERSION_GIT_BACKEND", "manged", "'libgit2' and 'managed'")]
-    [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "true", "GITVERSION_ARGUMENT_PARSER_VERSION=v6")]
-    [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "false", "GITVERSION_ARGUMENT_PARSER_VERSION=v6")]
-    [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "", "GITVERSION_ARGUMENT_PARSER_VERSION=v6")]
+    [TestCase("GITVERSION_ARGUMENT_PARSER_VERSION", "v6", "POSIX-style arguments")]
+    [TestCase("GITVERSION_CONFIGURATION_VERSION", " V6 ", "gitversion config migrate")]
+    [TestCase("GITVERSION_ARGUMENT_PARSER_VERSION", "true", "'v7'")]
+    [TestCase("GITVERSION_CONFIGURATION_VERSION", "v8", "'v7'")]
+    [TestCase("GITVERSION_GIT_BACKEND", "manged", "'managed'")]
+    [TestCase("GITVERSION_GIT_BACKEND", "libgit2", "removed in v7.1")]
+    [TestCase("GITVERSION_GIT_BACKEND", " LiBgIt2 ", "removed in v7.1")]
+    [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "true", "GITVERSION_ARGUMENT_PARSER_VERSION=v7")]
+    [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "false", "GITVERSION_ARGUMENT_PARSER_VERSION=v7")]
+    [TestCase("GITVERSION_USE_V6_ARGUMENT_PARSER", "", "GITVERSION_ARGUMENT_PARSER_VERSION=v7")]
     public void InvalidSelectorsFailBeforeHelpWithActionableStderr(string variable, string value, string guidance)
     {
         var environment = Selectors("v7", "v7", "managed").ToDictionary(pair => pair.Key, pair => pair.Value);
@@ -106,9 +109,9 @@ public class ExecFeatureSelectorTests
 
     [Test]
     [Combinatorial]
-    public void MigrationRetainsYamlStdoutWithEitherConfigurationAndBackend(
-        [Values("v6", "v7")] string configuration,
-        [Values("libgit2", "managed")] string backend)
+    public void MigrationRetainsV6InputAndYamlStdoutWithEitherBackend(
+        [Values("v7")] string configuration,
+        [Values("managed")] string backend)
     {
         var directory = Directory.CreateTempSubdirectory();
         try
@@ -133,22 +136,15 @@ public class ExecFeatureSelectorTests
         }
     }
 
-    private static string OutputArguments(string output, bool legacy, bool buildServer)
+    private static string OutputArguments(string output, bool buildServer)
     {
-        var arguments = (legacy, output) switch
+        var arguments = output switch
         {
-            (true, "variable") => "/output json /showvariable FullSemVer",
-            (false, "variable") => "--output json --show-variable FullSemVer",
-            (true, "config") => "/showconfig",
-            (false, "config") => "--show-config",
-            (true, _) => "/output json",
+            "variable" => "--output json --show-variable FullSemVer",
+            "config" => "--show-config",
             _ => "--output json"
         };
-        if (buildServer)
-        {
-            arguments += legacy ? " /output buildserver" : " --output buildserver";
-        }
-        return arguments;
+        return buildServer ? arguments + " --output buildserver" : arguments;
     }
 
     private static KeyValuePair<string, string?>[] Selectors(string? parser, string? configuration, string? backend) =>

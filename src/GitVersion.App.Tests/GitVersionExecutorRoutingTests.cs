@@ -53,7 +53,6 @@ public class GitVersionExecutorRoutingTests
         SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, this.originalVersion);
     }
 
-    [TestCase("v6")]
     [TestCase("v7")]
     public void DisplayUsesVersionSpecificOverridesWithoutCalculating(string version)
     {
@@ -92,8 +91,8 @@ public class GitVersionExecutorRoutingTests
         SysEnv.SetEnvironmentVariable(ConfigurationVersionSelector.EnvironmentVariableName, "v6");
         var options = new GitVersionOptions { ConfigurationInfo = { PropertyPath = "output.update-build-number" } };
 
-        Should.Throw<ConfigurationException>(() => this.executor.Execute(options))
-            .Message.ShouldBe("Configuration property queries require v7 configuration. Set GITVERSION_CONFIGURATION_VERSION=v7.");
+        Should.Throw<WarningException>(() => this.executor.Execute(options))
+            .Message.ShouldContain("removed in GitVersion 7.1");
 
         this.provider.ReceivedCalls().ShouldBeEmpty();
         this.console.ReceivedCalls().ShouldBeEmpty();

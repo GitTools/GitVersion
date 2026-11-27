@@ -1,6 +1,6 @@
 using System.IO.Abstractions;
 using GitVersion.Helpers;
-using LibGit2Sharp;
+using GitVersion.Testing.Git;
 
 namespace GitVersion.Tests;
 
@@ -31,12 +31,14 @@ public class GitVersionTaskDirectoryTests : TestBase
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = this.workDirectory, Settings = { NoFetch = true } });
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
+            sp.DiscoverRepository();
 
             var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 
             gitVersionCalculator.CalculateVersionVariables();
         });
-        exception.ShouldNotBeAssignableTo<RepositoryNotFoundException>();
+        exception.ShouldBeOfType<GitVersionException>()
+            .Message.ShouldBe("No commits found on the current branch.");
     }
 
     [Test]
@@ -50,11 +52,13 @@ public class GitVersionTaskDirectoryTests : TestBase
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = childDir, Settings = { NoFetch = true } });
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
+            sp.DiscoverRepository();
 
             var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 
             gitVersionCalculator.CalculateVersionVariables();
         });
-        exception.ShouldNotBeAssignableTo<RepositoryNotFoundException>();
+        exception.ShouldBeOfType<GitVersionException>()
+            .Message.ShouldBe("No commits found on the current branch.");
     }
 }
