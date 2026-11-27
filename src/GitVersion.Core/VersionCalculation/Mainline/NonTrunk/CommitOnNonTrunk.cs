@@ -2,7 +2,7 @@ using GitVersion.Configuration;
 
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class CommitOnNonTrunk : IIncrementer
+internal sealed class CommitOnNonTrunk(MainlineHistory history, IEnvironment environment) : IIncrementer
 {
     // B  57 minutes ago  (HEAD -> feature/foo)
     // A  58 minutes ago <<--
@@ -11,22 +11,21 @@ internal sealed class CommitOnNonTrunk : IIncrementer
     // A  58 minutes ago
 
     public bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => !commit.HasChildIteration
-           && !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
-           && context.SemanticVersion is null;
+        => context.SemanticVersion is null && !history.HasChildHistory(commit, context.TargetLabel, context.IncludeSharedHistory)
+           && !context.EffectiveConfiguration.IsMainBranch;
 
     public IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
+        if (context.GetPredecessor(commit) is { } predecessor && predecessor.BranchName != commit.BranchName)
         {
             context.Label = null;
         }
 
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
 
-        if (commit.Successor is not null)
+        if (!context.IsLastCommit(commit))
         {
             yield break;
         }

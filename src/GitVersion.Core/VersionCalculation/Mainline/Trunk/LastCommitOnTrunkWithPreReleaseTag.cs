@@ -1,14 +1,15 @@
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreReleaseTagBase
+internal sealed class LastCommitOnTrunkWithPreReleaseTag(IEnvironment environment) : CommitOnTrunkWithPreReleaseTagBase
 {
     // B 58 minutes ago (HEAD -> main) (tag 0.2.0-1) <<--
     // A 59 minutes ago
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is null;
+        => base.MatchPrecondition(iteration, commit, context) && context.IsLastCommit(commit);
 
     public override IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -18,15 +19,15 @@ internal sealed class LastCommitOnTrunkWithPreReleaseTag : CommitOnTrunkWithPreR
             yield return item;
         }
 
-        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
+        if (!context.IterationConfiguration.IsMainBranch)
         {
             yield break;
         }
 
-        context.Increment = commit.GetIncrementForcedByBranch(context.Configuration);
+        context.Increment = context.EffectiveConfiguration.Increment.ToVersionField();
 
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
+        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
         context.ForceIncrement = false;
 
         yield return new BaseVersionOperator

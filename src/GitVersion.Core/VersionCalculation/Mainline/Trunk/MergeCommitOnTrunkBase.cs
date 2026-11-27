@@ -2,10 +2,13 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal abstract class MergeCommitOnTrunkBase : IIncrementer
+internal abstract class MergeCommitOnTrunkBase(
+    MainlineHistory history, MainlineVersionCalculator calculator)
+    : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => commit.HasChildIteration && commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch && context.SemanticVersion is null;
+        => context.SemanticVersion is null && history.HasChildHistory(commit, context.TargetLabel, context.IncludeSharedHistory) && !context.IsMainlineMerge
+            && context.EffectiveConfiguration.IsMainBranch;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -19,32 +22,28 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
 
         IEnumerable<IBaseVersionIncrement> GetIncrementsInternal()
         {
-            var baseVersion = MainlineVersionStrategy.DetermineBaseVersionRecursive(
-                   iteration: commit.ChildIteration!,
-                   targetLabel: context.TargetLabel,
-                   incrementStrategyFinder: context.IncrementStrategyFinder,
-                   configuration: context.Configuration,
-                   environment: context.Environment,
-                   currentCommit: context.CurrentCommit
-               );
+            var baseVersion = calculator.CalculateBaseVersion(
+                commit.ChildIteration, context.TargetLabel,
+                includeSharedHistory: context.IncludeSharedHistory);
 
             context.Label ??= baseVersion.Operator?.Label;
 
             var increment = VersionField.None;
 
-            if (!commit.GetEffectiveConfiguration(context.Configuration).PreventIncrementOfMergedBranch)
+            if (!context.EffectiveConfiguration.PreventIncrementOfMergedBranch)
             {
                 increment = increment.Consolidate(context.Increment);
             }
 
-            if (!commit.ChildIteration.GetEffectiveConfiguration(context.Configuration).PreventIncrementWhenBranchMerged)
+            if (!context.ChildConfiguration.NotNull().PreventIncrementWhenBranchMerged)
             {
                 increment = increment.Consolidate(baseVersion.Operator?.Increment);
             }
 
-            if (commit.GetEffectiveConfiguration(context.Configuration).CommitMessageIncrementing != CommitMessageIncrementMode.Disabled)
+            if (context.EffectiveConfiguration.CommitMessageIncrementing
+                != CommitMessageIncrementMode.Disabled)
             {
-                increment = increment.Consolidate(commit.Increment);
+                increment = increment.Consolidate(context.CommitIncrement);
             }
             context.Increment = increment;
 
@@ -58,8 +57,9 @@ internal abstract class MergeCommitOnTrunkBase : IIncrementer
             else if (baseVersion.Operator?.AlternativeSemanticVersion is not null)
             {
                 context.AddAlternativeSemanticVersion(baseVersion.Operator.AlternativeSemanticVersion,
-                baseVersion.Operator.AlternativeSemVerSource ?? new SemanticVersionSource(
-                    "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion, null, VersionField.None));
+                    baseVersion.Operator.AlternativeSemVerSource ?? new SemanticVersionSource(
+                        "Alternative semantic version", baseVersion.Operator.AlternativeSemanticVersion,
+                        null, VersionField.None));
             }
 
             if (context.SemanticVersion is not null)

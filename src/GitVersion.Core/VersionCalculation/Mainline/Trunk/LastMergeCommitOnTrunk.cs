@@ -1,12 +1,14 @@
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class LastMergeCommitOnTrunk : MergeCommitOnTrunkBase
+internal sealed class LastMergeCommitOnTrunk(
+    MainlineHistory history, MainlineVersionCalculator calculator)
+    : MergeCommitOnTrunkBase(history, calculator)
 {
     // *  55 minutes ago  (HEAD -> main) <<--
     // |\
     // | B  56 minutes ago  (feature/foo)
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is null;
+        => base.MatchPrecondition(iteration, commit, context) && context.IsLastCommit(commit);
 }

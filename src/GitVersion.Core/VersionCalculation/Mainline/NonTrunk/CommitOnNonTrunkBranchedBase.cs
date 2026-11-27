@@ -3,12 +3,12 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal abstract class CommitOnNonTrunkBranchedBase : IIncrementer
+internal abstract class CommitOnNonTrunkBranchedBase(IEnvironment environment) : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => !commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch
+        => !context.EffectiveConfiguration.IsMainBranch
            && commit.BranchName != iteration.BranchName
-           && commit.Successor is null;
+           && context.IsLastCommit(commit);
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -16,12 +16,12 @@ internal abstract class CommitOnNonTrunkBranchedBase : IIncrementer
         context.BaseVersionSource = commit.Value;
 
         var incrementForcedByBranch = iteration.Configuration.Increment == IncrementStrategy.Inherit
-            ? commit.GetIncrementForcedByBranch(context.Configuration)
+            ? context.EffectiveConfiguration.Increment.ToVersionField()
             : iteration.Configuration.Increment.ToVersionField();
         context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
 
-        var iterationEffectiveConfiguration = iteration.GetEffectiveConfiguration(context.Configuration);
-        context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null, context.Environment, context.CurrentCommit) ?? context.Label;
+        var iterationEffectiveConfiguration = context.IterationConfiguration;
+        context.Label = iterationEffectiveConfiguration.GetBranchSpecificLabel(iteration.BranchName, null, environment, context.CurrentCommit) ?? context.Label;
         context.ForceIncrement = true;
 
         yield return new BaseVersionOperator

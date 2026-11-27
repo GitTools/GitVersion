@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class CommitOnNonTrunkBranchedToTrunk : CommitOnNonTrunkBranchedBase
+internal sealed class CommitOnNonTrunkBranchedToTrunk(
+    IEnvironment environment)
+    : CommitOnNonTrunkBranchedBase(environment)
 {
     // B  51 minutes ago  (HEAD -> release/1.0.x, main) <<--
     // A  59 minutes ago
@@ -15,5 +17,5 @@ internal sealed class CommitOnNonTrunkBranchedToTrunk : CommitOnNonTrunkBranched
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
         => base.MatchPrecondition(iteration, commit, context)
-           && iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch;
+           && context.IterationConfiguration.IsMainBranch;
 }

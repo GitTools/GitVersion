@@ -5,16 +5,26 @@ using GitVersion.Git;
 
 namespace GitVersion.VersionCalculation.Mainline;
 
-internal sealed class EnrichIncrement : IContextPreEnricher
+internal sealed class EnrichIncrement(
+    IIncrementStrategyFinder incrementStrategyFinder, IGitVersionConfiguration configuration,
+    MainlineConfigurationResolver configurationResolver, IEnvironment environment)
+    : IContextPreEnricher
 {
     public void Enrich(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
     {
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
+        var effectiveConfiguration = context.EffectiveConfiguration;
         var incrementForcedByBranch = effectiveConfiguration.Increment.ToVersionField();
-        var commitMessageIncrement = commit.IsDummy
+        // An eligible tag on a merged mainline already releases that commit's bump message.
+        var isTaggedMergedMainline = context.SemanticVersion is not null
+            && iteration.Configuration.IsMainBranch == true
+            && effectiveConfiguration.IsMainBranch
+            && effectiveConfiguration.PreventIncrementWhenCurrentCommitTagged
+            && iteration.GetBranchedTo() is { } receivingMerge
+            && configurationResolver.GetEffectiveConfiguration(receivingMerge).IsMainBranch;
+        var commitMessageIncrement = commit.IsDummy || isTaggedMergedMainline
             ? default
-            : GetIncrementForcedByCommit(context, commit.Value, effectiveConfiguration);
-        commit.Increment = commitMessageIncrement.Increment;
+            : GetIncrementForcedByCommit(commit.Value, effectiveConfiguration);
+        context.CommitIncrement = commitMessageIncrement.Increment;
         if (commitMessageIncrement.VersionBumpNeedsToBeReset)
         {
             context.Increment = VersionField.None;
@@ -22,43 +32,52 @@ internal sealed class EnrichIncrement : IContextPreEnricher
         }
 
         context.Increment = context.Increment.Consolidate(commitMessageIncrement.Increment);
-        if (!context.SuppressBranchIncrement)
+        var mergedBranchIncrement = GetMergedBranchIncrement(context);
+        context.Increment = context.Increment.Consolidate(mergedBranchIncrement);
+        if (!context.SuppressBranchIncrement
+            && (mergedBranchIncrement is null || !effectiveConfiguration.PreventIncrementOfMergedBranch))
         {
             context.Increment = context.Increment.Consolidate(incrementForcedByBranch);
         }
 
-        if (commit.Predecessor is not null && commit.Predecessor.BranchName != commit.BranchName)
+        if (context.GetPredecessor(commit) is { } predecessor && predecessor.BranchName != commit.BranchName)
         {
             context.Label = null;
         }
 
-        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+        context.Label ??= effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
 
         if (effectiveConfiguration.IsMainBranch)
         {
-            context.BaseVersionSource = commit.Predecessor?.Value;
+            context.BaseVersionSource = context.GetPredecessor(commit)?.Value;
         }
 
-        context.ForceIncrement |= effectiveConfiguration.IsMainBranch || commit.IsPredecessorTheLastCommitOnTrunk(context.Configuration);
+        context.ForceIncrement |= effectiveConfiguration.IsMainBranch
+            || context.GetPredecessor(commit) is { } previous
+                && configurationResolver.GetEffectiveConfiguration(previous).IsMainBranch;
     }
 
-    private static CommitMessageIncrement GetIncrementForcedByCommit(
-        MainlineContext context, ICommit commit, EffectiveConfiguration configuration)
-    {
-        context.NotNull();
-        commit.NotNull();
-        configuration.NotNull();
+    private static VersionField? GetMergedBranchIncrement(MainlineContext context)
+        => context.SemanticVersion is null && context.EffectiveConfiguration.IsMainBranch
+            && context.ChildConfiguration?.IsMainBranch == true ? VersionField.None : null;
 
-        return configuration.CommitMessageIncrementing switch
+    private CommitMessageIncrement GetIncrementForcedByCommit(
+        ICommit commit, EffectiveConfiguration effectiveConfiguration)
+    {
+        commit.NotNull();
+        effectiveConfiguration.NotNull();
+
+        return effectiveConfiguration.CommitMessageIncrementing switch
         {
             CommitMessageIncrementMode.Enabled
-                => context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration),
+                => incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration),
             CommitMessageIncrementMode.Disabled => default,
             CommitMessageIncrementMode.MergeMessageOnly => commit.IsMergeCommit
-                ? context.IncrementStrategyFinder.GetIncrementForcedByCommit(commit, context.Configuration)
+                ? incrementStrategyFinder.GetIncrementForcedByCommit(commit, configuration)
                 : default,
             _ => throw new InvalidEnumArgumentException(
-                nameof(configuration.CommitMessageIncrementing), (int)configuration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
+                nameof(effectiveConfiguration.CommitMessageIncrementing),
+                (int)effectiveConfiguration.CommitMessageIncrementing, typeof(CommitMessageIncrementMode)
             )
         };
     }

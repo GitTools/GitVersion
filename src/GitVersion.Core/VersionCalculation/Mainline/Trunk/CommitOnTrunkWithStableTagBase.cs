@@ -3,10 +3,10 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal abstract class CommitOnTrunkWithStableTagBase : IIncrementer
+internal abstract class CommitOnTrunkWithStableTagBase(IEnvironment environment) : IIncrementer
 {
     public virtual bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => commit.GetEffectiveConfiguration(context.Configuration).IsMainBranch && !commit.HasChildIteration
+        => context.EffectiveConfiguration.IsMainBranch
             && context.SemanticVersion?.IsPreRelease == false;
 
     public virtual IEnumerable<IBaseVersionIncrement> GetIncrements(
@@ -22,7 +22,7 @@ internal abstract class CommitOnTrunkWithStableTagBase : IIncrementer
             BaseVersionSource = context.BaseVersionSource
         };
 
-        var effectiveConfiguration = commit.GetEffectiveConfiguration(context.Configuration);
-        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, context.Environment, context.CurrentCommit);
+        var effectiveConfiguration = context.EffectiveConfiguration;
+        context.Label = effectiveConfiguration.GetBranchSpecificLabel(commit.BranchName, null, environment, context.CurrentCommit);
     }
 }

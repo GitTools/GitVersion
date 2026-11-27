@@ -1,12 +1,14 @@
 namespace GitVersion.VersionCalculation.Mainline.Trunk;
 
-internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTagBase
+internal sealed class LastCommitOnTrunkWithStableTag(
+    IEnvironment environment)
+    : CommitOnTrunkWithStableTagBase(environment)
 {
     // B  58 minutes ago  (HEAD -> main) (tag 0.2.0) <<--
     // A  59 minutes ago
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is null;
+        => base.MatchPrecondition(iteration, commit, context) && context.IsLastCommit(commit);
 
     public override IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
@@ -16,7 +18,7 @@ internal sealed class LastCommitOnTrunkWithStableTag : CommitOnTrunkWithStableTa
             yield return item;
         }
 
-        if (!iteration.GetEffectiveConfiguration(context.Configuration).IsMainBranch)
+        if (!context.IterationConfiguration.IsMainBranch)
         {
             yield break;
         }

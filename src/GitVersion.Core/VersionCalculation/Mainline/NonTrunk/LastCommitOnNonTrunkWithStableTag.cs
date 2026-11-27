@@ -1,12 +1,14 @@
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class LastCommitOnNonTrunkWithStableTag : CommitOnNonTrunkWithStableTagBase
+internal sealed class LastCommitOnNonTrunkWithStableTag(
+    IEnvironment environment)
+    : CommitOnNonTrunkWithStableTagBase(environment)
 {
     // B 57 minutes ago  (HEAD -> feature/foo) (tag 1.2.3) <<--
     // A 58 minutes ago
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is null;
+        => base.MatchPrecondition(iteration, commit, context) && context.IsLastCommit(commit);
 
     public override IEnumerable<IBaseVersionIncrement> GetIncrements(
         MainlineIteration iteration, MainlineCommit commit, MainlineContext context)

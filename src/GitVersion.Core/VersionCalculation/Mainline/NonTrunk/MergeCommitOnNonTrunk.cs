@@ -1,6 +1,8 @@
 namespace GitVersion.VersionCalculation.Mainline.NonTrunk;
 
-internal sealed class MergeCommitOnNonTrunk : MergeCommitOnNonTrunkBase
+internal sealed class MergeCommitOnNonTrunk(
+    MainlineHistory history, MainlineVersionCalculator calculator)
+    : MergeCommitOnNonTrunkBase(history, calculator)
 {
     // C  53 minutes ago  (HEAD -> develop)
     // *  55 minutes ago <<--
@@ -8,5 +10,5 @@ internal sealed class MergeCommitOnNonTrunk : MergeCommitOnNonTrunkBase
     // | B  56 minutes ago  (feature/foo)
 
     public override bool MatchPrecondition(MainlineIteration iteration, MainlineCommit commit, MainlineContext context)
-        => base.MatchPrecondition(iteration, commit, context) && commit.Successor is not null;
+        => base.MatchPrecondition(iteration, commit, context) && !context.IsLastCommit(commit);
 }
