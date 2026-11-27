@@ -16,6 +16,12 @@ public class BuildContext(ICakeContext context) : BuildContextBase(context)
 
     public bool EnabledUnitTests { get; set; }
 
+    // Linux releases are built in native glibc/musl containers on each CPU architecture.
+    // NativeAOT cannot use the former cross-OS/ABI publication loop.
+    public string[] PackageRuntimes => IsOnLinux
+        ? [System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier]
+        : this.NativeRuntimes[Platform];
+
     public Credentials? Credentials { get; set; }
 
     public DotNetMSBuildSettings MsBuildSettings { get; } = new();

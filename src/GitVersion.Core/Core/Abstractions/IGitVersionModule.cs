@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Extensions;
 
 namespace GitVersion;
@@ -9,6 +10,7 @@ public interface IGitVersionModule
     void RegisterTypes(IServiceCollection services);
 
     /// <summary>Returns all concrete types in <paramref name="assembly"/> that are assignable to <typeparamref name="T"/>.</summary>
+    [RequiresUnreferencedCode("Assembly scanning cannot preserve derived types. Register known implementations explicitly when trimming.")]
     static IEnumerable<Type> FindAllDerivedTypes<T>(Assembly? assembly)
     {
         assembly.NotNull();
