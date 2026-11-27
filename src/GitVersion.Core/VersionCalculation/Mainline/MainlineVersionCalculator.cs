@@ -7,6 +7,7 @@ namespace GitVersion.VersionCalculation.Mainline;
 internal sealed class MainlineVersionCalculator
 {
     private readonly MainlineHistory history;
+    private readonly MergedMainlineVersionPolicy sourceVersions;
     private readonly IReadOnlyCollection<IContextPreEnricher> preEnrichers;
     private readonly IReadOnlyCollection<IIncrementer> incrementers;
 
@@ -24,7 +25,7 @@ internal sealed class MainlineVersionCalculator
         configurationResolver.NotNull();
         this.history = history.NotNull();
         var environment = history.Environment;
-        var sourceVersions = new MergedMainlineVersionPolicy(configurationResolver, environment, this);
+        this.sourceVersions = new MergedMainlineVersionPolicy(configurationResolver, environment, this);
 
         this.preEnrichers =
         [
@@ -37,7 +38,7 @@ internal sealed class MainlineVersionCalculator
         [
             // Trunk
             new CommitOnTrunk(history, environment),
-            new MergedMainlineIncrementer(history, environment, sourceVersions),
+            new MergedMainlineIncrementer(history, environment, this.sourceVersions),
 
             new CommitOnTrunkWithPreReleaseTag(),
             new LastCommitOnTrunkWithPreReleaseTag(environment),
@@ -49,9 +50,9 @@ internal sealed class MainlineVersionCalculator
             new LastMergeCommitOnTrunk(history, this),
 
             new CommitOnTrunkBranchedToTrunk(environment),
-            new MergedMainlineBranchedToTrunk(environment, sourceVersions),
+            new MergedMainlineBranchedToTrunk(environment, this.sourceVersions),
             new CommitOnTrunkBranchedToNonTrunk(environment),
-            new MergedMainlineBranchedToNonTrunk(environment, sourceVersions),
+            new MergedMainlineBranchedToNonTrunk(environment, this.sourceVersions),
 
             // NonTrunk
             new FirstCommitOnRelease(history),
@@ -72,13 +73,22 @@ internal sealed class MainlineVersionCalculator
     }
 
     internal BaseVersion DetermineBaseVersion(MainlineIteration iteration, string? targetLabel)
-        => CalculateBaseVersion(iteration, targetLabel, [], includeSharedHistory: false);
+    {
+        try
+        {
+            return CalculateBaseVersion(iteration, targetLabel, includeSharedHistory: false);
+        }
+        finally
+        {
+            this.sourceVersions.ClearCache();
+        }
+    }
 
     internal BaseVersion CalculateBaseVersion(MainlineIteration iteration, string? targetLabel,
-        Dictionary<MainlineIteration, BaseVersion> mainlineVersions, bool includeSharedHistory, bool includeAncestry = false)
+        bool includeSharedHistory, bool includeAncestry = false)
     {
         iteration.NotNull();
-        var context = new MainlineContext(this.history.CurrentCommit, mainlineVersions)
+        var context = new MainlineContext(this.history.CurrentCommit)
         {
             TargetLabel = targetLabel,
             IncludeSharedHistory = includeSharedHistory

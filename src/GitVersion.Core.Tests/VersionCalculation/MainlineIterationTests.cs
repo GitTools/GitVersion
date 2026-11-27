@@ -110,7 +110,7 @@ public class MainlineIterationTests
         var calculation = MainlineTestCalculation.Create(receiver, configuration, new TestEnvironment(), mergeValue);
         var context = calculation.CalculationContext;
 
-        var version = calculation.SourceVersions.GetSourceVersion(source, context);
+        var version = calculation.SourceVersions.GetSourceVersion(source);
 
         source.Commits.ShouldBeEmpty();
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
@@ -170,12 +170,11 @@ public class MainlineIterationTests
         merge.AddChildIteration(source);
 
         var calculation = MainlineTestCalculation.Create(root, configuration, new TestEnvironment(), mergeValue);
-        var context = calculation.CalculationContext;
         var effective = calculation.ConfigurationResolver.GetEffectiveConfiguration(source);
 
         effective.Increment.ShouldBe(IncrementStrategy.Minor);
         effective.Label.ShouldBe("beta");
-        var version = calculation.SourceVersions.GetSourceVersion(source, context);
+        var version = calculation.SourceVersions.GetSourceVersion(source);
         version.SemanticVersion.ShouldBe(taggedVersion);
         version.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.2");
         version.BaseVersionSource.ShouldBeSameAs(branchPointValue);
@@ -244,16 +243,13 @@ public class MainlineIterationTests
         var second = new MainlineIteration("second", first.BranchName, branch, receiver, receiverTip, merge.Value);
         second.CreateCommit(tip, second.BranchName, branch).AddSemanticVersions(new SemanticVersion(3, 0, 0));
         var calculation = MainlineTestCalculation.Create(receiver, configuration, new TestEnvironment(), tip);
-        var context = calculation.CalculationContext;
-
-        var firstVersion = calculation.SourceVersions.GetSourceVersion(first, context);
-        var secondVersion = calculation.SourceVersions.GetSourceVersion(second, context);
+        var firstVersion = calculation.SourceVersions.GetSourceVersion(first);
+        var secondVersion = calculation.SourceVersions.GetSourceVersion(second);
 
         firstVersion.GetIncrementedVersion().Major.ShouldBe(2);
         secondVersion.GetIncrementedVersion().Major.ShouldBe(3);
-        context.MainlineVersions.Count.ShouldBe(2);
-        calculation.SourceVersions.GetSourceVersion(first, context).ShouldBeSameAs(firstVersion);
-        context.MainlineVersions.Count.ShouldBe(2);
+        calculation.SourceVersions.GetSourceVersion(first).ShouldBeSameAs(firstVersion);
+        calculation.SourceVersions.GetSourceVersion(second).ShouldBeSameAs(secondVersion);
     }
     [Test]
     public void MainlineMergeAtInheritedBranchBoundaryPreservesBothOperators()

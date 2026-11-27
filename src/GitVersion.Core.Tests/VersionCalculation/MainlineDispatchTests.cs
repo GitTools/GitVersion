@@ -38,7 +38,6 @@ public class MainlineDispatchTests
             .Where(c => c.MatchPrecondition(fixture.Root, fixture.Merge, fixture.Context)).ToArray();
 
         matches.Select(c => c.GetType().Name).ShouldBe([expected]);
-        fixture.Context.MainlineVersions.ShouldBeEmpty();
     }
 
     [TestCase(true, false, "3.0.0-beta.1")]
@@ -94,7 +93,6 @@ public class MainlineDispatchTests
         context.Increments.ReleaseBaseline.ShouldNotBeNull().ToString().ShouldBe("1.0.0");
         context.Label.ShouldBe("beta");
         context.Increment.ShouldBe(VersionField.Major);
-        context.MainlineVersions.Count.ShouldBe(preventSource ? 0 : 1);
     }
 
     [TestCase(true, false, "3.0.0-beta.1")]
@@ -112,6 +110,22 @@ public class MainlineDispatchTests
         result.BaseVersionSource.ShouldBeSameAs(fixture.Merge.Value);
         result.GetSemVerSource().Commit.ShouldBeSameAs(preventSource ? fixture.Initial.Value : fixture.SourceValue);
         result.GetSemVerSource().Increment.ShouldBe(VersionField.Major);
+    }
+
+    [Test]
+    public void TopLevelCalculationsRecomputeTheSourceVersion()
+    {
+        var fixture = Fixture(boundary: true);
+        var calculator = fixture.Calculation.VersionCalculator;
+        var source = fixture.Merge.ChildIteration.ShouldNotBeNull().Commits.Single();
+
+        var first = calculator.DetermineBaseVersion(fixture.Root, null);
+        source.AddSemanticVersions(new SemanticVersion(4, 0, 0));
+        var second = calculator.DetermineBaseVersion(fixture.Root, null);
+
+        first.GetIncrementedVersion().ToString().ShouldBe("3.0.0-beta.1");
+        second.GetIncrementedVersion().ToString().ShouldBe("5.0.0-beta.1");
+        second.GetSemVerSource().Commit.ShouldBeSameAs(fixture.SourceValue);
     }
 
     [TestCase(true, "none")]
@@ -144,7 +158,6 @@ public class MainlineDispatchTests
         operation.Label.ShouldBe("beta");
         operation.ForceIncrement.ShouldBeTrue();
         operation.BaseVersionSource.ShouldBeSameAs(fixture.Merge.Value);
-        fixture.Context.MainlineVersions.ShouldBeEmpty();
     }
 
     [TestCase(true, "not-last")]
@@ -167,7 +180,6 @@ public class MainlineDispatchTests
             .MatchPrecondition(iteration, fixture.Merge, fixture.Context).ShouldBeFalse();
         new MergedMainlineBranchedToNonTrunk(environment, sourceVersions)
             .MatchPrecondition(iteration, fixture.Merge, fixture.Context).ShouldBeFalse();
-        fixture.Context.MainlineVersions.ShouldBeEmpty();
     }
 
     [TestCase(false)]
@@ -190,7 +202,6 @@ public class MainlineDispatchTests
         var result = items[0].ShouldBeOfType<BaseVersion>();
         result.GetIncrementedVersion().ToString().ShouldBe("1.0.2-1");
         result.GetSemVerSource().Commit.ShouldBeSameAs(fixture.Initial.Value);
-        fixture.Context.MainlineVersions.Count.ShouldBe(inheritSource ? 0 : 1);
     }
 
     [TestCase(true)]

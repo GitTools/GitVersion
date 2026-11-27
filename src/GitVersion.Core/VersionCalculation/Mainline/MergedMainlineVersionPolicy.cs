@@ -6,31 +6,35 @@ namespace GitVersion.VersionCalculation.Mainline;
 internal sealed class MergedMainlineVersionPolicy(
     MainlineConfigurationResolver configurationResolver, IEnvironment environment, MainlineVersionCalculator calculator)
 {
+    private readonly Dictionary<MainlineIteration, BaseVersion> cachedVersions = [];
+
+    internal void ClearCache() => this.cachedVersions.Clear();
+
     internal IBaseVersionIncrement CreateIncrement(
         BaseVersionOperator operation, MainlineCommit commit, MainlineContext context)
         => context.SemanticVersion is null && commit.ChildIteration is { } child
             && !context.ChildConfiguration.NotNull().PreventIncrementWhenBranchMerged
             ? Resolve(context.Increments.Version ?? new BaseVersion(), operation,
-                GetSourceVersion(child, context), context.Increments.ReleaseBaseline)
+                GetSourceVersion(child), context.Increments.ReleaseBaseline)
             : operation;
 
-    internal BaseVersion GetSourceVersion(MainlineIteration iteration, MainlineContext context)
+    internal BaseVersion GetSourceVersion(MainlineIteration iteration)
     {
         // Inherited configurations depend on their enclosing iteration.
         var canCache = iteration.Configuration.Increment != IncrementStrategy.Inherit;
-        if (canCache && context.MainlineVersions.TryGetValue(iteration, out var cachedVersion))
+        if (canCache && this.cachedVersions.TryGetValue(iteration, out var cachedVersion))
         {
             return cachedVersion;
         }
-        var version = CalculateSourceVersion(iteration, context);
+        var version = CalculateSourceVersion(iteration);
         if (canCache)
         {
-            context.MainlineVersions.Add(iteration, version);
+            this.cachedVersions.Add(iteration, version);
         }
         return version;
     }
 
-    private BaseVersion CalculateSourceVersion(MainlineIteration iteration, MainlineContext context)
+    private BaseVersion CalculateSourceVersion(MainlineIteration iteration)
     {
         // An ignored source tip must not be mistaken for its earlier released ancestor.
         var merge = iteration.BranchedTo.NotNull();
@@ -38,7 +42,7 @@ internal sealed class MergedMainlineVersionPolicy(
             && iteration.ParentIteration is { } parent && iteration.BranchName == parent.BranchName ? 0 : 1];
         var configuration = configurationResolver.GetEffectiveConfiguration(iteration);
         var label = configuration.GetBranchSpecificLabel(iteration.BranchName, null, environment, tip);
-        var version = calculator.CalculateBaseVersion(iteration, label, context.MainlineVersions,
+        var version = calculator.CalculateBaseVersion(iteration, label,
             includeSharedHistory: true, includeAncestry: true);
         // A released source tip contributes its tag, not its next pending increment.
         if (version.Operand.BaseVersionSource?.Equals(tip) == true

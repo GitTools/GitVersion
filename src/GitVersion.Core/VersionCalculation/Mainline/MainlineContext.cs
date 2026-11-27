@@ -4,7 +4,7 @@ using GitVersion.Git;
 namespace GitVersion.VersionCalculation.Mainline;
 
 // CurrentCommit stays fixed while traversing ancestors and merged branches.
-internal record MainlineContext(ICommit CurrentCommit, Dictionary<MainlineIteration, BaseVersion> MainlineVersions)
+internal record MainlineContext(ICommit CurrentCommit)
 {
     public string? TargetLabel { get; init; }
 

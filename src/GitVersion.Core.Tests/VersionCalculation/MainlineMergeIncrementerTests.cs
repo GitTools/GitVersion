@@ -96,8 +96,8 @@ public class MainlineMergeIncrementerTests
         var parentVersion = new BaseVersion("parent", new SemanticVersion(9, 0, 0));
         fixture.Context.Increments.Add(parentVersion);
 
-        var first = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
-        var second = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
+        var first = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source);
+        var second = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source);
 
         first.SemanticVersion.ToString().ShouldBe("2.0.0");
         second.GetIncrementedVersion().ToString().ShouldBe("2.0.0-1");
@@ -106,12 +106,10 @@ public class MainlineMergeIncrementerTests
         if (inherit)
         {
             second.ShouldNotBeSameAs(first);
-            fixture.Context.MainlineVersions.ShouldBeEmpty();
         }
         else
         {
             second.ShouldBeSameAs(first);
-            fixture.Context.MainlineVersions.Count.ShouldBe(1);
         }
     }
 
@@ -122,7 +120,7 @@ public class MainlineMergeIncrementerTests
     {
         var fixture = Fixture(preventTaggedIncrement: preventTaggedIncrement);
 
-        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source);
 
         result.GetIncrementedVersion().ToString().ShouldBe(expected);
         result.Operator.ShouldNotBeNull().Increment.ShouldBe(increment);
@@ -137,7 +135,7 @@ public class MainlineMergeIncrementerTests
         var fixture = Fixture(label: "beta");
         fixture.Context.Increments.Add(new BaseVersion("receiver", new SemanticVersion(9, 0, 0)));
 
-        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source);
 
         result.SemanticVersion.ToString().ShouldBe("2.0.0-beta.4");
         result.GetIncrementedVersion().ToString().ShouldBe("2.0.0-beta.5");
@@ -159,7 +157,7 @@ public class MainlineMergeIncrementerTests
             SemanticVersion.Parse($"2.0.0-{otherLabel}.4", null));
         fixture.Context.IsMainlineMerge.ShouldBeTrue();
 
-        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source, fixture.Context);
+        var result = fixture.Calculation.SourceVersions.GetSourceVersion(fixture.Source);
 
         result.Operand.SemanticVersion.PreReleaseTag.Name.ShouldBe(sourceLabel);
         result.Operand.BaseVersionSource.ShouldBeSameAs(fixture.SourceValue);
